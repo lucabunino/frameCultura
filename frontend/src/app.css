@@ -1,0 +1,251 @@
+/* Typography */
+.jost-12 {
+	font-size: 1rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 600;
+	font-style: normal;
+	letter-spacing: .04em;
+	line-height: 1.3;
+}
+.jost-15 {
+	font-size: 1.25rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: .03em;
+	line-height: 1.3;
+}
+.jost-18 {
+	font-size: 1.5rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: .02em;
+	line-height: 1.2;
+}
+.jost-21 {
+	font-size: 1.75rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: .02em;
+	line-height: 1.2;
+}
+.jost-24 {
+	font-size: 2rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: .01em;
+	line-height: 1.2;
+}
+.jost-24.uppercase {
+	line-height: 1;
+}
+.jost-30 {
+	font-size: 2.5rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	letter-spacing: .01em;
+	line-height: 1.2;
+}
+.jost-45 {
+	font-size: 3.75rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+	letter-spacing: .01em;
+	line-height: 1;
+}
+.jost-54 {
+	font-size: 4.5rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+	letter-spacing: -.02em;
+	line-height: 1;
+}
+.jost-74 {
+	font-size: 6.166rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+	letter-spacing: -.03em;
+	line-height: 1;
+}
+.jost-74.uppercase {
+	line-height: .9;
+}
+.jost-210 {
+	font-size: 17.5rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+	letter-spacing: -.05em;
+	line-height: .85;
+}
+
+/* Reset */
+*, *::before, *::after {
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	-webkit-tap-highlight-color:transparent;
+}
+* {
+	margin: 0;
+}
+:root{
+	--gutter: 1rem;
+	--margin: 2rem;
+	--transition: cubic-bezier(.77,0,.175,1) 200ms;
+	--white: #FFF;
+	--black: #000;
+	--gray: #E7E7E7;
+	--azure: #20B2E4;
+	--blue: #3f77bc;
+	--orange: #F89B22;
+	--yellow: #FCCD0D;
+	--purple: #3E2C70;
+	--red: #EE3923;
+	--pink: #F16276;
+	--cabaret: #C14969;
+}
+html {
+	-webkit-font-smoothing: antialiased;
+	font-size: clamp(10px, 12px, 18px);
+	line-height: 1.2;
+	color: var(--black);
+	background-color: var(--lightGray);
+	overscroll-behavior-x: none;
+	scroll-behavior: smooth;
+}
+body {
+	overflow-x: hidden;
+	overscroll-behavior-x: none;
+}
+p, h1, h2, h3, h4, h5, h6 {
+	overflow-wrap: break-word;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	white-space: pre-line;
+}
+img, picture, video, canvas, svg {
+	display: block;
+	max-width: 100%;
+}
+input, button, textarea, select {
+	font: inherit;
+}
+button {
+	-webkit-appearance: none;
+	border-radius: 0;
+	text-align: inherit;
+	background: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
+	padding: 0;
+	cursor: pointer;
+	border: none;
+	color: inherit;
+	font: inherit;
+	text-transform: inherit;
+}
+#root, #__next {
+	isolation: isolate;
+}
+a:-webkit-any-link {
+	text-decoration: none;
+}
+a:-moz-any-link {
+	text-decoration: none;
+}
+a:any-link {
+	text-decoration: none;
+}
+a:-webkit-any-link:not(.btn):not(.project-link) {
+	color: inherit;
+	cursor: pointer;
+}
+a:-moz-any-link:not(.btn):not(.project-link) {
+	color: inherit;
+	cursor: pointer;
+}
+a:any-link:not(.btn):not(.project-link) {
+	color: inherit;
+	cursor: pointer;
+}
+a:-webkit-any-link.underline {
+	text-decoration: underline;
+}
+a:-webkit-any-link.underline,
+a:any-link.underline,
+.underline {
+	text-decoration: underline;
+}
+.uppercase {
+	text-transform: uppercase;
+}
+.titlecase {
+	text-transform: capitalize;
+}
+.bold {
+	font-weight: 600;
+}
+.hidden {
+	display: none !important;
+}
+.invisible {
+	opacity: 0;
+	pointer-events: none;
+}
+.mobile-only {
+	display: none !important;
+}
+@media screen and (max-width: 700px) {
+	.desktop-only {
+		display: none;
+	}
+	.mobile-only {
+		display: inherit;
+	}
+}
+
+/* General */
+.btn {
+	font-size: 1.25rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 600;
+	font-style: normal;
+	text-transform: uppercase;
+	padding: 1em 2em;
+	border-radius: 99em;
+	background-color: var(--white);
+	display: inline-block;
+	border: solid 1px;
+}
+.tag {
+	font-size: 1rem;
+	font-family: "Jost", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 600;
+	font-style: normal;
+	text-transform: uppercase;
+	padding: .5em 1em;
+	background-color: var(--white);
+	display: inline-block;
+	letter-spacing: .04em;
+}

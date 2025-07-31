@@ -85,18 +85,20 @@ let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 		<h4 class="jost-54 inline-title">Produzioni</h4>{#if homepage.productionsIntro}
 		<span class="section-description jost-18">{homepage.productionsIntro}</span>{/if}
 		<div class="productions">
-			{#each homepage.productionsSelection as production, i}
-				<a class="production jost-18" href={`/esplora/${production.slug.current}`}>
-					<img src={urlFor(production.cover)} alt="">
-					<h2 class="uppercase bold">{production.title}</h2>
-					{#if production.subtitle}<h3 class="bold">{production.subtitle}</h3>{/if}
-					<p>
-						{#if production._type == 'video'}Guarda il video{/if}
-						{#if production._type == 'playlist'}Guarda la playlist{/if}
-						{#if production._type == 'podcast'}Ascolta il podcast{/if}
-					</p>
-				</a>
-			{/each}
+			<div class="productions-swiper">
+				{#each homepage.productionsSelection as production, i}
+					<a class="production jost-18" href={`/esplora/${production.slug.current}`}>
+						<img src={urlFor(production.cover)} alt="">
+						<h2 class="uppercase bold">{production.title}</h2>
+						{#if production.subtitle}<h3 class="bold">{production.subtitle}</h3>{/if}
+						<p>
+							{#if production._type == 'video'}Guarda il video{/if}
+							{#if production._type == 'playlist'}Guarda la playlist{/if}
+							{#if production._type == 'podcast'}Ascolta il podcast{/if}
+						</p>
+					</a>
+				{/each}
+			</div>
 		</div>
 		<a href="/esplora" class="btn">Esplora tra i contenuti</a>
 	</section>
@@ -213,12 +215,19 @@ section + section {
 	gap: var(--margin);
 }
 .productions {
+	margin: 6rem 0;
+	overflow: scroll;
+	width: 100%;
+}
+.productions-swiper {
 	display: flex;
 	gap: 4px;
-	margin: 6rem 0;
+	width: max-content;
 }
 .production img {
 	border-radius: 1rem;
+	height: 20vh;
+	width: auto;
 }
 #productions .btn {
 	width: fit-content;

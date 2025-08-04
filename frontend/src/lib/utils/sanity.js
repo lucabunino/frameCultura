@@ -169,7 +169,7 @@ export async function getAuthor(slug) {
 			highlightedContents[]-> {
 				...,
 			},
-			"productions": *[(_type in ["video", "playlist", "podcast"]) && references(^._id) && visible == true] {
+			"productions": *[(_type in ["video", "playlist", "podcast"]) && references(^._id) && visibleAuthor == true] {
 				...,
 			}
 		}`, { slug });

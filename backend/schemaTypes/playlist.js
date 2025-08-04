@@ -32,6 +32,12 @@ export default {
 			validation: (Rule) => Rule.required(),
 		},
 		{
+			name: 'visibleAuthor',
+			title: "Visible in 'Author' page",
+			type: 'boolean',
+			initialValue: false,
+		},
+		{
 			name: 'hierarchy',
 			description: "Higher number means it will be displayed higher in 'Esplora' page",
 			type: 'number',

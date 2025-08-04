@@ -11,6 +11,10 @@ export default {
 			type: 'string',
 		},
 		{
+			name: 'subtitle',
+			type: 'string',
+		},
+		{
 			name: 'number',
 			type: 'number',
 		},
@@ -32,14 +36,12 @@ export default {
 			title: "Visible in 'Esplora' page",
 			type: 'boolean',
 			initialValue: false,
-			validation: (Rule) => Rule.required(),
 		},
 		{
 			name: 'hierarchy',
 			description: "Higher number means it will be displayed higher in 'Esplora' page",
 			type: 'number',
 			initialValue: 1,
-			validation: (Rule) => Rule.required(),
 		},
 		{
 			name: 'link',

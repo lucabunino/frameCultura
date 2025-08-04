@@ -78,7 +78,7 @@ let activeVideoPlay = $state(false)
 					href={episode.link}
 					target="_blank" rel="noopener noreferrer"
 					>
-						<h2 class="jost-24 uppercase bold">{production.episodes.length - i}. {episode.title}</h2>
+						<h2 class="jost-24 uppercase bold">{#if episode.number}{episode.number}{@html '. '}{/if}{episode.title}</h2>
 						{#if episode.subtitle}<h2 class="jost-24 bold">{episode.subtitle}</h2>{/if}
 						{#if episode.date}<time class="jost-15" datetime={episode.date}>{episode.date}</time>{/if}
 						{#if episode.body}

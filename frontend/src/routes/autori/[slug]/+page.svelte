@@ -38,7 +38,10 @@ const author = data.author
 				<div class="author-contents">
 					{#each author.productions as production, i}
 						<a class="author-content jost-15" href={`/esplora/${production.slug.current}`}>
-							<img src={urlFor(production.cover)} alt="">
+							<img class="cover rounded" src={urlFor(production.cover)} alt=""
+							class:_1-1={production._type == "episode" || production._type == "podcast"}
+							class:_16-9={production._type == "video" || production._type == "playlist"}
+							>
 							<h2 class="uppercase bold">{production.title}</h2>
 							{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
 						</a>
@@ -49,10 +52,13 @@ const author = data.author
 	</div>
 	{#if author.highlightedContents}	
 		<div class="author-highlighted-contents">
-			<h4 class="jost-12 uppercase">In evidenza</h4>
+			<h4 class="jost-12 uppercase bold">In evidenza</h4>
 			{#each author.highlightedContents as production, i}
 				<a class="active-author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
-					<img src={urlFor(production.cover)} alt="">
+					<img class="cover rounded" src={urlFor(production.cover)} alt=""
+					class:_1-1={production._type == "episode" || production._type == "podcast"}
+					class:_16-9={production._type == "video" || production._type == "playlist"}
+					>
 					<h2 class="uppercase bold">{production.title}</h2>
 					{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
 				</a>
@@ -76,7 +82,6 @@ const author = data.author
 	gap: var(--margin);
 }
 .portrait {
-	border-radius: 100%;
 	max-width: 200px;
 }
 .bio {
@@ -96,9 +101,6 @@ h4 {
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 }
-.author-contents img {
-	border-radius: 1rem;
-}
 /* Highlights */
 .author-highlighted-contents {
 	width: 30%;
@@ -106,7 +108,7 @@ h4 {
 	border-left: solid 1px;
 	padding: var(--margin);
 }
-.author-highlighted-contents img {
-	border-radius: 1rem;
+.author-highlighted-contents .cover {
+	max-width: 150px;
 }
 </style>

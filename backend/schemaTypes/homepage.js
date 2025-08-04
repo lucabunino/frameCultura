@@ -117,7 +117,7 @@ export default {
 			of: [
 				{
 					type: 'reference',
-					to: [{type: 'podcast'}, {type: 'video'}, {type: 'playlist'},],
+					to: [{type: 'episode'}, {type: 'podcast'}, {type: 'video'}, {type: 'playlist'},],
 				}
 			],
 			fieldset: 'productions',

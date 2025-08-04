@@ -11,8 +11,8 @@ export default {
 			type: 'string',
 		},
 		{
-			name: 'subtitle',
-			type: 'string',
+			name: 'number',
+			type: 'number',
 		},
 		{
 			name: 'slug',
@@ -26,6 +26,20 @@ export default {
 		{
 			name: 'date',
 			type: 'date',
+		},
+		{
+			name: 'visible',
+			title: "Visible in 'Esplora' page",
+			type: 'boolean',
+			initialValue: false,
+			validation: (Rule) => Rule.required(),
+		},
+		{
+			name: 'hierarchy',
+			description: "Higher number means it will be displayed higher in 'Esplora' page",
+			type: 'number',
+			initialValue: 1,
+			validation: (Rule) => Rule.required(),
 		},
 		{
 			name: 'link',
@@ -55,11 +69,16 @@ export default {
 				}
 			],
 		},
-		// {
-		// 	name: 'cover',
-		// 	description: 'Aspect ratio 1:1',
-		// 	type: 'image',
-		// },
+		{
+			name: 'cover',
+			description: 'Aspect ratio 1:1',
+			type: 'image',
+		},
+		{
+			name: 'highlightCover',
+			description: "Aspect ratio 21:9. To be used if the podcast is selected in 'Esplora' page",
+			type: 'image',
+		},
 		body(),
 	],
 	preview: {

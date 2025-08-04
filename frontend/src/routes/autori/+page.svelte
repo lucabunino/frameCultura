@@ -53,7 +53,6 @@ let previousInitial = '';
 	margin-top: .5rem;
 }
 .author .portrait {
-	border-radius: 100%;
 	max-width: 200px;
 }
 </style>

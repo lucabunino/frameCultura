@@ -1,18 +1,15 @@
 <script>
 import { register } from 'swiper/element/bundle';register();
-import Media from '$lib/components/Media.svelte';register();
+import Media from '$lib/components/Media.svelte';
 import sliderInjectedStyle from '$lib/utils/sliderInjectedStyle';
 
 let {
 	slides,
-	size = "s",
 } = $props()
 
 let swiperEl = $state()
-const sizeMap = { xs: 5.5, s: 4.5, m: 3.5, l: 2.5, xl: 1.5 };
 const swiperParams = {
-	navigation: true,
-	injectStyles: [sliderInjectedStyle],
+	injectStyles: sliderInjectedStyle,
 };
 
 $effect(() => {
@@ -24,7 +21,7 @@ $effect(() => {
 <swiper-container
 init={false}
 bind:this={swiperEl}
-slides-per-view={sizeMap[size]}
+navigation={true}
 centered-slides={true}
 space-between={1}
 grabCursor={true}

@@ -5,6 +5,9 @@ export default {
 	name: 'video',
 	type: 'document',
 	icon: VideoIcon,
+	fieldsets: [
+		{name: 'youtube'},
+	],
 	fields: [
 		{
 			name: 'title',
@@ -29,11 +32,6 @@ export default {
 			type: 'date',
 		},
 		{
-			name: 'youtubeEmbedCode',
-			type: 'string',
-			validation: (Rule) => Rule.required(),
-		},
-		{
 			name: 'visible',
 			title: "Visible in 'Esplora' page",
 			type: 'boolean',
@@ -46,6 +44,20 @@ export default {
 			type: 'number',
 			initialValue: 1,
 			validation: (Rule) => Rule.required(),
+		},
+		{
+			name: 'youtubeVideoCode',
+			title: 'Video Code',
+			type: 'string',
+			validation: (Rule) => Rule.required(),
+			fieldset: 'youtube',
+		},
+		{
+			name: 'youtubePlaylistCode',
+			title: 'Playlist Code',
+			description: "Required to display the video as part of a Youtube playlist",
+			type: 'string',
+			fieldset: 'youtube',
 		},
 		{
 			name: 'topics',

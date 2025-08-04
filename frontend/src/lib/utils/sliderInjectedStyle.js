@@ -1,4 +1,4 @@
-export default `
+export default `[
 .swiper-button-next,
 .swiper-button-prev {
 	background-color: var(--white);
@@ -38,4 +38,4 @@ export default `
 	pointer-events: none;
 	display: none;
 }
-`;
+]`;

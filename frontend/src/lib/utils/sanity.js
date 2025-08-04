@@ -89,7 +89,7 @@ export async function getExploreSelection() {
 }
 export async function getExplore() {
 	return await client.fetch(`
-		*[_type in ["podcast", "video", "playlist"] && visible == true && !(_id in path('drafts.**'))] {
+		*[_type in ["episode", "podcast", "video", "playlist"] && visible == true && !(_id in path('drafts.**'))] {
 			...,
 			authors[]-> {
 				...,
@@ -99,7 +99,7 @@ export async function getExplore() {
 }
 export async function getProduction(slug) {
 	return await client.fetch(`
-		*[_type in ["podcast", "video", "playlist"] && slug.current == $slug][0] {
+		*[_type in ["episode", "podcast", "video", "playlist"] && slug.current == $slug][0] {
 			...,
 			topics[]-> {
 				...,
@@ -118,6 +118,12 @@ export async function getProduction(slug) {
 				authors[]-> {
 					...,
 				},
+			},
+			"podcasts": *[_type == "podcast" && references(^._id)]{
+				...,
+			},
+			"playlists": *[_type == "playlist" && references(^._id)]{
+				...,
 			},
 		}`, { slug });
 }
@@ -163,7 +169,7 @@ export async function getAuthor(slug) {
 			highlightedContents[]-> {
 				...,
 			},
-			"productions": *[(_type in ["video", "playlist", "podcast"]) && references(^._id)] {
+			"productions": *[(_type in ["video", "playlist", "podcast"]) && references(^._id) && visible == true] {
 				...,
 			}
 		}`, { slug });

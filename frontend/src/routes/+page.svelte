@@ -1,9 +1,18 @@
 <script>
 import { urlFor } from "$lib/utils/image";
+import ProductionsWidget from "$lib/components/ProductionsWidget.svelte";
+// import { register } from 'swiper/element/bundle';register();
+
 let { data } = $props();
 const homepage = data.homepage
+let domLoaded = $state(false)
 let activeAuthorIndex = $state(0)
 let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
+// let swiperProductionsIndex = $state(0)
+
+$effect(() => {
+	domLoaded = true
+})
 </script>
 
 <section id="hero">
@@ -69,7 +78,7 @@ let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 							{#if event.city}<button class="tag">{event.city.title}</button>{/if}
 						</div>
 					{/if}
-					<img src={urlFor(event.cover)} alt="">
+					<img class="cover _5-7" src={urlFor(event.cover)} alt="">
 					<time datetime={event.start}>{event.start}</time>
 					<h2>{event.title}</h2>
 					{#if event.subtitle}<h3>{event.subtitle}</h3>{/if}
@@ -84,11 +93,31 @@ let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 	<section id="productions">
 		<h4 class="jost-54 inline-title">Produzioni</h4>{#if homepage.productionsIntro}
 		<span class="section-description jost-18">{homepage.productionsIntro}</span>{/if}
-		<div class="productions">
-			<div class="productions-swiper">
-				{#each homepage.productionsSelection as production, i}
-					<a class="production jost-18" href={`/esplora/${production.slug.current}`}>
-						<img src={urlFor(production.cover)} alt="">
+		<!-- <swiper-container
+		onswiperrealindexchange={swiperProductionsIndex = event.detail[0].realIndex}
+		class:invisible={!domLoaded}
+		loop={false}
+		auto-width={true}
+		centered-slides={true}
+		space-between={4}
+		grabCursor={true}
+		slides-per-view={"auto"}
+		free-mode={true}
+		mousewheel={true}
+		>
+		{#each homepage.productionsSelection as production, i}
+			<swiper-slide style="width: auto;">
+				<a class="production jost-18"
+				class:l={swiperProductionsIndex == i}
+				class:m={swiperProductionsIndex == i-1 || swiperProductionsIndex == i+1}
+				href={`/esplora/${production.slug.current}`}
+				>
+					<img class="cover rounded"
+					class:_1-1={production._type == "episode" || production._type == "podcast"}
+					class:_16-9={production._type == "video" || production._type == "playlist"}
+					src={urlFor(production.cover)} alt=""
+					>
+					<div class="production-text">
 						<h2 class="uppercase bold">{production.title}</h2>
 						{#if production.subtitle}<h3 class="bold">{production.subtitle}</h3>{/if}
 						<p>
@@ -96,10 +125,12 @@ let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 							{#if production._type == 'playlist'}Guarda la playlist{/if}
 							{#if production._type == 'podcast'}Ascolta il podcast{/if}
 						</p>
-					</a>
-				{/each}
-			</div>
-		</div>
+					</div>
+				</a>
+			</swiper-slide>
+		{/each}
+		</swiper-container> -->
+		<ProductionsWidget productions={homepage.productionsSelection} />
 		<a href="/esplora" class="btn">Esplora tra i contenuti</a>
 	</section>
 {/if}
@@ -109,16 +140,19 @@ let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 		<div class="active-author">
 			<h4 class="jost-54 inline-title">Autori</h4>
 			<div class="active-author-card">
-				<img class="active-author-portrait" src={urlFor(activeAuthor.portrait)} alt="">
+				<img class="active-author-portrait _1-1" src={urlFor(activeAuthor.portrait)} alt="">
 				{#if activeAuthor.highlight}<blockquote class="active-author-highlight">{activeAuthor.highlight}</blockquote>{/if}
 			</div>
 			{#if activeAuthor.highlightedContents}
 				<div>
-					<p class="jost-12 uppercase">Compare in</p>
+					<p class="jost-12 uppercase bold">Compare in</p>
 					<div class="active-author-highlighted-contents">
 						{#each activeAuthor.highlightedContents as production, i}
 							<a class="active-author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
-								<img src={urlFor(production.cover)} alt="">
+								<img class="cover rounded" src={urlFor(production.cover)} alt=""
+								class:_1-1={production._type == "episode" || production._type == "podcast"}
+								class:_16-9={production._type == "video" || production._type == "playlist"}
+								>
 								<h2 class="uppercase bold">{production.title}</h2>
 								{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
 							</a>
@@ -213,25 +247,44 @@ section + section {
 	flex-direction: column;
 	align-items: center;
 	gap: var(--margin);
-}
-.productions {
-	margin: 6rem 0;
-	overflow: scroll;
 	width: 100%;
 }
-.productions-swiper {
-	display: flex;
-	gap: 4px;
-	width: max-content;
+/* swiper-container {
+	margin: 8rem 0;
+	width: 100%;
 }
-.production img {
-	border-radius: 1rem;
-	height: 20vh;
+swiper-container::part(container) {
+	overflow: visible;
+}
+
+.production .cover {
+	transition: var(--transition);
+	height: 15vh;
 	width: auto;
+}
+.production.l .cover {
+	height: 25vh;
+}
+.production.m .cover {
+	height: 20vh;
+}
+.production:hover .production-text {
+	opacity: 1;
+}
+.production-text {
+	margin-top: .8rem;
+	position: absolute;
+	top: 100%;
+	left: 50%;
+    width: max-content;
+    transform: translateX(-50%);
+	opacity: 0;
+	transition: var(--transition);
 }
 #productions .btn {
 	width: fit-content;
-}
+} */
+
 
 /* Authors */
 #authors {
@@ -242,7 +295,7 @@ section + section {
 	position: sticky;
 	top: 0;
 	height: fit-content;
-	min-height: 80vh;
+	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -263,7 +316,6 @@ section + section {
 .active-author-portrait {
 	width: 20vh;
 	min-width: 200px;
-	aspect-ratio: 1;
 	border-radius: 99em;
 }
 .active-author-highlight {

@@ -5,7 +5,7 @@ $inspect(data)
 </script>
 
 {#if data.liveSelection}
-	<section id="liveSelection">
+	<section id="liveSelection" class="cover">
 		Selezione di eventi in evidenza (slider):
 		{#each data.liveSelection as event, i}
 			<div>{event.title}</div>
@@ -24,7 +24,7 @@ $inspect(data)
 				{#if event.city}<button class="tag">{event.city.title}</button>{/if}
 			</div>
 		{/if}
-		<img src={urlFor(event.cover)} alt="">
+		<img class="cover _5-7" src={urlFor(event.cover)} alt="">
 		<time datetime={event.start}>{event.start}</time>
 		<h2>{event.title}</h2>
 		{#if event.subtitle}<h3>{event.subtitle}</h3>{/if}
@@ -35,7 +35,6 @@ $inspect(data)
 <style>
 /* Highlights */
 #liveSelection {
-	background-color: var(--blue);
 	height: 100vh;
 }
 

@@ -26,7 +26,7 @@ let activeOrganization = $state(0)
 			<div class="organizations">
 				{#each cluster.organizations as organization, j}
 					<div class="organization">
-						<img src={urlFor(organization.logo)} alt="">
+						<img class="_1-1" src={urlFor(organization.logo)} alt="">
 						<h2>{organization.title}</h2>
 					</div>
 				{/each}

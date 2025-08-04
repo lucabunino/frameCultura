@@ -86,6 +86,7 @@ export default {
 					to: [
 						{type: 'video'},
 						{type: 'playlist'},
+						{type: 'episode'},
 						{type: 'podcast'},
 					],
 				}

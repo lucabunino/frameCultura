@@ -36,7 +36,7 @@ let { value } = $derived(portableText)
 	border-radius: 1rem;
 	background-color: var(--gray);
 	padding: var(--margin);
-	height: 40vh;
+	min-height: 35vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

@@ -232,9 +232,11 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	list-style: none;
 	display: flex;
 	flex-direction: column;
-	line-height: 1;
 	overflow: hidden;
 	padding: 0;
+}
+.menu a {
+	line-height: 1;
 }
 .menu.open ul {
 	height: 100vh;

@@ -1,7 +1,8 @@
 <script>
 import { urlFor } from "$lib/utils/image";
+import { formatDate } from "$lib/utils/date";
 import ProductionsWidget from "$lib/components/ProductionsWidget.svelte";
-// import { register } from 'swiper/element/bundle';register();
+import { register } from 'swiper/element/bundle';register();
 
 let { data } = $props();
 const homepage = data.homepage
@@ -20,20 +21,24 @@ $effect(() => {
 	{#if homepage.intro2}
 		<p>{homepage.intro2}</p>
 	{/if}
-	<a href="/about" class="btn">Leggi di più</a>
+	<a href="/about" class="btn bg-gray">Leggi di più</a>
 </section>
 
 {#if homepage.highlights}
 	<section id="highlights">
 		{#each homepage.highlights as highlight, i}
-			<div class="highlight-wrapper"
+			<!-- <div class="highlight-wrapper"
 			style={
 				(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
 				(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
 			}
-			>
+			> -->
 				{#if highlight.ctaReference || highlight.ctaLink}
 					<a class="highlight"
+					style={
+						(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
+						(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
+					}
 					href={highlight.ctaReference ? `/${{
 						video: 'esplora',
 						playlist: 'esplora',
@@ -49,17 +54,17 @@ $effect(() => {
 							{#if highlight.title}<h2 class="jost-54">{highlight.title}</h2>{/if}
 							{#if highlight.abstract}<p class="jost-18">{highlight.abstract}</p>{/if}
 						</div>
-						{#if highlight.ctaLabel}<button class="btn">{highlight.ctaLabel}</button>{/if}
+						{#if highlight.ctaLabel}<button class="btn bg-white">{highlight.ctaLabel}</button>{/if}
 					</a>
 				{:else}
 					<div class="highlight">
 						{#if highlight.subtitle}<h3>{highlight.subtitle}</h3>{/if}
 						{#if highlight.title}<h2>{highlight.title}</h2>{/if}
 						{#if highlight.abstract}<p>{highlight.abstract}</p>{/if}
-						{#if highlight.ctaLabel}<button class="btn">{highlight.ctaLabel}</button>{/if}
+						{#if highlight.ctaLabel}<button class="btn bg-white">{highlight.ctaLabel}</button>{/if}
 					</div>
 				{/if}
-			</div>
+			<!-- </div> -->
 		{/each}
 	</section>
 {/if}
@@ -67,25 +72,37 @@ $effect(() => {
 {#if homepage.liveSelection}
 	<section id="live">
 		<h4 class="jost-54 inline-title">Live</h4>{#if homepage.liveIntro}<span class="section-description-inline jost-18">{homepage.liveIntro}</span>{/if}
-		<div class="events">
+		<swiper-container class="events"
+		class:invisible={!domLoaded}
+		loop={false}
+		space-between={4}
+		grabCursor={true}
+		slides-per-view={3.5}
+		free-mode={false}
+		mousewheel-force-to-axis={true}
+		slides-offset-before={21}
+		slides-offset-after={21}
+		>
 			{#each homepage.liveSelection as event, i}
-				<a class="event" href={`/live/${event.slug.current}`}>
-					{#if event.topics || event.city}
-						<div class="tags">
-							{#each event.topics as topic, j}
-								<button class="tag">{topic.title}</button>
-							{/each}
-							{#if event.city}<button class="tag">{event.city.title}</button>{/if}
-						</div>
-					{/if}
-					<img class="cover _5-7" src={urlFor(event.cover)} alt="">
-					<time datetime={event.start}>{event.start}</time>
-					<h2>{event.title}</h2>
-					{#if event.subtitle}<h3>{event.subtitle}</h3>{/if}
-				</a>
+				<swiper-slide>
+					<a class="event" href={`/live/${event.slug.current}`}>
+						{#if event.topics || event.city}
+							<div class="tags">
+								{#each event.topics as topic, j}
+									<button class="tag">{topic.title}</button>
+								{/each}
+								{#if event.city}<button class="tag">{event.city.title}</button>{/if}
+							</div>
+						{/if}
+						<img class="cover _5-7" src={urlFor(event.cover)} alt="">
+						<time class="jost-18" datetime={event.start}>{formatDate(event.start, event.end)}</time>
+						<h2 class="jost-24 uppercase bold">{event.title}</h2>
+						{#if event.subtitle}<h3 class="jost-24 bold">{event.subtitle}</h3>{/if}
+					</a>
+				</swiper-slide>
 			{/each}
-		</div>
-		<a href="/live" class="btn">Vedi tutti</a>
+		</swiper-container>
+		<a href="/live" class="btn bg-gray">Vedi tutti</a>
 	</section>
 {/if}
 
@@ -93,45 +110,8 @@ $effect(() => {
 	<section id="productions">
 		<h4 class="jost-54 inline-title">Produzioni</h4>{#if homepage.productionsIntro}
 		<span class="section-description jost-18">{homepage.productionsIntro}</span>{/if}
-		<!-- <swiper-container
-		onswiperrealindexchange={swiperProductionsIndex = event.detail[0].realIndex}
-		class:invisible={!domLoaded}
-		loop={false}
-		auto-width={true}
-		centered-slides={true}
-		space-between={4}
-		grabCursor={true}
-		slides-per-view={"auto"}
-		free-mode={true}
-		mousewheel={true}
-		>
-		{#each homepage.productionsSelection as production, i}
-			<swiper-slide style="width: auto;">
-				<a class="production jost-18"
-				class:l={swiperProductionsIndex == i}
-				class:m={swiperProductionsIndex == i-1 || swiperProductionsIndex == i+1}
-				href={`/esplora/${production.slug.current}`}
-				>
-					<img class="cover rounded"
-					class:_1-1={production._type == "episode" || production._type == "podcast"}
-					class:_16-9={production._type == "video" || production._type == "playlist"}
-					src={urlFor(production.cover)} alt=""
-					>
-					<div class="production-text">
-						<h2 class="uppercase bold">{production.title}</h2>
-						{#if production.subtitle}<h3 class="bold">{production.subtitle}</h3>{/if}
-						<p>
-							{#if production._type == 'video'}Guarda il video{/if}
-							{#if production._type == 'playlist'}Guarda la playlist{/if}
-							{#if production._type == 'podcast'}Ascolta il podcast{/if}
-						</p>
-					</div>
-				</a>
-			</swiper-slide>
-		{/each}
-		</swiper-container> -->
 		<ProductionsWidget productions={homepage.productionsSelection} />
-		<a href="/esplora" class="btn">Esplora tra i contenuti</a>
+		<a href="/esplora" class="btn bg-gray">Esplora tra i contenuti</a>
 	</section>
 {/if}
 
@@ -140,24 +120,45 @@ $effect(() => {
 		<div class="active-author">
 			<h4 class="jost-54 inline-title">Autori</h4>
 			<div class="active-author-card">
-				<img class="active-author-portrait _1-1" src={urlFor(activeAuthor.portrait)} alt="">
+				<img class="active-author-portrait portrait _1-1" src={urlFor(activeAuthor.portrait)} alt="">
 				{#if activeAuthor.highlight}<blockquote class="active-author-highlight">{activeAuthor.highlight}</blockquote>{/if}
 			</div>
 			{#if activeAuthor.highlightedContents}
-				<div>
-					<p class="jost-12 uppercase bold">Compare in</p>
-					<div class="active-author-highlighted-contents">
+				<div class="active-author-highlighted-contents-wrapper">
+					<p class="jost-12 uppercase bold active-author-highlighted-title">Compare in</p>
+					<swiper-container class="active-author-highlighted-contents"
+					class:invisible={!domLoaded}
+					loop={false}
+					space-between={10}
+					grabCursor={true}
+					slides-per-view={2.5}
+					free-mode={false}
+					mousewheel-force-to-axis={true}
+					pagination-clickable={true}
+					>
 						{#each activeAuthor.highlightedContents as production, i}
-							<a class="active-author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
-								<img class="cover rounded" src={urlFor(production.cover)} alt=""
-								class:_1-1={production._type == "episode" || production._type == "podcast"}
-								class:_16-9={production._type == "video" || production._type == "playlist"}
-								>
-								<h2 class="uppercase bold">{production.title}</h2>
-								{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
-							</a>
+							{#if i < 4}
+							<swiper-slide>
+								<a class="active-author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
+									<img class="cover rounded" src={urlFor(production.cover)} alt=""
+									class:_1-1={production._type == "episode" || production._type == "podcast"}
+									class:_16-9={production._type == "video" || production._type == "playlist"}
+									>
+									<div>
+										<h2 class="uppercase bold">{production.title}</h2>
+										{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
+										<p>
+											{#if production._type == "video"}Guarda il video{/if}
+											{#if production._type == "playlist"}Guarda la playlist{/if}
+											{#if production._type == "episode"}Ascolta l'episodio{/if}
+											{#if production._type == "podcast"}Ascolta il podcast{/if}
+										</p>
+									</div>
+								</a>
+							</swiper-slide>
+							{/if}
 						{/each}
-					</div>
+					</swiper-container>
 				</div>
 			{/if}
 		</div>
@@ -171,7 +172,7 @@ $effect(() => {
 					<h2>{author.name} {author.surname}</h2>
 				</a>
 			{/each}
-			<a href="/autori" class="btn">Vedi tutti</a>
+			<a href="/autori" class="btn bg-gray">Vedi tutti</a>
 		</div>
 	</section>
 {/if}
@@ -186,17 +187,21 @@ section + section {
 	display: inline-block;
 	white-space: pre;
 }
+.section-description-inline {
+	margin-left: var(--margin);
+}
 .section-description {
 	display: block;
 	max-width: 600px;
+	margin-bottom: 2rem;
 }
 
 /* Hero */
 #hero {
-	padding: var(--margin);
+	padding: 1rem var(--margin) 4rem;
 }
 #hero p {
-	margin: 4rem 0 8rem;
+	margin: 3rem 0 8rem;
 	max-width: 600px;
 }
 
@@ -204,16 +209,30 @@ section + section {
 #highlights {
 	display: flex;
 }
-.highlight-wrapper {
+/* .highlight-wrapper {
 	width: 100%;
 	background-position: center;
-	padding: var(--margin);
-}
+	padding: 2rem var(--margin) 4rem;
+} */
 .highlight {
-	height: 50vh;
+	width: 100%;
+	background-position: center;
+	padding: 2rem var(--margin) 4rem;
+	min-height: 600px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+.highlight h3 {
+	margin-bottom: 1rem;
+	max-width: 600px;
+}
+.highlight h2 {
+	margin-bottom: 2rem;
+	max-width: 600px;
+}
+.highlight p {
+	max-width: 450px;
 }
 .highlight .btn {
 	width: fit-content;
@@ -222,12 +241,25 @@ section + section {
 /* Live */
 #live {
 	margin-top: 10rem;
+	padding: 2rem var(--margin);
+}
+.events {
+	margin: 2rem calc(var(--margin)*-1) 4rem;
+	display: flex;
 }
 .event {
 	position: relative;
 }
-.events {
-	display: flex;
+.event .cover {
+	margin-bottom: 1rem;
+}
+.event:hover {
+	
+}
+.event time {
+	margin-bottom: 1rem;
+	line-height: 1.1;
+	display: block;
 }
 .tags {
 	display: flex;
@@ -235,7 +267,7 @@ section + section {
 	width: -webkit-fill-available;
 	width: fill-available;
 	position: absolute;
-	padding: .2em;
+	padding: .4em;
 	gap: .2em;
 }
 
@@ -289,7 +321,7 @@ swiper-container::part(container) {
 /* Authors */
 #authors {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(2, 50%);
 }
 .active-author {
 	position: sticky;
@@ -299,10 +331,11 @@ swiper-container::part(container) {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	padding: 2rem var(--margin) 2rem;
 }
 .active-author-card {
 	position: absolute;
-	top: 30%;
+	top: 25%;
 	left: 50%;
 	transform: translateX(-50%);
 	display: flex;
@@ -316,22 +349,68 @@ swiper-container::part(container) {
 .active-author-portrait {
 	width: 20vh;
 	min-width: 200px;
-	border-radius: 99em;
 }
 .active-author-highlight {
 	margin-top: 2rem;
 }
-.active-author-highlighted-contents {
-	display: flex;
-	gap: var(--gutter);
+.active-author-highlighted-title {
+	margin-bottom: 1rem;
 }
+/* .active-author-highlighted-contents::part(button-next), .active-author-highlighted-contents::part(button-prev) {
+	content: '';
+	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: calc(100%/2.5*.5);
+	z-index: 99;
+	margin-top: 0;
+}
+.active-author-highlighted-contents::part(button-next) {
+	right: 0;
+}
+.active-author-highlighted-contents::part(button-prev) {
+	left: 0;
+} */
+.active-author-highlighted-contents {
+	margin-top: -2rem;
+}
+.active-author-highlighted-contents swiper-slide {
+	margin-top: 2rem;
+}
+.active-author-highlighted-contents::part(pagination) {
+	width: fit-content;
+	left: unset;
+	bottom: unset;
+	right: 0;
+	top: 0;
+	line-height: 0;
+}
+.active-author-highlighted-contents::part(bullet) {
+	margin: 0 3px;
+	background-color: var(--gray);
+	opacity: 1;
+}
+.active-author-highlighted-contents::part(bullet-active) {
+	background-color: var(--orange);
+}
+
 .active-author-highlighted-content {
 	display: flex;
+	gap: var(--gutter);
+	line-height: 1.1;
+	align-items: center;
 }
 .active-author-highlighted-content img {
 	height: 50px;
 }
+.authors {
+	padding: 1.5rem var(--margin);
+}
 .author.active h2 {
 	color: var(--orange);
+}
+.authors .btn {
+	margin-top: 4rem;
 }
 </style>

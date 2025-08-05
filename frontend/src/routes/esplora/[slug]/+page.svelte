@@ -373,6 +373,7 @@ let activeVideoPlay = $state(false)
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
+	border: solid 1px var(--black);
 }
 .podcast-body {
 	margin-top: 2rem;
@@ -458,6 +459,7 @@ let activeVideoPlay = $state(false)
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
+	box-shadow: 10px 5px 5px var(--black);
 }
 .playlist-videos {
 	grid-column: 8 / span 3;

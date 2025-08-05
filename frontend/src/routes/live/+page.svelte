@@ -43,7 +43,7 @@ $inspect(data)
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: var(--gutter);
-	padding: var(--margin);
+	padding: 2rem var(--margin);
 }
 .event {
 	position: relative;

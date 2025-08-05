@@ -34,7 +34,7 @@ const author = data.author
 		</div>
 		{#if author.productions.length > 0}
 			<div class="author-appears">
-				<h4 class="jost-12 uppercase">Compare in</h4>
+				<h4 class="jost-12 uppercase bold">Compare in</h4>
 				<div class="author-contents">
 					{#each author.productions as production, i}
 						<a class="author-content jost-15" href={`/esplora/${production.slug.current}`}>

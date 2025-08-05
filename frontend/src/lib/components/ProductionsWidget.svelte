@@ -124,6 +124,7 @@ function handleMouseLeave() {
 					<p>
 						{#if production._type == "video"}Guarda il video{/if}
 						{#if production._type == "playlist"}Guarda la playlist{/if}
+						{#if production._type == "episode"}Ascolta l'episodio{/if}
 						{#if production._type == "podcast"}Ascolta il podcast{/if}
 					</p>
 				</div>

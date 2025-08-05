@@ -63,6 +63,7 @@ export default {
 		},
 		{
 			name: 'bio',
+			description: "The 'body' field is temporarily replaced due to a legacy import. Use 'body' to apply styling and links.",
 			type: 'text',
 			fieldset: 'author',
 			group: 'author',

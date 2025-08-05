@@ -1,6 +1,7 @@
 <script>
 import { urlFor } from "$lib/utils/image";
 let { data } = $props();
+$inspect(data)
 let previousInitial = '';
 </script>
 
@@ -18,7 +19,7 @@ let previousInitial = '';
 			{:else}
 			<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 		{/if}
-		<h2 class="jost-30">{author.name} {author.surname}</h2>
+		<h2 class="jost-27">{author.name} {author.surname}</h2>
 		{#if author.occupation}<h3 class="jost-18">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
 	</a>
 {/each}
@@ -28,7 +29,7 @@ let previousInitial = '';
 /* Authors */
 #authors {
 	display: grid;
-	grid-template-columns: repeat(6, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 	padding: var(--margin);
@@ -48,11 +49,27 @@ let previousInitial = '';
 }
 .author h2 {
 	margin-top: 1rem;
+	line-height: 1.05;
 }
 .author h3 {
 	margin-top: .5rem;
 }
 .author .portrait {
 	max-width: 200px;
+}
+@media only screen and (max-width: 1280px) {
+	#authors {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+@media only screen and (max-width: 1080px) {
+	#authors {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+@media only screen and (max-width: 800px) {
+	#authors {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }
 </style>

@@ -84,7 +84,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <header>
 	<!-- Menu -->
-	<nav aria-label="menu" class="menu" class:open={menuOpen} class:up={menuUp}>
+	<nav aria-label="menu" class="menu" class:open={menuOpen} class:up={menuUp} class:transparent={$page.url.pathname == "/esplora"}>
 		{#if data.info.logo}
 			<a class="logo" href="/" class:active={$page.url.pathname === "/"}>
 				<img src={urlFor(data.info.logo)} alt="">
@@ -124,7 +124,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <!-- Main -->
 {#key data.pathname + cookieAccepted}
-	<main class:marginTop={!$page.url.pathname.includes("/esplora/")}>
+	<main class:marginTop={!$page.url.pathname.includes("/esplora")}>
 		{@render children()}
 	</main>
 {/key}
@@ -210,7 +210,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <style>
 .menu {
-	background: var(--white);
+	background-color: var(--white);
 	display: flex;
 	justify-content: space-between;
 	padding: var(--margin);
@@ -219,6 +219,14 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	width: 100%;
 	z-index: 2;
 	transition: var(--transition);
+	transition-property: transform;
+}
+.menu.transparent:not(.open) {
+	background-color: transparent;
+	color: var(--white);
+}
+.menu.transparent:not(.open) .logo {
+	filter: brightness(100);
 }
 .menu.up:not(.open) {
 	transform: translateY(-100%);

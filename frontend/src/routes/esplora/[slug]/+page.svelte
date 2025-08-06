@@ -8,6 +8,7 @@ const production = data.production
 let activeVideoIndex = $state(0)
 let activeVideo = $derived(production.videos?.[activeVideoIndex])
 let activeVideoPlay = $state(false)
+let productionVideoPlay = $state(false)
 </script>
 
 <!-- <svelte:head>
@@ -40,7 +41,11 @@ let activeVideoPlay = $state(false)
 							{:else}
 								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 							{/if}
-							<h3>{author.name} {author.surname}</h3>
+							{#if author.name || author.surname}
+								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
+							{:else if author.alias}
+								<h3 class="jost-27">{author.alias}</h3>
+							{/if}
 						</a>
 					{/each}
 				</div>
@@ -70,7 +75,7 @@ let activeVideoPlay = $state(false)
 				</div>
 			{/if}
 		</div>
-		{#if production.episodes}
+		{#if production.episodes.length > 0}
 			<div class="podcast-episodes">
 				<h4 class="jost-12 uppercase bold">Episodi</h4>
 				{#each production.episodes as episode, i}
@@ -118,7 +123,11 @@ let activeVideoPlay = $state(false)
 							{:else}
 								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 							{/if}
-							<h3>{author.name} {author.surname}</h3>
+							{#if author.name || author.surname}
+								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
+							{:else if author.alias}
+								<h3 class="jost-27">{author.alias}</h3>
+							{/if}
 						</a>
 					{/each}
 				</div>
@@ -176,7 +185,11 @@ let activeVideoPlay = $state(false)
 							{:else}
 								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 							{/if}
-							<h3>{author.name} {author.surname}</h3>
+							{#if author.name || author.surname}
+								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
+							{:else if author.alias}
+								<h3 class="jost-27">{author.alias}</h3>
+							{/if}
 						</a>
 					{/each}
 				</div>
@@ -208,12 +221,12 @@ let activeVideoPlay = $state(false)
 							<button class="playlist-active-video-cover"
 							onclick={() => activeVideoPlay = true}
 							>
+								<img class="cover rounded _16-9" src={urlFor(activeVideo.cover)} alt="">
 								{#if !activeVideoPlay}
-									<img class="cover rounded _16-9" src={urlFor(activeVideo.cover)} alt="">
 									<span class="btn watch">Guarda</span>
 								{:else if activeVideo.youtubeVideoCode}
 									<iframe class="embed yt"
-									src="https://www.youtube.com/embed/{activeVideo.youtubeVideoCode}{activeVideo.youtubePlaylistCode ? `?list=${activeVideo.youtubePlaylistCode}&autoplay=1` : `?autoplay=1`}"
+									src="https://www.youtube.com/embed/{activeVideo.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1`}"
 									title="YouTube video with playlist"
 									frameborder="0"
 									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -239,7 +252,13 @@ let activeVideoPlay = $state(false)
 										<p class="episode-authors-label">
 											<span>Con</span>
 											{#each video.authors as author, j}
-												<a class="author" href="/autori/{author.slug.current}">{author.name} {author.surname}</a>{@html j < video.authors.length - 1  ? ', ' : ''}
+												<a class="author" href="/autori/{author.slug.current}">
+													{#if author.name || author.surname}
+														{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}
+													{:else if author.alias}
+														{author.alias}
+													{/if}
+												</a>{@html j < video.authors.length - 1  ? ', ' : ''}
 											{/each}
 										</p>
 									</div>
@@ -308,8 +327,28 @@ let activeVideoPlay = $state(false)
 					}}/>
 				</div>
 			{/if}
+			{#if production.cover}
+				<div class="playlist-active-video">
+					<button class="playlist-active-video-cover"
+					onclick={() => productionVideoPlay = true}
+					>
+						<img class="cover rounded _16-9" src={urlFor(production.cover)} alt="">
+						{#if !productionVideoPlay}
+							<span class="btn watch">Guarda</span>
+						{:else if production.youtubeVideoCode}
+							<iframe class="embed yt"
+							src="https://www.youtube.com/embed/{production.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1&rel=0`}"
+							title="YouTube video with playlist"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowfullscreen>
+							</iframe>
+						{/if}
+					</button>
+				</div>
+			{/if}
 		</div>
-		{#if production.playlists}
+		{#if production.playlists.length > 0}
 			<div class="video-playlists">
 				<h4 class="jost-12 uppercase bold">Playlist</h4>
 				{#each production.playlists as playlist, j}
@@ -373,7 +412,9 @@ let activeVideoPlay = $state(false)
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
-	border: solid 1px var(--black);
+}
+.listen:hover {
+	opacity: 1;
 }
 .podcast-body {
 	margin-top: 2rem;
@@ -459,7 +500,6 @@ let activeVideoPlay = $state(false)
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
-	box-shadow: 10px 5px 5px var(--black);
 }
 .playlist-videos {
 	grid-column: 8 / span 3;

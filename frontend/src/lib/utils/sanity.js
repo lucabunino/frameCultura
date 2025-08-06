@@ -159,7 +159,7 @@ export async function getAuthors() {
 	return await client.fetch(`
 		*[_type == "person" && isAuthor == true && !(_id in path('drafts.**'))] {
 			...,
-		}|order(surname asc)`
+		}| order(lower(surname) asc)`
 	);
 }
 export async function getAuthor(slug) {

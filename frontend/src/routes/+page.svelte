@@ -193,7 +193,6 @@ section + section {
 .section-description {
 	display: block;
 	max-width: 600px;
-	margin-bottom: 2rem;
 }
 
 /* Hero */
@@ -404,8 +403,11 @@ swiper-container::part(container) {
 .active-author-highlighted-content img {
 	height: 50px;
 }
+#authors .section-description {
+	margin-bottom: 2rem;
+}
 .authors {
-	padding: 1.5rem var(--margin);
+	padding: 2rem var(--margin);
 }
 .author.active h2 {
 	color: var(--orange);

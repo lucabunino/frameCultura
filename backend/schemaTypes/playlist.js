@@ -5,6 +5,9 @@ export default {
 	name: 'playlist',
 	type: 'document',
 	icon: VersionsIcon,
+	fieldsets: [
+		{name: 'youtube'},
+	],
 	fields: [
 		{
 			name: 'title',
@@ -43,6 +46,13 @@ export default {
 			type: 'number',
 			initialValue: 1,
 			validation: (Rule) => Rule.required(),
+		},
+		{
+			name: 'youtubePlaylistCode',
+			title: 'Playlist Code',
+			description: "Required to display the videos as part of a Youtube playlist, when loaded in 'Playlist' page",
+			type: 'string',
+			fieldset: 'youtube',
 		},
 		{
 			name: 'topics',

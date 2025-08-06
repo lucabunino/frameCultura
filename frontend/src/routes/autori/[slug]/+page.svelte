@@ -26,8 +26,12 @@ const author = data.author
 			{:else}
 				<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 			{/if}
-			<div>
-				<h1 class="jost-74">{author.name} {author.surname}</h1>
+			<div class="author-names">
+				{#if author.name || author.surname}
+					<h1 class="jost-74">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h1>
+				{:else if author.alias}
+					<h1 class="jost-74">{author.alias}</h1>
+				{/if}
 				{#if author.occupation}<h3 class="jost-24">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
 			</div>
 			{#if author.bio}<p class="jost-18 bio">{author.bio}</p>{/if}
@@ -81,8 +85,11 @@ const author = data.author
 	flex-wrap: wrap;
 	gap: var(--margin);
 }
+.author-names {
+	width: calc(100% - 200px - var(--margin));
+}
 .portrait {
-	max-width: 200px;
+	width: 200px;
 }
 .bio {
 	max-width: 700px;

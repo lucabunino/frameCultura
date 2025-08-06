@@ -61,7 +61,7 @@ export default {
 		{
 			name: 'youtubePlaylistCode',
 			title: 'Playlist Code',
-			description: "Required to display the video as part of a Youtube playlist",
+			description: "Required to display the video as part of a Youtube playlist, when loaded in 'Single Video' page",
 			type: 'string',
 			fieldset: 'youtube',
 		},

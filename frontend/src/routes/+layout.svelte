@@ -265,6 +265,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 /* Main */
 main.marginTop {
 	margin-top: calc(var(--margin)*2 + 4rem);
+	padding-top: 2rem;
 }
 
 /* Pre-footer */

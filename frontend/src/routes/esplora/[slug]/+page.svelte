@@ -28,7 +28,7 @@ let productionVideoPlay = $state(false)
 
 	<!-- Podcast -->
 	{#if production._type == 'podcast'}
-		<div class="podcast-description">
+		<div class="description">
 			<h1 class="jost-74 uppercase">{production.title}</h1>
 			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
 			{#if production.authors?.length < 4}
@@ -50,16 +50,16 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p>di Autori vari</p>
+				<p class="jost-27 authors">di Autori vari</p>
 			{/if}
 			{#if production.cover}
-				<a class="podcast-cover" href={production.link} target="_blank" rel="noopener noreferrer">
+				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
 					<img class="cover rounded _1-1" src={urlFor(production.cover)} alt="">
 					<button class="btn listen">Ascolta</button>
 				</a>
 			{/if}
 			{#if production.body}
-				<div class="podcast-body jost-21">
+				<div class="body jost-21">
 					<PortableText
 					value={production.body}
 					components={{
@@ -76,7 +76,7 @@ let productionVideoPlay = $state(false)
 			{/if}
 		</div>
 		{#if production.episodes.length > 0}
-			<div class="podcast-episodes">
+			<div class="list episodes">
 				<h4 class="jost-12 uppercase bold">Episodi</h4>
 				{#each production.episodes as episode, i}
 					<a class="episode"
@@ -87,7 +87,7 @@ let productionVideoPlay = $state(false)
 						{#if episode.subtitle}<h2 class="jost-24 bold">{episode.subtitle}</h2>{/if}
 						{#if episode.date}<time class="jost-15" datetime={episode.date}>{episode.date}</time>{/if}
 						{#if episode.body}
-							<div class="episode-body jost-15">
+							<div class="body jost-15">
 								<PortableText
 								value={episode.body}
 								components={{
@@ -110,7 +110,7 @@ let productionVideoPlay = $state(false)
 	
 	<!-- Episode -->
 	{#if production._type == 'episode'}
-		<div class="episode-description">
+		<div class="description">
 			<h1 class="jost-74 uppercase">{production.title}</h1>
 			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
 			{#if production.authors?.length < 4}
@@ -132,16 +132,16 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p>di Autori vari</p>
+				<p class="authors">di Autori vari</p>
 			{/if}
 			{#if production.cover}
-				<a class="episode-cover" href={production.link} target="_blank" rel="noopener noreferrer">
+				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
 					<img class="cover rounded _1-1" src={urlFor(production.cover)} alt="">
 					<button class="btn listen">Ascolta</button>
 				</a>
 			{/if}
 			{#if production.body}
-				<div class="episode-body jost-21">
+				<div class="body jost-21">
 					<PortableText
 					value={production.body}
 					components={{
@@ -158,7 +158,7 @@ let productionVideoPlay = $state(false)
 			{/if}
 		</div>
 		{#if production.podcasts}
-			<div class="episode-podcasts">
+			<div class="list podcasts">
 				<h4 class="jost-12 uppercase bold">Podcast</h4>
 				{#each production.podcasts as podcast, j}
 					<a class="podcast jost-24" href="/esplora/{podcast.slug.current}">
@@ -172,7 +172,7 @@ let productionVideoPlay = $state(false)
 
 	<!-- Playlist -->
 	{#if production._type == 'playlist'}
-		<div class="playlist-description">
+		<div class="description">
 			<h1 class="jost-74 uppercase">{production.title}</h1>
 			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
 			{#if production.authors?.length < 4}
@@ -194,10 +194,10 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p>di Autori vari</p>
+				<p class="authors">di Autori vari</p>
 			{/if}
 			{#if production.body}
-				<div class="playlist-body jost-24">
+				<div class="body jost-24">
 					<PortableText
 					value={production.body}
 					components={{
@@ -214,11 +214,11 @@ let productionVideoPlay = $state(false)
 			{/if}
 		</div>
 		{#if production.videos}
-			<div class="playlist-content">
+			<div class="content">
 				<h4 class="jost-12 uppercase bold">Episodi</h4>
-				<div class="playlist-active-video">
+				<div class="active-video">
 					{#if activeVideo.cover}
-							<button class="playlist-active-video-cover"
+							<button class="active-video-cover"
 							onclick={() => activeVideoPlay = true}
 							>
 								<img class="cover rounded _16-9" src={urlFor(activeVideo.cover)} alt="">
@@ -236,7 +236,7 @@ let productionVideoPlay = $state(false)
 						</button>
 					{/if}
 				</div>
-				<div class="playlist-videos">
+				<div class="list videos">
 					{#each production.videos as video, i}
 						<button class="item" class:active={activeVideoIndex == i}
 						onclick={() => {activeVideoIndex = i; activeVideoPlay = false}}
@@ -249,7 +249,7 @@ let productionVideoPlay = $state(false)
 								{#if video.date}<time class="jost-15" datetime={video.date}>{video.date}</time>{/if}
 								{#if video.authors?.length < 4}
 									<div class="authors jost-15">
-										<p class="episode-authors-label">
+										<p class="authors-label">
 											<span>Con</span>
 											{#each video.authors as author, j}
 												<a class="author" href="/autori/{author.slug.current}">
@@ -263,7 +263,7 @@ let productionVideoPlay = $state(false)
 										</p>
 									</div>
 								{:else if video.authors?.length >= 4}
-									<p>di Autori vari</p>
+									<p class="authors">di Autori vari</p>
 								{/if}
 								{#if video.body}
 									<div class="body jost-15">
@@ -291,7 +291,7 @@ let productionVideoPlay = $state(false)
 
 	<!-- Video -->
 	{#if production._type == 'video'}
-		<div class="video-description">
+		<div class="description">
 			<h1 class="jost-74 uppercase">{production.title}</h1>
 			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
 			{#if production.authors?.length < 4}
@@ -309,10 +309,10 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p>di Autori vari</p>
+				<p class="authors">di Autori vari</p>
 			{/if}
 			{#if production.body}
-				<div class="video-body jost-24">
+				<div class="body jost-24">
 					<PortableText
 					value={production.body}
 					components={{
@@ -328,8 +328,8 @@ let productionVideoPlay = $state(false)
 				</div>
 			{/if}
 			{#if production.cover}
-				<div class="playlist-active-video">
-					<button class="playlist-active-video-cover"
+				<div class="active-video">
+					<button class="active-video-cover"
 					onclick={() => productionVideoPlay = true}
 					>
 						<img class="cover rounded _16-9" src={urlFor(production.cover)} alt="">
@@ -349,7 +349,7 @@ let productionVideoPlay = $state(false)
 			{/if}
 		</div>
 		{#if production.playlists.length > 0}
-			<div class="video-playlists">
+			<div class="list playlists">
 				<h4 class="jost-12 uppercase bold">Playlist</h4>
 				{#each production.playlists as playlist, j}
 					<a class="playlist jost-24" href="/esplora/{playlist.slug.current}">
@@ -364,31 +364,33 @@ let productionVideoPlay = $state(false)
 
 <style>
 #production {
-	padding: calc(var(--margin)*3 + 4rem) var(--margin);
+	padding: 0 var(--margin);
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
 	gap: var(--gutter);
 }
-/* Podcast */
-#production.podcast {
-	padding: 0 var(--margin);
-}
-.podcast-description {
+.description {
 	grid-column: 1 / span 6;
 	overflow-y: scroll;
 	position: sticky;
 	top: 0;
-	padding-top: calc((var(--margin)*3 + 4rem));
-	padding-bottom: 4rem;
 	height: fit-content;
 	max-height: 100vh;
+	padding-top: calc((var(--margin)*2 + 8rem));
+	padding-bottom: 4rem;
+}
+.playlist .description {
+	position: relative;
 }
 .authors {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--gutter);
 	align-items: center;
-	padding: 1rem 0;
+	margin-top: 3rem;
+}
+.list .authors {
+	margin-top: 0;
 }
 .authors-label {
 	flex-basis: 100%;
@@ -401,140 +403,26 @@ let productionVideoPlay = $state(false)
 .portrait {
 	width: 3rem;
 }
-.podcast-cover {
-	display: block;
-	position: relative;
-	overflow: hidden;
-	max-width: 300px;
-}
-.listen {
+.listen, .watch {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
 }
-.listen:hover {
-	opacity: 1;
+h1 {
+	margin-right: var(--margin);
 }
-.podcast-body {
-	margin-top: 2rem;
-	max-width: 800px;
+.body {
+	margin-top: 3rem;
+	margin-bottom: 4rem;
+	max-width: 700px;
 }
-.podcast-episodes {
-	grid-column: 7 / span 4;
-	padding-top: calc((var(--margin)*3 + 4rem));
-	padding-bottom: 2rem;
-}
-.podcast-episodes h4 {
-	margin-bottom: 1rem;
-}
-.podcast-episodes .episode {
-	display: block;
-	border-top: solid 1px var(--black);
-	padding: 2rem 0;
-}
-.podcast-episodes .episode:hover {
-	opacity: .4;
-}
-.podcast-episodes .episode time {
-	display: block;
-	margin: 1rem 0 2rem;
-}
-
-
-/* Episode */
-.episode-description {
-	grid-column: 1 / span 6;
-}
-.episode-cover {
+.podcast .cover-wrapper, .episode .cover-wrapper {
+	margin-top: 3rem;
 	display: block;
 	position: relative;
 	overflow: hidden;
 	max-width: 300px;
-}
-.episode-podcasts {
-	grid-column: 8 / span 3;
-}
-.episode-podcasts .cover {
-	max-height: 150px;
-}
-.episode-podcasts h4 {
-	margin-bottom: 1rem;
-}
-.episode-podcasts .podcast {
-	border-top: solid 1px var(--black);
-	display: block;
-	padding-top: 2rem;
-	padding-bottom: 1rem;
-}
-/* .episode-podcasts .cover {
-	max-width: 300px;
-} */
-
-
-/* Playlist */
-.playlist-description {
-	grid-column: 1 / span 6;
-}
-.playlist-content {
-	grid-column: 1 / span 10;
-	display: grid;
-	grid-template-columns: repeat(10, 1fr);
-	gap: var(--gutter);
-}
-.playlist-content h4 {
-	margin-top: 4rem;
-	margin-bottom: 1rem;
-}
-.playlist-active-video {
-	grid-column: 1 / span 7;
-}
-.playlist-active-video-cover {
-	display: block;
-	position: relative;
-	overflow: hidden;
-	width: 100%;
-}
-.watch {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translateX(-50%) translateY(-50%);
-}
-.playlist-videos {
-	grid-column: 8 / span 3;
-}
-.playlist-videos .item {
-	width: 100%;
-	display: block;
-}
-.playlist-videos .item + .item:not(.active) {
-	border-top: solid 1px var(--black);
-}
-.playlist-videos .opener {
-	height: 0;
-	overflow: hidden;
-}
-.playlist-videos .title {
-	padding: var(--gutter);
-	border-radius: 1rem;
-}
-.playlist-videos .item.active .title {
-	background-color: var(--gray);
-}
-.playlist-videos .authors {
-	padding: 0;
-}
-.playlist-videos .author {
-	display: inline-block;
-	text-decoration: underline;
-}
-.playlist-videos .item.active .opener {
-	height: auto;
-	padding: var(--gutter);
-}
-.playlist-videos .body {
-	margin: 2rem 0 4rem;
 }
 .embed.yt {
 	width: 100%;
@@ -543,6 +431,115 @@ let productionVideoPlay = $state(false)
 	display: block;
 	top: 0;
 	left: 0;
+}
+.list {
+	grid-column: 7 / span 4;
+	padding: calc((var(--margin)*2 + 8rem)) 0 2rem;
+}
+.playlist .list {
+	padding-top: 0;
+}
+.episode .list,
+.playlist .list,
+.video .list {
+	grid-column: 8 / span 3;
+}
+h4 {
+	margin-bottom: 1rem;
+}
+
+/* Podcast */
+.podcast .episode {
+	display: block;
+	border-top: solid 1px var(--black);
+	padding: 2rem 0;
+}
+.podcast .episode:hover {
+	opacity: .4;
+}
+.podcast .episode time {
+	display: block;
+	margin: 1rem 0 2rem;
+}
+
+
+/* Episode */
+.episode .cover {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	max-width: 300px;
+}
+.episode .podcasts .cover {
+	max-height: 150px;
+	width: auto;
+}
+.episode .podcasts .podcast {
+	border-top: solid 1px var(--black);
+	display: block;
+	padding-top: 2rem;
+	padding-bottom: 1rem;
+}
+
+
+
+
+
+/* Playlist */
+.playlist .content {
+	grid-column: 1 / span 10;
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	column-gap: var(--gutter);
+}
+.playlist h4 {
+	position: sticky;
+	top: calc((var(--margin)*2 + 5.7rem));
+}
+.playlist .active-video {
+	grid-column: 1 / span 7;
+	position: sticky;
+	height: fit-content;
+	top: calc((var(--margin)*2 + 8rem));
+}
+.playlist .active-video-cover {
+	display: block;
+	position: relative;
+	overflow: hidden;
+}
+.playlist .cover {
+	max-height: calc(100vh - (var(--margin)*3 + 8rem));
+	width: auto;
+}
+.playlist .videos .item {
+	width: 100%;
+	display: block;
+}
+.playlist .videos .item + .item:not(.active) {
+	border-top: solid 1px var(--black);
+}
+.playlist .videos .opener {
+	height: 0;
+	overflow: hidden;
+}
+.playlist .videos .title {
+	padding: var(--gutter);
+	border-radius: 1rem;
+}
+.playlist .videos .item.active .title {
+	margin-top: 1px;
+	background-color: var(--gray);
+}
+.playlist .videos .authors {
+	padding: 0;
+}
+.playlist .videos .author {
+	display: inline-block;
+	text-decoration: underline;
+}
+.playlist .videos .item.active .opener {
+	height: auto;
+	padding: var(--gutter);
 }
 
 /* Video */

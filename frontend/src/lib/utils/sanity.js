@@ -155,12 +155,34 @@ export async function getLive() {
 		}|order(hierarchy desc)`
 	);
 }
-export async function getAuthors() {
-	return await client.fetch(`
-		*[_type == "person" && isAuthor == true && !(_id in path('drafts.**'))] {
-			...,
-		}| order(lower(surname) asc)`
-	);
+export async function getAuthors(search) {
+	if (search) {
+		const searchWildcard = `*${search}*`;
+
+		return await client.fetch(`
+			*[
+				_type == "person" &&
+				isAuthor == true &&
+				!(_id in path('drafts.**')) &&
+				(
+					name match $search ||
+					surname match $search ||
+					alias match $search ||
+					occupation match $search ||
+					bio match $search ||
+					body match $search
+				)
+			] | order(lower(surname) asc)
+		`, { search: searchWildcard });
+	} else {
+		return await client.fetch(`
+			*[
+				_type == "person" &&
+				isAuthor == true &&
+				!(_id in path('drafts.**'))
+			] | order(lower(surname) asc)
+		`);
+	}
 }
 export async function getAuthor(slug) {
 	return await client.fetch(`
@@ -168,9 +190,15 @@ export async function getAuthor(slug) {
 			...,
 			highlightedContents[]-> {
 				...,
+				authors[]-> {
+					...,
+				},
 			},
 			"productions": *[(_type in ["video", "playlist", "episode", "podcast"]) && references(^._id) && visibleAuthor == true] {
 				...,
+				authors[]-> {
+					...,
+				},
 			}
 		}`, { slug });
 }

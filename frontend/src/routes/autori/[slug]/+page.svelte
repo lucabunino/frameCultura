@@ -1,8 +1,14 @@
 <script>
+import { PortableText } from '@portabletext/svelte'
+import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
+import { formatDate } from "$lib/utils/date";
 let { data } = $props();
 $inspect(data.author)
 const author = data.author
+
+let expanded = $state(false)
+
 </script>
 
 <!-- <svelte:head>
@@ -19,22 +25,36 @@ const author = data.author
 </svelte:head> -->
 
 <section id="author">
-	<div class="author">
-		<div class="author-description">
-			{#if author.portrait}
-				<img class="portrait" src={urlFor(author.portrait)} alt="">
-			{:else}
-				<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-			{/if}
-			<div class="author-names">
-				{#if author.name || author.surname}
-					<h1 class="jost-74">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h1>
-				{:else if author.alias}
-					<h1 class="jost-74">{author.alias}</h1>
+	<div class="author-wrapper" class:noHighlights={!author.highlightedContents}>
+		<div class="description">
+			<div class="card">
+				{#if author.portrait}
+					<img class="portrait" src={urlFor(author.portrait)} alt="">
+				{:else}
+					<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
 				{/if}
-				{#if author.occupation}<h3 class="jost-24">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
+				<div class="names">
+					{#if author.name || author.surname}
+						<h1 class="jost-74 name">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h1>
+					{:else if author.alias}
+						<h1 class="jost-74 name">{author.alias}</h1>
+					{/if}
+					{#if author.occupation}<h3 class="jost-27 occupation">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
+				</div>
 			</div>
-			{#if author.bio}<p class="jost-18 bio">{author.bio}</p>{/if}
+			{#if author.bio}
+				{#if author.bio.length > 400}
+					{#if expanded}
+						<p class="jost-18 bio">{author.bio}</p>
+						<button class="btn bg-gray" onclick={() => expanded = false}>Leggi meno</button>
+					{:else}
+						<p class="jost-18 bio">{author.bio.slice(0, 400)}…</p>
+						<button class="btn bg-gray" onclick={() => expanded = true}>Leggi di più</button>
+					{/if}
+				{:else}
+					{author.bio}
+				{/if}
+			{/if}
 		</div>
 		{#if author.productions.length > 0}
 			<div class="author-appears">
@@ -42,12 +62,12 @@ const author = data.author
 				<div class="author-contents">
 					{#each author.productions as production, i}
 						<a class="author-content jost-15" href={`/esplora/${production.slug.current}`}>
-							<img class="cover rounded" src={urlFor(production.cover)} alt=""
+							<img class="cover rounded _16-9" src={urlFor(production.cover)} alt=""
 							class:_1-1={production._type == "episode" || production._type == "podcast"}
 							class:_16-9={production._type == "video" || production._type == "playlist"}
 							>
-							<h2 class="uppercase bold">{production.title}</h2>
-							{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
+							<h2 class="jost-18 uppercase bold">{production.title}</h2>
+							{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
 						</a>
 					{/each}
 				</div>
@@ -58,13 +78,50 @@ const author = data.author
 		<div class="author-highlighted-contents">
 			<h4 class="jost-12 uppercase bold">In evidenza</h4>
 			{#each author.highlightedContents as production, i}
-				<a class="active-author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
+				<a class="author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
 					<img class="cover rounded" src={urlFor(production.cover)} alt=""
 					class:_1-1={production._type == "episode" || production._type == "podcast"}
 					class:_16-9={production._type == "video" || production._type == "playlist"}
 					>
-					<h2 class="uppercase bold">{production.title}</h2>
-					{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
+					<h2 class="jost-18 uppercase bold">{production.title}</h2>
+					{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
+					<div class="info">
+						{#if production.date}<time class="jost-15" datetime={production.date}>{formatDate(production.date)}</time>{/if}
+						{#if production.authors?.length < 4}
+							<div class="authors jost-15">
+								<p class="episode-authors-label">
+									<span>Con</span>
+									{#each production.authors as author, j}
+										<a class="author" href="/autori/{author.slug.current}">
+											{#if author.name || author.surname}
+												{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}
+											{:else if author.alias}
+												{author.alias}
+											{/if}
+										</a>{@html j < production.authors.length - 1  ? ', ' : ''}
+									{/each}
+								</p>
+							</div>
+						{:else if production.authors?.length >= 4}
+							<p>di Autori vari</p>
+						{/if}
+					</div>
+					{#if production.body}
+						<div class="body jost-15">
+							<PortableText
+							value={production.body}
+							components={{
+							block: {
+								normal: PlainTextStyle,
+								h3: PlainTextStyle,
+							},
+							listItem: PlainTextStyle,
+							marks: {
+								link: PlainTextStyle,
+							},
+							}}/>
+						</div>
+					{/if}
 				</a>
 			{/each}
 		</div>
@@ -73,27 +130,46 @@ const author = data.author
 
 <style>
 #author {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	padding: 0 var(--margin);
+	gap: var(--gutter);
 }
-.author {
-	width: 70%;
-	padding: var(--margin);
+.author-wrapper {
+	grid-column: 1 / span 7;
+	overflow-y: scroll;
+	position: sticky;
+	top: 0;
+	height: fit-content;
+	max-height: 100vh;
+}
+.author-wrapper.noHighlights {
+	grid-column: 1 / span 10;
 }
 /* Description */
-.author-description {
+.card {
 	display: flex;
-	flex-wrap: wrap;
+	align-items: center;
 	gap: var(--margin);
+	padding-top: 2rem;
 }
-.author-names {
+.names {
 	width: calc(100% - 200px - var(--margin));
+}
+.name {
+	max-width: 800px;
+}
+.occupation {
+	margin-top: 1rem;
+	max-width: 600px;
 }
 .portrait {
 	width: 200px;
 }
 .bio {
+	margin-top: 2rem;
 	max-width: 700px;
-	flex-basis: 100%;
+	margin-bottom: 2rem;
 }
 /* Productions */
 .author-appears {
@@ -107,15 +183,40 @@ h4 {
 	grid-template-columns: repeat(4, 1fr);
 	column-gap: var(--gutter);
 	row-gap: 4rem;
+	padding-bottom: 4rem;
+}
+.noHighlights .author-contents {
+	grid-template-columns: repeat(5, 1fr);
+}
+.author-content img {
+	margin-bottom: 1rem;
+}
+.author-content h2, .author-content h3 {
+	line-height: 1.05;
 }
 /* Highlights */
 .author-highlighted-contents {
-	width: 30%;
-	right: 0;
-	border-left: solid 1px;
-	padding: var(--margin);
+	grid-column: 8 / span 3;
+	padding-top: 2rem;
 }
 .author-highlighted-contents .cover {
-	max-width: 150px;
+	max-height: 250px;
+	margin-bottom: 1rem;
+}
+.author-highlighted-content {
+	display: block;
+	border-top: solid 1px var(--black);
+	padding-top: 2rem;
+	margin-bottom: 4rem;
+}
+.author-highlighted-content .info {
+	margin-top: 1rem;
+}
+.author-highlighted-content .author {
+	display: inline-block;
+	text-decoration: underline;
+}
+.author-highlighted-content .body {
+	margin-top: 2rem;
 }
 </style>

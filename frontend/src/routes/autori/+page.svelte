@@ -1,5 +1,6 @@
 <script>
 import { urlFor } from "$lib/utils/image";
+import { page } from "$app/state";
 let { data } = $props();
 
 function getInitial(surname) {
@@ -16,6 +17,7 @@ let scrollY = $state(0)
 let anchors = $state([])
 let menuUp = $state(false)
 let lastScrollY = 0;
+let search = $derived(page.url.searchParams.get('search') ? page.url.searchParams.get('search') : '')
 
 function handleScroll(e) {
 	// headerPosition
@@ -40,17 +42,43 @@ function handleScroll(e) {
 <svelte:window bind:scrollY onscroll={(e) => handleScroll(e)}></svelte:window>
 
 <section id="anchors" class:up={menuUp}>
-	{#each data.groupedAuthors as group, i}
-			<a href="#{group.letter}" class="anchor jost-18 bold uppercase"
-			class:active={activeLetter == group.letter}
-			>{group.letter}</a>
-	{/each}
+	<div class="anchors">
+		{#if data.groupedAuthors.length > 0}
+			{#each data.groupedAuthors as group, i}
+				<a href="#{group.letter}" class="anchor jost-18 bold uppercase"
+				class:active={activeLetter == group.letter}
+				>{group.letter}</a>
+			{/each}
+		{:else}
+			<p class="jost-27" style="height: 3rem;">Nessun risultato per <span class="bold">{page.url.searchParams.get('search')}</span></p>
+		{/if}
+	</div>
+</section>
+
+<section id="search-author">
+	<form>
+		<input type="text" name="search" id="search" class="jost-15 bold" placeholder="CERCA TRA GLI AUTORI" bind:value={search}>
+		<button type="submit" id="search-submit">
+			<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g clip-path="url(#a)">
+					<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063a5.103 5.103 0 0 0 .835 2.813L0 11.57 1.417 13l3.687-3.688c.807.547 1.78.869 2.826.874 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.113a3.073 3.073 0 0 1-3.094-3.05h-.004A3.089 3.089 0 0 1 7.93 1.955a3.072 3.072 0 0 1 3.068 3.05A3.073 3.073 0 0 1 7.96 8.113Z" fill="#000"/>
+				</g>
+				<defs>
+					<clipPath id="a">
+						<path fill="#fff" d="M0 0h13v13H0z"/>
+					</clipPath>
+				</defs>
+			</svg>
+		</button>
+	</form>
 </section>
 
 <section id="authors">
 	{#each data.groupedAuthors as group, i}
-		<h1 class="letter jost-210 uppercase">{group.letter}</h1>
-		<span id={group.letter} class="anchorTarget" bind:this={anchors[i]}></span>
+		<div class="letter-wrapper">
+			<span id={group.letter} class="anchorTarget" bind:this={anchors[i]}></span>
+			<h1 class="letter jost-210 uppercase">{group.letter}</h1>
+		</div>
 		{#each group.authors as author, j}
 			<a class="author" href={`/autori/${author.slug.current}`}>
 				{#if author.portrait}
@@ -72,24 +100,28 @@ function handleScroll(e) {
 <style>
 /* Anchors */
 #anchors {
+	margin-bottom: calc((var(--margin)*2 + 4rem));
+	padding: var(--margin);
+	position: sticky;
+	top: calc((var(--margin)*2 + 4rem));
+	width: 100%;
+	transition: var(--transition);
+	overflow: scroll;
+	z-index: 2;
+}
+.anchors {
 	display: flex;
 	gap: 1rem;
-	padding: 8rem var(--margin);
 	justify-content: center;
-	position: sticky;
-	top: var(--margin);
-	width: 100%;
-	border-radius: 1rem;
-	justify-self: center;
-	transition: var(--transition);
-	position: relative;
+	width: fit-content;
+	margin: auto;
 }
 #anchors.up {
 	transform: translateY(calc((var(--margin)*2 + 4rem)*-1));
 }
 .anchor {
-	width: 2em;
-	height: 2em;
+	width: 3rem;
+	height: 3rem;
 	background-color: var(--gray);
 	border-radius: 100%;
 	display: flex;
@@ -104,14 +136,25 @@ function handleScroll(e) {
 .anchor.active {
 	background-color: var(--pink);
 }
-.anchorTarget {
-	height: 10px;
-	width: 10px;
-	margin-top: -100px;
-	position: absolute;
-	border: solid red 1px;
-}
 
+/* Search */
+#search-author {
+	display: flex;
+	justify-self: center;
+	border-bottom: solid 1px var(--black);
+	padding-bottom: .3rem;
+	margin-bottom: calc((var(--margin)*2 + 4rem));
+}
+input::placeholder {
+	color: var(--black);
+}
+#search {
+	width: 250px;
+	border: none;
+}
+#search-submit svg {
+	fill: var(--black);
+}
 
 /* Authors */
 #authors {
@@ -120,6 +163,14 @@ function handleScroll(e) {
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 	padding: var(--margin);
+	position: relative;
+}
+.anchorTarget {
+	height: 0;
+	width: 0;
+	opacity: 0;
+	position: absolute;
+	top: calc((var(--margin)*4 + 9rem)*-1)
 }
 .letter {
 	text-align: center;
@@ -127,6 +178,9 @@ function handleScroll(e) {
 	justify-self: center;
 	aspect-ratio: 1;
 	max-width: 200px;
+}
+.letter-wrapper {
+	position: relative;
 }
 .author {
 	text-align: center;

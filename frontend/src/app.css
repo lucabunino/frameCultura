@@ -44,9 +44,6 @@
 	letter-spacing: .01em;
 	line-height: 1.2;
 }
-.jost-24.uppercase {
-	line-height: 1;
-}
 .jost-27 {
 	font-size: 2.25rem;
 	font-family: "Jost", sans-serif;
@@ -268,6 +265,7 @@ a:any-link.underline,
 }
 .cover {
 	background-color: var(--gray);
+	width: 100%;
 }
 .rounded {
 	border-radius: .6rem;

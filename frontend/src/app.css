@@ -262,6 +262,8 @@ a:any-link.underline,
 }
 .portrait {
 	border-radius: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
 }
 .cover {
 	background-color: var(--gray);

@@ -194,7 +194,13 @@ export async function getAuthor(slug) {
 					...,
 				},
 			},
-			"productions": *[(_type in ["video", "playlist", "episode", "podcast"]) && references(^._id) && visibleAuthor == true] {
+			"audios": *[(_type in ["episode", "podcast"]) && references(^._id) && visibleAuthor == true] {
+				...,
+				authors[]-> {
+					...,
+				},
+			},
+			"videos": *[(_type in ["video", "playlist"]) && references(^._id) && visibleAuthor == true] {
 				...,
 				authors[]-> {
 					...,

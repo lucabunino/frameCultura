@@ -1,4 +1,6 @@
 import { TagIcon } from '@sanity/icons'
+import RelatedContentInput from './components/RelatedContentInput' // we'll make this
+
 
 export default {
 	name: 'topic',
@@ -18,5 +20,20 @@ export default {
 				maxLength: 96,
 			},
 		},
+		{
+      name: 'relatedContent',
+      title: 'Referenced In',
+      type: 'array',
+      of: [{ type: 'reference', to: [
+        { type: 'video' },
+        { type: 'playlist' },
+        { type: 'episode' },
+        { type: 'podcast' }
+      ]}],
+      components: {
+        input: RelatedContentInput
+      },
+      readOnly: true
+    }
 	],
 };

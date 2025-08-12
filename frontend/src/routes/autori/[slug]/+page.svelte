@@ -97,18 +97,35 @@ function blocksToPlainText(blocks) {
 				{/if}
 			{/if}
 		</div>
-		{#if author.productions.length > 0}
+		{#if author.audios.length > 0}
 			<div class="author-appears">
-				<h4 class="jost-12 uppercase bold">Compare in</h4>
-				<div class="author-contents">
-					{#each author.productions as production, i}
-						<a class="author-content jost-15" href={`/esplora/${production.slug.current}`}>
-							<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt=""
-							class:_1-1={production._type == "episode" || production._type == "podcast"}
-							class:_16-9={production._type == "video" || production._type == "playlist"}
+				<h4 class="jost-12 uppercase bold">Podcast</h4>
+				<div class="author-contents podcasts">
+					{#each author.audios as audio, i}
+						<a class="author-content jost-15" href={`/esplora/${audio.slug.current}`}>
+							<img class="cover rounded _16-9" src={urlFor(audio.cover ? audio.cover : data.info.placeholder)} alt=""
+							class:_1-1={audio._type == "episode" || audio._type == "podcast"}
+							class:_16-9={audio._type == "video" || audio._type == "playlist"}
 							>
-							<h2 class="jost-18 uppercase bold">{production.title}</h2>
-							{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
+							<h2 class="jost-18 uppercase bold">{audio.title}</h2>
+							{#if audio.subtitle}<h3 class="jost-18 bold">{audio.subtitle}</h3>{/if}
+						</a>
+					{/each}
+				</div>
+			</div>
+		{/if}
+		{#if author.videos.length > 0}
+			<div class="author-appears">
+				<h4 class="jost-12 uppercase bold">Video</h4>
+				<div class="author-contents videos">
+					{#each author.videos as video, i}
+						<a class="author-content jost-15" href={`/esplora/${video.slug.current}`}>
+							<img class="cover rounded _16-9" src={urlFor(video.cover ? video.cover : data.info.placeholder)} alt=""
+							class:_1-1={video._type == "episode" || video._type == "podcast"}
+							class:_16-9={video._type == "video" || video._type == "playlist"}
+							>
+							<h2 class="jost-18 uppercase bold">{video.title}</h2>
+							{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
 						</a>
 					{/each}
 				</div>
@@ -174,7 +191,7 @@ function blocksToPlainText(blocks) {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
 	padding: 0 var(--margin);
-	gap: var(--gutter);
+	/* gap: var(--margin); */
 }
 .author-wrapper {
 	grid-column: 1 / span 7;
@@ -215,19 +232,25 @@ function blocksToPlainText(blocks) {
 /* Productions */
 .author-appears {
 	margin-top: 8rem;
+	padding-right: var(--margin);
 }
 h4 {
 	margin-bottom: 1rem;
 }
 .author-contents {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 	padding-bottom: 4rem;
 }
-.noHighlights .author-contents {
+.author-contents.podcasts {
 	grid-template-columns: repeat(5, 1fr);
+}
+.author-contents.videos {
+	grid-template-columns: repeat(4, 1fr);
+}
+.noHighlights .author-contents {
+	grid-template-columns: repeat(6, 1fr);
 }
 .author-content img {
 	margin-bottom: 1rem;
@@ -239,10 +262,13 @@ h4 {
 .author-highlighted-contents {
 	grid-column: 8 / span 3;
 	padding-top: 2rem;
+	border-left: solid 1px;
+	padding-left: var(--margin);
 }
 .author-highlighted-contents .cover {
 	max-height: 250px;
 	margin-bottom: 1rem;
+	width: auto;
 }
 .author-highlighted-content {
 	display: block;

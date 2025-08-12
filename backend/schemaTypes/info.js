@@ -22,7 +22,8 @@ export default {
 			type: 'image',
 		},
 		{
-			name: 'authorsPlaceholder',
+			name: 'placeholder',
+			description: "To be displayed when no other image is selected",
 			type: 'image',
 		},
 		{

@@ -18,7 +18,8 @@ let { data } = $props();
 		<img class="cover rounded"
 		class:_1-1={production._type == "episode" || production._type == "podcast"}
 		class:_16-9={production._type == "video" || production._type == "playlist"}
-		src={urlFor(production.cover)} alt=""
+		src={urlFor(production.cover ? production.cover : data.info.placeholder)}
+		alt=""
 		>
 		<h2 class="jost-18 uppercase bold">{production.title}</h2>
 		{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}

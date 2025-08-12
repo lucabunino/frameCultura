@@ -8,7 +8,14 @@ $inspect(data.author)
 const author = data.author
 
 let expanded = $state(false)
-
+let plainTextBody = $derived(blocksToPlainText(author.body));
+function blocksToPlainText(blocks) {
+	if (!Array.isArray(blocks)) return '';
+	return blocks
+		.filter(block => block._type === 'block' && block.children)
+		.map(block => block.children.map(child => child.text).join(''))
+		.join('\n'); // Optional: use "\n\n" to preserve paragraph breaks
+}
 </script>
 
 <!-- <svelte:head>
@@ -28,11 +35,7 @@ let expanded = $state(false)
 	<div class="author-wrapper" class:noHighlights={!author.highlightedContents}>
 		<div class="description">
 			<div class="card">
-				{#if author.portrait}
-					<img class="portrait" src={urlFor(author.portrait)} alt="">
-				{:else}
-					<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-				{/if}
+				<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 				<div class="names">
 					{#if author.name || author.surname}
 						<h1 class="jost-74 name">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h1>
@@ -42,17 +45,55 @@ let expanded = $state(false)
 					{#if author.occupation}<h3 class="jost-27 occupation">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
 				</div>
 			</div>
-			{#if author.bio}
+			{#if author.body}
+				{#if plainTextBody.length > 400}
+					{#if expanded}
+						<div class="body bio jost-18">
+							<PortableText
+								value={author.body}
+								components={{
+									block: {
+										normal: PlainTextStyle,
+										h3: PlainTextStyle,
+									},
+									listItem: PlainTextStyle,
+									marks: {
+										link: PlainTextStyle,
+									},
+								}}/>
+						</div>
+						<button class="btn bg-gray" on:click={() => expanded = false}>Leggi meno</button>
+					{:else}
+						<p class="jost-18 bio">{plainTextBody.slice(0, 400)}…</p>
+						<button class="btn bg-gray" on:click={() => expanded = true}>Leggi di più</button>
+					{/if}
+				{:else}
+					<div class="body bio jost-18">
+						<PortableText
+							value={author.body}
+							components={{
+								block: {
+									normal: PlainTextStyle,
+									h3: PlainTextStyle,
+								},
+								listItem: PlainTextStyle,
+								marks: {
+									link: PlainTextStyle,
+								},
+							}}/>
+					</div>
+				{/if}
+			{:else if author.bio}
 				{#if author.bio.length > 400}
 					{#if expanded}
 						<p class="jost-18 bio">{author.bio}</p>
-						<button class="btn bg-gray" onclick={() => expanded = false}>Leggi meno</button>
+						<button class="btn bg-gray" on:click={() => expanded = false}>Leggi meno</button>
 					{:else}
 						<p class="jost-18 bio">{author.bio.slice(0, 400)}…</p>
-						<button class="btn bg-gray" onclick={() => expanded = true}>Leggi di più</button>
+						<button class="btn bg-gray" on:click={() => expanded = true}>Leggi di più</button>
 					{/if}
 				{:else}
-					{author.bio}
+					<p class="jost-18 bio">{author.bio}</p>
 				{/if}
 			{/if}
 		</div>
@@ -62,7 +103,7 @@ let expanded = $state(false)
 				<div class="author-contents">
 					{#each author.productions as production, i}
 						<a class="author-content jost-15" href={`/esplora/${production.slug.current}`}>
-							<img class="cover rounded _16-9" src={urlFor(production.cover)} alt=""
+							<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt=""
 							class:_1-1={production._type == "episode" || production._type == "podcast"}
 							class:_16-9={production._type == "video" || production._type == "playlist"}
 							>
@@ -79,7 +120,7 @@ let expanded = $state(false)
 			<h4 class="jost-12 uppercase bold">In evidenza</h4>
 			{#each author.highlightedContents as production, i}
 				<a class="author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
-					<img class="cover rounded" src={urlFor(production.cover)} alt=""
+					<img class="cover rounded" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt=""
 					class:_1-1={production._type == "episode" || production._type == "podcast"}
 					class:_16-9={production._type == "video" || production._type == "playlist"}
 					>

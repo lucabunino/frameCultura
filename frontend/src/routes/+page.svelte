@@ -393,7 +393,6 @@ swiper-container::part(container) {
 .active-author-highlighted-contents::part(bullet-active) {
 	background-color: var(--orange);
 }
-
 .active-author-highlighted-content {
 	display: flex;
 	gap: var(--gutter);
@@ -402,6 +401,7 @@ swiper-container::part(container) {
 }
 .active-author-highlighted-content img {
 	height: 50px;
+	width: auto;
 }
 #authors .section-description {
 	margin-bottom: 2rem;

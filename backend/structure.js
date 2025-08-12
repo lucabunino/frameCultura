@@ -38,13 +38,41 @@ export const myStructure = (S, context) => {
 				.title('People')
 				.items([
 				S.listItem()
-					.title('Authors')
-					.icon(EditIcon)
-					.child(
+				.title('Authors (all)')
+				.icon(EditIcon)
+				.child(
 					S.documentList()
-						.title('Authors')
-						.filter('_type == "person" && isAuthor == true')
-					),
+					.title('Authors')
+					.filter('_type == "person" && isAuthor == true')
+				),
+				S.listItem()
+				.title('Authors (with content)')
+				.icon(EditIcon)
+				.child(
+					S.documentList()
+					.title('Authors')
+					.filter(
+						`_type == "person" && isAuthor == true &&
+						count(*[
+						_type in ["video","playlist","episode","podcast"] &&
+						references(^._id)
+						]) > 0`
+					)
+				),
+				S.listItem()
+				.title('Authors (without content)')
+				.icon(EditIcon)
+				.child(
+					S.documentList()
+					.title('Authors')
+					.filter(
+						`_type == "person" && isAuthor == true &&
+						count(*[
+						_type in ["video","playlist","episode","podcast"] &&
+						references(^._id)
+						]) == 0`
+					)
+				),
 				S.listItem()
 					.title('Team')
 					.icon(SparkleIcon)

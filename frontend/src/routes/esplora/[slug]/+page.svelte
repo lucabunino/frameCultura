@@ -2,6 +2,8 @@
 import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
+import { formatDate } from '$lib/utils/date';
+
 let { data } = $props();
 $inspect(data)
 const production = data.production
@@ -9,6 +11,8 @@ let activeVideoIndex = $state(0)
 let activeVideo = $derived(production.videos?.[activeVideoIndex])
 let activeVideoPlay = $state(false)
 let productionVideoPlay = $state(false)
+let videos = $state([])
+let scrollY = $state(0)
 </script>
 
 <!-- <svelte:head>
@@ -24,6 +28,8 @@ let productionVideoPlay = $state(false)
 	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${data.project[0].title}`}>{/if}
 </svelte:head> -->
 
+<svelte:window bind:scrollY></svelte:window>
+
 <section id="production" class={production._type}>
 
 	<!-- Podcast -->
@@ -36,11 +42,7 @@ let productionVideoPlay = $state(false)
 					<p class="authors-label jost-12 uppercase bold">Un podcast di</p>
 					{#each production.authors as author, j}
 						<a href="/autori/{author.slug.current}" class="author jost-24">
-							{#if author.portrait}
-								<img class="portrait" src={urlFor(author.portrait)} alt="">
-							{:else}
-								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-							{/if}
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 							{#if author.name || author.surname}
 								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
 							{:else if author.alias}
@@ -54,7 +56,7 @@ let productionVideoPlay = $state(false)
 			{/if}
 			{#if production.cover}
 				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
-					<img class="cover rounded _1-1" src={urlFor(production.cover)} alt="">
+					<img class="cover rounded _1-1" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
 					<button class="btn listen">Ascolta</button>
 				</a>
 			{/if}
@@ -84,8 +86,8 @@ let productionVideoPlay = $state(false)
 					target="_blank" rel="noopener noreferrer"
 					>
 						<h2 class="jost-24 uppercase bold">{#if episode.number}{episode.number}{@html '. '}{/if}{episode.title}</h2>
-						{#if episode.subtitle}<h2 class="jost-24 bold">{episode.subtitle}</h2>{/if}
-						{#if episode.date}<time class="jost-15" datetime={episode.date}>{episode.date}</time>{/if}
+						{#if episode.subtitle}<h3 class="jost-24 bold">{episode.subtitle}</h3>{/if}
+						{#if episode.date}<time class="jost-15" datetime={episode.date}>{formatDate(episode.date)}</time>{/if}
 						{#if episode.body}
 							<div class="body jost-15">
 								<PortableText
@@ -118,11 +120,7 @@ let productionVideoPlay = $state(false)
 					<p class="authors-label jost-12 uppercase bold">Un podcast di</p>
 					{#each production.authors as author, j}
 						<a href="/autori/{author.slug.current}" class="author jost-24">
-							{#if author.portrait}
-								<img class="portrait" src={urlFor(author.portrait)} alt="">
-							{:else}
-								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-							{/if}
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 							{#if author.name || author.surname}
 								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
 							{:else if author.alias}
@@ -132,11 +130,11 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p class="authors">di Autori vari</p>
+				<p class="jost-27 authors">di Autori vari</p>
 			{/if}
 			{#if production.cover}
 				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
-					<img class="cover rounded _1-1" src={urlFor(production.cover)} alt="">
+					<img class="cover rounded _1-1" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
 					<button class="btn listen">Ascolta</button>
 				</a>
 			{/if}
@@ -162,8 +160,9 @@ let productionVideoPlay = $state(false)
 				<h4 class="jost-12 uppercase bold">Podcast</h4>
 				{#each production.podcasts as podcast, j}
 					<a class="podcast jost-24" href="/esplora/{podcast.slug.current}">
-						<img class="cover rounded _1-1" src={urlFor(podcast.cover)} alt="">
-						<h3>{podcast.title}</h3>
+						<img class="cover rounded _1-1" src={urlFor(podcast.cover ? podcast.cover : data.info.placeholder)} alt="">
+						<h2 class="jost-18 uppercase bold">{podcast.title}</h2>
+						{#if podcast.subtitle}<h3 class="jost-18 bold">{podcast.subtitle}</h3>{/if}
 					</a>
 				{/each}
 			</div>
@@ -180,11 +179,7 @@ let productionVideoPlay = $state(false)
 					<p class="authors-label jost-12 uppercase bold">Con</p>
 					{#each production.authors as author, j}
 						<a href="/autori/{author.slug.current}" class="author jost-24">
-							{#if author.portrait}
-								<img class="portrait" src={urlFor(author.portrait)} alt="">
-							{:else}
-								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-							{/if}
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 							{#if author.name || author.surname}
 								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
 							{:else if author.alias}
@@ -194,7 +189,7 @@ let productionVideoPlay = $state(false)
 					{/each}
 				</div>
 			{:else if production.authors?.length >= 4}
-				<p class="authors">di Autori vari</p>
+				<p class="jost-27 authors">di Autori vari</p>
 			{/if}
 			{#if production.body}
 				<div class="body jost-24">
@@ -217,33 +212,41 @@ let productionVideoPlay = $state(false)
 			<div class="content">
 				<h4 class="jost-12 uppercase bold">Episodi</h4>
 				<div class="active-video">
-					{#if activeVideo.cover}
-							<button class="active-video-cover"
-							onclick={() => activeVideoPlay = true}
-							>
-								<img class="cover rounded _16-9" src={urlFor(activeVideo.cover)} alt="">
-								{#if !activeVideoPlay}
-									<span class="btn watch">Guarda</span>
-								{:else if activeVideo.youtubeVideoCode}
-									<iframe class="embed yt"
-									src="https://www.youtube.com/embed/{activeVideo.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1`}"
-									title="YouTube video with playlist"
-									frameborder="0"
-									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-									allowfullscreen>
-									</iframe>
-								{/if}
-						</button>
-					{/if}
+						<button class="active-video-cover"
+						onclick={() => activeVideoPlay = true}
+						>
+							<img class="cover rounded _16-9" src={urlFor(activeVideo.cover ? activeVideo.cover : data.info.placeholder)} alt="">
+							{#if !activeVideoPlay}
+								<span class="btn watch">Guarda</span>
+							{:else if activeVideo.youtubeVideoCode}
+								<iframe class="embed yt"
+								src="https://www.youtube.com/embed/{activeVideo.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1`}"
+								title={activeVideo.title}
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen>
+								</iframe>
+							{/if}
+					</button>
 				</div>
 				<div class="list videos">
 					{#each production.videos as video, i}
 						<button class="item" class:active={activeVideoIndex == i}
-						onclick={() => {activeVideoIndex = i; activeVideoPlay = false}}
+						bind:this={videos[i]}
+						onclick={() => {
+							activeVideoIndex = i;
+							activeVideoPlay = false;
+							setTimeout(() => {
+								if (production.videos.length - i > 4) {
+									const offset = scrollY + videos[i].getBoundingClientRect().top - (12*4 + 12*7 - 1);
+									window.scrollTo({ top: offset, behavior: 'smooth' });	
+								}
+							}, 100);
+						}}
 						>
 							<div class="title">
-								<h2 class="jost-18 uppercase bold">{production.videos.length - i}. {video.title}</h2>
-								{#if video.subtitle}<h2 class="jost-18 bold">{video.subtitle}</h2>{/if}
+								<h2 class="jost-18 uppercase bold">{i+1}. {video.title}</h2>
+								{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
 							</div>
 							<div class="opener">
 								{#if video.date}<time class="jost-15" datetime={video.date}>{video.date}</time>{/if}
@@ -252,7 +255,7 @@ let productionVideoPlay = $state(false)
 										<p class="authors-label">
 											<span>Con</span>
 											{#each video.authors as author, j}
-												<a class="author" href="/autori/{author.slug.current}">
+												<a class="author inline" href="/autori/{author.slug.current}">
 													{#if author.name || author.surname}
 														{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}
 													{:else if author.alias}
@@ -299,11 +302,7 @@ let productionVideoPlay = $state(false)
 					<p class="authors-label jost-12 uppercase bold">Con</p>
 					{#each production.authors as author, j}
 						<a href="/autori/{author.slug.current}" class="author jost-24">
-							{#if author.portrait}
-								<img class="portrait" src={urlFor(author.portrait)} alt="">
-							{:else}
-								<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-							{/if}
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 							<h3>{author.name} {author.surname}</h3>
 						</a>
 					{/each}
@@ -332,7 +331,7 @@ let productionVideoPlay = $state(false)
 					<button class="active-video-cover"
 					onclick={() => productionVideoPlay = true}
 					>
-						<img class="cover rounded _16-9" src={urlFor(production.cover)} alt="">
+						<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
 						{#if !productionVideoPlay}
 							<span class="btn watch">Guarda</span>
 						{:else if production.youtubeVideoCode}
@@ -353,8 +352,9 @@ let productionVideoPlay = $state(false)
 				<h4 class="jost-12 uppercase bold">Playlist</h4>
 				{#each production.playlists as playlist, j}
 					<a class="playlist jost-24" href="/esplora/{playlist.slug.current}">
-						<img class="cover rounded _16-9" src={urlFor(playlist.cover)} alt="">
-						<h3>{playlist.title}</h3>
+						<img class="cover rounded _16-9" src={urlFor(playlist.cover ? playlist.cover : data.info.placeholder)} alt="">
+						<h2 class="jost-18 uppercase bold">{playlist.title}</h2>
+						{#if playlist.subtitle}<h3 class="jost-18 bold">{playlist.subtitle}</h3>{/if}
 					</a>
 				{/each}
 			</div>
@@ -375,17 +375,20 @@ let productionVideoPlay = $state(false)
 	position: sticky;
 	top: 0;
 	height: fit-content;
-	max-height: 100vh;
 	padding-top: calc((var(--margin)*2 + 8rem));
 	padding-bottom: 4rem;
 }
 .playlist .description {
 	position: relative;
 }
+.playlist .description, .podcast .description {
+	max-height: 100vh;
+}
 .authors {
 	display: flex;
 	flex-wrap: wrap;
-	gap: var(--gutter);
+	row-gap: var(--gutter);
+	column-gap: calc(var(--gutter)*2);
 	align-items: center;
 	margin-top: 3rem;
 }
@@ -397,8 +400,11 @@ let productionVideoPlay = $state(false)
 }
 .author {
 	display: flex;
-	gap: var(--gutter);
+	column-gap: calc(var(--gutter)/2);
 	align-items: center;
+}
+.author.inline {
+	display: inline !important;
 }
 .portrait {
 	width: 3rem;
@@ -432,12 +438,18 @@ h1 {
 	top: 0;
 	left: 0;
 }
+.active-video-cover {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+}
 .list {
 	grid-column: 7 / span 4;
 	padding: calc((var(--margin)*2 + 8rem)) 0 2rem;
 }
 .playlist .list {
-	padding-top: 0;
+	padding: 0;
 }
 .episode .list,
 .playlist .list,
@@ -447,6 +459,7 @@ h1 {
 h4 {
 	margin-bottom: 1rem;
 }
+
 
 /* Podcast */
 .podcast .episode {
@@ -470,18 +483,22 @@ h4 {
 	overflow: hidden;
 	max-width: 300px;
 }
+.episode .podcasts h4 {
+	border-bottom: solid 1px var(--black);
+	padding-bottom: 1rem;
+}
+.episode .podcasts h2 {
+	margin-top: 1rem;
+}
 .episode .podcasts .cover {
 	max-height: 150px;
 	width: auto;
 }
 .episode .podcasts .podcast {
-	border-top: solid 1px var(--black);
 	display: block;
-	padding-top: 2rem;
-	padding-bottom: 1rem;
+	padding-top: 1rem;
+	padding-bottom: 3rem;
 }
-
-
 
 
 
@@ -502,18 +519,19 @@ h4 {
 	height: fit-content;
 	top: calc((var(--margin)*2 + 8rem));
 }
-.playlist .active-video-cover {
-	display: block;
-	position: relative;
-	overflow: hidden;
-}
 .playlist .cover {
 	max-height: calc(100vh - (var(--margin)*3 + 8rem));
-	width: auto;
+	width: 100%;
+	object-fit: contain;
 }
 .playlist .videos .item {
 	width: 100%;
 	display: block;
+}
+.playlist .videos .item:not(.active):hover .title {
+	border-right: solid 5px var(--black);
+	padding-right: calc(var(--gutter) - 5px);
+	border-radius: 0;
 }
 .playlist .videos .item + .item:not(.active) {
 	border-top: solid 1px var(--black);
@@ -524,11 +542,13 @@ h4 {
 }
 .playlist .videos .title {
 	padding: var(--gutter);
-	border-radius: 1rem;
+	border-radius: .6rem;
 }
 .playlist .videos .item.active .title {
-	margin-top: 1px;
 	background-color: var(--gray);
+}
+.playlist .videos .item.active:not(:first-of-type) .title {
+	margin-top: 1px;
 }
 .playlist .videos .authors {
 	padding: 0;
@@ -543,23 +563,30 @@ h4 {
 }
 
 /* Video */
-.video-description {
+.video .description {
 	grid-column: 1 / span 6;
 }
-.video-playlists {
+.video .active-video {
+	margin-top: 4rem;
+}
+
+.video .playlists {
 	grid-column: 8 / span 3;
 }
-.video-playlists h4 {
-	margin-bottom: 1rem;
-}
-.video-playlists .podcast {
-	border-top: solid 1px var(--black);
-	display: block;
-	padding-top: 2rem;
+.video .playlists h4 {
+	border-bottom: solid 1px var(--black);
 	padding-bottom: 1rem;
 }
-/* .video-playlists .cover {
-	border-radius: 1rem;
-	max-width: 300px;
-} */
+.video .playlists h2 {
+	margin-top: 1rem;
+}
+.video .playlists .cover {
+	max-height: 150px;
+	width: auto;
+}
+.video .playlists .playlist {
+	display: block;
+	padding-top: 1rem;
+	padding-bottom: 3rem;
+}
 </style>

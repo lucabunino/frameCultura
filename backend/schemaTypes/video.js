@@ -92,7 +92,6 @@ export default {
 			name: 'cover',
 			description: 'Aspect ratio 16:9',
 			type: 'image',
-			validation: (Rule) => Rule.required(),
 		},
 		{
 			name: 'highlightCover',

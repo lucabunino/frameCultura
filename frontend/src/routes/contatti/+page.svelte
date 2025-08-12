@@ -32,7 +32,7 @@ $inspect(data)
 .box {
 	min-width: 80%;
 	scroll-snap-align: start;
-	border-radius: 1rem;
+	border-radius: .6rem;
 	background-color: var(--gray);
 	padding: var(--margin);
 	min-height: 35vh;

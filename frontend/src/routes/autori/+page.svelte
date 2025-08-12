@@ -2,6 +2,7 @@
 import { urlFor } from "$lib/utils/image";
 import { page } from "$app/state";
 let { data } = $props();
+$inspect(data)
 
 function getInitial(surname) {
 	if (!surname) return '';
@@ -81,11 +82,7 @@ function handleScroll(e) {
 		</div>
 		{#each group.authors as author, j}
 			<a class="author" href={`/autori/${author.slug.current}`}>
-				{#if author.portrait}
-					<img class="portrait" src={urlFor(author.portrait)} alt="">
-					{:else}
-					<img class="portrait" src={urlFor(data.info.authorsPlaceholder)} alt="">
-				{/if}
+				<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 				{#if author.name || author.surname}
 					<h2 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h2>
 				{:else if author.alias}
@@ -107,7 +104,7 @@ function handleScroll(e) {
 	width: 100%;
 	transition: var(--transition);
 	overflow: scroll;
-	z-index: 2;
+	z-index: 1;
 }
 .anchors {
 	display: flex;

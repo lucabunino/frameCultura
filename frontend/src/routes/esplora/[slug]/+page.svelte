@@ -623,16 +623,18 @@ h4 {
 	height: .7em;
 	width: auto;
 }
-.podcast .episode:hover {
-	border-right: solid 5px var(--black);
-	padding-right: 15px;
-}
-.podcast .episode:hover svg {
-	opacity: 1;
-}
 .podcast .episode time {
 	display: block;
 	margin: 1rem 0 2rem;
+}
+@media screen and (min-width: 801px) {
+	.podcast .episode:hover {
+		border-right: solid 5px var(--black);
+		padding-right: 15px;
+	}
+	.podcast .episode:hover svg {
+		opacity: 1;
+	}
 }
 @media screen and (max-width: 800px) {
 	.podcast .episode {

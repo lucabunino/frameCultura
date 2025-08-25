@@ -262,7 +262,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 				{/each}
 			{/if}
 		</div>
-		<p>Design e sviluppo: <a class="underline" href="http://www.lucabunino.com" target="_blank" rel="noopener noreferrer">Luca Bunino</a></p>
+		<p>Sviluppo: <a class="underline" href="http://www.lucabunino.com" target="_blank" rel="noopener noreferrer">Luca Bunino</a></p>
 	</div>
 </footer>
 

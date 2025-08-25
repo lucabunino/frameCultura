@@ -97,7 +97,7 @@ function handleMouseLeave() {
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div class="productions-wrapper-x" bind:this={container} class:invisible={!domLoaded}>
-	<div class="productions-wrapper-y" style="height: 200px;">
+	<div class="productions-wrapper-y" style="height: 18vw;">
 		<div class="productions"
 		onmousemove={handleMouseMove}
 		onmouseleave={handleMouseLeave}

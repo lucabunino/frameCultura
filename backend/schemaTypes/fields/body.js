@@ -1,7 +1,6 @@
 export default function body({ group = undefined } = {}) {
 	return {
 		name: 'body',
-		title: 'Body',
 		type: 'array',
 		group,
 		of: [

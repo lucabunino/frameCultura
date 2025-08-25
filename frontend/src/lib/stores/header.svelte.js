@@ -1,13 +1,21 @@
-let blurred = $state(false)
+let up = $state(false)
+let inverted = $state(false)
 
 export function getHeader() {
-	function setBlurred(b) {
-		blurred = b
+	function setUp(u) {
+		up = u
+	}
+	function setInverted(i) {
+		inverted = i
 	}
 	return {
-		get blurred() {
-			return blurred;
+		get up() {
+			return up;
 		},
-		setBlurred,
+		setUp,
+		get inverted() {
+			return inverted;
+		},
+		setInverted,
 	};
 }

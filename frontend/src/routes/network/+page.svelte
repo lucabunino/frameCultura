@@ -1,8 +1,13 @@
 <script>
 import { urlFor } from "$lib/utils/image";
+import { slide } from "svelte/transition";
 let { data } = $props();
+let innerWidth = $state(undefined)
 let activeOrganization = $state(0)
+let activeOrganizationMobile = $state(undefined)
 </script>
+
+<svelte:window bind:innerWidth></svelte:window>
 
 {#if data.network.introduction}
 	<section id="intro">
@@ -11,16 +16,30 @@ let activeOrganization = $state(0)
 {/if}
 
 <section id="network">
-	<nav class="navigator">
-		{#each data.network.network as cluster, i}
-			<a class="navigator-item jost-18 uppercase bold" href="#{cluster.slug.current}"
-			class:active={activeOrganization == i}
-			onclick={() => activeOrganization = i}
-			style={`--color: ${cluster.activeColor?.hex}`}
-			>{cluster.title}</a>
-		{/each}
-	</nav>
-	<div class="network">
+	<!-- {#if innerWidth > 800} -->
+		<nav class="navigator">
+			{#each data.network.network as cluster, i}
+				<a class="navigator-item jost-18 uppercase bold" href="#{cluster.slug.current}"
+				class:active={activeOrganization == i}
+				onclick={() => activeOrganization = i}
+				style={`--color: ${cluster.activeColor?.hex}`}
+				>{cluster.title}</a>
+			{/each}
+		</nav>
+		<div class="network">
+			{#each data.network.network as cluster, i}
+				<h4 class="jost-12 uppercase bold" id={cluster.slug.current}>{cluster.title}</h4>
+				<div class="organizations">
+					{#each cluster.organizations as organization, j}
+						<div class="organization">
+							<img class="_1-1" src={urlFor(organization.logo)} alt="">
+							<h2>{organization.title}</h2>
+						</div>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	<!-- {:else}
 		{#each data.network.network as cluster, i}
 			<h4 class="jost-12 uppercase bold" id={cluster.slug.current}>{cluster.title}</h4>
 			<div class="organizations">
@@ -32,7 +51,7 @@ let activeOrganization = $state(0)
 				{/each}
 			</div>
 		{/each}
-	</div>
+	{/if} -->
 </section>
 
 <style>
@@ -54,12 +73,13 @@ let activeOrganization = $state(0)
 .navigator-item {
 	padding: var(--gutter);
 }
-.navigator-item:hover, .navigator-item.active {
-	border-top: none;
-	background-color: var(--color);
-}
 .navigator-item + .navigator-item {
 	border-top: solid 1px;
+}
+.navigator-item.active {
+	border-top: 0;
+	background-color: var(--color);
+	border-radius: .6rem;
 }
 /* Network */
 .network {
@@ -72,6 +92,7 @@ let activeOrganization = $state(0)
 	grid-template-columns: repeat(4, 1fr);
 	column-gap: var(--gutter);
 	row-gap: 6rem;
+	align-items: start;
 }
 .organization {
 	display: flex;
@@ -80,16 +101,66 @@ let activeOrganization = $state(0)
 	justify-content: center;
 	text-align: center;
 }
+.organization img {
+	padding: 2rem;
+}
 h4 {
 	flex-basis: 100%;
 	border-bottom: solid 1px var(--black);
 	margin-top: 2rem;
-	margin-bottom: 1rem;
 	padding-top: 8rem;
 	padding-bottom: 1rem;
 }
 h4:first-of-type {
-	margin: 0;
+	margin-top: 0;
 	padding-top: 0;
+}
+@media only screen and (min-width: 1600px) {
+	.organizations {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+@media only screen and (max-width: 1080px) {
+	.navigator {
+		grid-column: 1 / span 3;
+		padding-right: var(--gutter);
+	}
+	.organizations {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+@media only screen and (min-width: 801px) {
+	.navigator-item:not(.active):hover {
+		border-right: solid 5px var(--black);
+		padding-right: calc(var(--gutter) - 5px);
+		border-radius: 0;
+	}
+	.navigator-item:not(:first-of-type).active {
+		margin-top: 1px;
+	}
+	.navigator-item.active + .navigator-item {
+		border-top: 0;
+		margin-top: 1px;
+	}
+}
+@media only screen and (max-width: 800px) {
+	#network {
+		grid-template-columns: repeat(1, 1fr);
+		gap: 4px;
+	}
+	.network {
+		grid-column: 1 / span 1;
+	}
+	.navigator {
+		display: none;
+	}
+	.organizations {
+		row-gap: 2rem;
+	}
+}
+@media only screen and (max-width: 400px) {
+	.organizations {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 </style>

@@ -1,21 +1,20 @@
-import { getExploreSelection, getExplore, getTopics } from '$lib/utils/sanity';
+import { getExplore, getAuthors, getTopics } from '$lib/utils/sanity';
 import { error } from '@sveltejs/kit';
-
 export async function load({ url }) {
-	const exploreSelection = await getExploreSelection();
 	const topics = await getTopics();
 	const searchFormats = url.searchParams.getAll('format');
 	const searchTopic = url.searchParams.get('topic');
 	const searchString = url.searchParams.get('search');
+	const authors = await getAuthors(searchString);
 	const explore = await getExplore(searchFormats, searchTopic, searchString);
-	if (exploreSelection && explore) {
+	if (topics && authors && explore) {
 		return {
-			exploreSelection: exploreSelection.exploreSelection,
-			explore,
 			searchFormats,
 			searchTopic,
 			searchString,
-			topics
+			topics,
+			authors,
+			explore
 		};
 	}
 	throw error(404, 'Not found');

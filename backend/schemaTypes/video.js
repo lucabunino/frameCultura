@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import {VideoIcon} from '@sanity/icons';
 
 export default {
 	name: 'video',
 	type: 'document',
 	icon: VideoIcon,
+	groups: [{name: 'SEO'}],
 	fieldsets: [
 		{name: 'youtube'},
 	],
@@ -98,7 +100,13 @@ export default {
 			description: "Aspect ratio 21:9. To be used if the video is selected in 'Esplora' page",
 			type: 'image',
 		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
+		},
 		body(),
+		...seoFields()
 	],
 	preview: {
 		select: {

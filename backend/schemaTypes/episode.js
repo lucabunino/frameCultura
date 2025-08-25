@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import {SquareIcon} from '@sanity/icons';
 
 export default {
 	name: 'episode',
 	type: 'document',
 	icon: SquareIcon,
+	groups: [{name: 'SEO'}],
 	fields: [
 		{
 			name: 'title',
@@ -87,7 +89,13 @@ export default {
 			description: "Aspect ratio 21:9. To be used if the podcast is selected in 'Esplora' page",
 			type: 'image',
 		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
+		},
 		body(),
+		...seoFields(),
 	],
 	preview: {
 		select: {

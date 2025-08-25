@@ -12,7 +12,7 @@ $inspect(data)
 			<div class="box-content">
 				<h2 class="jost-45">{item.title}</h2>
 				{#if item.abstract}
-					<p class="jost-18">{item.abstract}</p>
+					<p class="abstract jost-18">{item.abstract}</p>
 				{/if}
 			</div>
 			{#if item.ctaLabel && item.ctaLink}
@@ -34,19 +34,28 @@ $inspect(data)
 	scroll-snap-align: start;
 	border-radius: .6rem;
 	background-color: var(--gray);
-	padding: var(--margin);
+	padding: 2rem var(--gutter) 4rem;
 	min-height: 35vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	gap: 6rem;
 }
 .box:hover {
 	background-color: var(--color);
 }
-h2 {
-	margin-bottom: 1rem;
+.box-content {
+	max-width: 600px;
+}
+.abstract {
+	margin-top: 3rem;
 }
 .btn {
 	width: fit-content;
+}
+@media only screen and (max-width: 800px) {
+	#contact {
+		grid-template-columns: repeat(1, 1fr);
+	}
 }
 </style>

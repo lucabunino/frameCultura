@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import {TiersIcon} from '@sanity/icons'
 
 export default {
 	name: 'podcast',
 	type: 'document',
 	icon: TiersIcon,
+	groups: [{name: 'SEO'}],
 	fields: [
 		{
 			name: 'title',
@@ -82,6 +84,11 @@ export default {
 			description: "Aspect ratio 21:9. To be used if the podcast is selected in 'Esplora' page",
 			type: 'image',
 		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
+		},
 		body(),
 		{
 			name: 'episodes',
@@ -94,5 +101,6 @@ export default {
 			],
 			validation: (Rule) => Rule.required(),
 		},
+		...seoFields()
 	],
 };

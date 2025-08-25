@@ -2,11 +2,9 @@ import { getAuthors } from '$lib/utils/sanity';
 import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {
-	const search = url.searchParams.get('search');
-	const authors = await getAuthors(search);
-
-	if (!authors) throw error(404, 'Not found');
-
+	const searchString = url.searchParams.get('search');
+	const authors = await getAuthors(searchString);
+	
 	// Group authors by initial
 	const grouped = new Map();
 
@@ -33,5 +31,10 @@ export async function load({ url }) {
 		})
 		.map(([letter, authors]) => ({ letter, authors }));
 
-	return { groupedAuthors };
+	if (groupedAuthors) {
+	return {
+			groupedAuthors
+		};
+	}
+	throw error(404, 'Not found');
 }

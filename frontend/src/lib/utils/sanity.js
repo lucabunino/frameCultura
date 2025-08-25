@@ -83,19 +83,71 @@ export async function getExploreSelection() {
 		*[_type == "explore" && !(_id in path('drafts.**'))][0] {
 			exploreSelection[]-> {
 				...,
+				authors[]->{
+					...,
+				},
+				topics[]->{
+					...,
+				}
 			},
 		}`
 	);
 }
-export async function getExplore() {
+export async function getExploreHasContent() {
+	const result = await client.fetch(`
+		*[_type == "explore" && !(_id in path('drafts.**'))][0]{
+			"hasContent": count(exploreSelection) > 0
+		}
+	`);
+	return result?.hasContent ?? false;
+}
+export async function getExplore(formats = [], topic = null, search) {
+  const hasSearch = Boolean(search && search.trim());
+  const searchWildcard = hasSearch ? `*${search}*` : null;
+  const baseQuery = `
+    *[
+      _type in ["episode", "podcast", "video", "playlist"]
+      && !(_id in path('drafts.**'))
+      && visible == true
+      ${formats?.length ? `&& _type in $formats` : ``}
+      ${topic ? `&& count(topics[@->slug.current == $topic]) > 0` : ``}
+      ${hasSearch ? `
+        && (
+          title match $search ||
+          subtitle match $search ||
+          body[].children[].text match $search ||
+          authors[]->name match $search ||
+          authors[]->surname match $search ||
+          authors[]->alias match $search ||
+          topics[]->title match $search ||
+          videos[]->title match $search ||
+          videos[]->subtitle match $search ||
+          videos[]->body[].children[].text match $search ||
+          episodes[]->title match $search ||
+          episodes[]->subtitle match $search ||
+          episodes[]->body[].children[].text match $search
+        )
+      ` : ``}
+    ]{
+      ...,
+      authors[]->{ ... },
+      topics[]->{ ... }
+    } | order(hierarchy desc, date desc, title asc)
+  `;
+  return client.fetch(baseQuery, { formats, topic, search: searchWildcard });
+}
+export async function getTopics() {
 	return await client.fetch(`
-		*[_type in ["episode", "podcast", "video", "playlist"] && visible == true && !(_id in path('drafts.**'))] {
-			...,
-			authors[]-> {
-				...,
-			},
-		}| order(hierarchy desc, date desc, title asc)`
-	);
+		*[
+			_type == "topic"
+			&& !(_id in path('drafts.**'))
+			&& _id in *[
+				_type in ["episode", "podcast", "video", "playlist"]
+				&& !(_id in path('drafts.**'))
+				&& visible == true
+			].topics[]._ref
+		] | order(title asc)
+	`);
 }
 export async function getProduction(slug) {
 	return await client.fetch(`
@@ -139,6 +191,14 @@ export async function getLiveSelection() {
 		}`
 	);
 }
+export async function getLiveHasContent() {
+	const result = await client.fetch(`
+		*[_type == "live" && !(_id in path('drafts.**'))][0]{
+			"hasContent": count(liveSelection) > 0
+		}
+	`);
+	return result?.hasContent ?? false;
+}
 export async function getLive() {
 	return await client.fetch(`
 		*[_type in ["event", "eventSerie"] && visible == true && !(_id in path('drafts.**'))] {
@@ -156,34 +216,33 @@ export async function getLive() {
 	);
 }
 export async function getAuthors(search) {
-	if (search) {
-		const searchWildcard = `*${search}*`;
+  const hasSearch = Boolean(search && search.trim());
+  const searchWildcard = hasSearch ? `*${search}*` : null;
+  const baseQuery = `
+    *[
+      _type == "person" &&
+      isAuthor == true &&
+      !(_id in path('drafts.**')) &&
+      _id in *[
+        _type in ["episode","podcast","video","playlist"] &&
+        !(_id in path('drafts.**'))
+      ].authors[]._ref
+      ${hasSearch ? `
+        && (
+          name match $search ||
+          surname match $search ||
+          alias match $search ||
+          occupation match $search ||
+          bio match $search ||
+          authorBody[].children[].text match $search
+        )
+      ` : ``}
+    ] | order(lower(surname) asc)
+  `;
 
-		return await client.fetch(`
-			*[
-				_type == "person" &&
-				isAuthor == true &&
-				!(_id in path('drafts.**')) &&
-				(
-					name match $search ||
-					surname match $search ||
-					alias match $search ||
-					occupation match $search ||
-					bio match $search ||
-					body match $search
-				)
-			] | order(lower(surname) asc)
-		`, { search: searchWildcard });
-	} else {
-		return await client.fetch(`
-			*[
-				_type == "person" &&
-				isAuthor == true &&
-				!(_id in path('drafts.**'))
-			] | order(lower(surname) asc)
-		`);
-	}
+  return client.fetch(baseQuery, { search: searchWildcard });
 }
+
 export async function getAuthor(slug) {
 	return await client.fetch(`
 		*[_type == "person" && isAuthor == true && slug.current == $slug][0] {
@@ -206,6 +265,12 @@ export async function getAuthor(slug) {
 					...,
 				},
 			}
+		}`, { slug });
+}
+export async function getTeamMember(slug) {
+	return await client.fetch(`
+		*[_type == "person" && isTeam == true && slug.current == $slug][0] {
+			...,
 		}`, { slug });
 }
 export async function getAbout() {
@@ -247,185 +312,3 @@ export async function getContact() {
 		}`
 	);
 }
-
-// export async function getModules(tags, search) {
-// 	if (tags.length > 0) {
-// 		return await client.fetch(`
-// 			*[_type in ["module", "serie"]
-// 			&& search == true
-// 			${tags?.length ? `&& count(tags[@->slug.current in $tags]) > 0` : ''}
-// 			&& !(_id in path('drafts.**'))] {
-// 				${module}
-// 			}|order(hierarchy desc)`, { tags });
-// 	} else if (search) {
-// 		return await client.fetch(`
-// 			*[_type == "module"
-// 			&& search == true
-// 			&& (
-// 				title match $search ||
-// 				project->title match $search ||
-// 				tags[]->title match $search ||
-// 				text1[].children[].text match $search ||
-// 				text2[].children[].text match $search ||
-// 				quotes[].quotation match $search
-// 			)
-// 			&& !(_id in path('drafts.**'))
-// 			] | score(
-// 			boost(title match $search, 4)
-// 			) | order(_score desc) {
-// 			${module},
-// 			_score
-// 			}
-// 			`, { search: `${search}*` });
-// 	} else {
-// 		return await client.fetch(`
-// 			*[_type == "homepage" && !(_id in path('drafts.**'))][0].modules[]->{
-// 				${module}
-// 			}`
-// 		);
-// 	}
-// }
-// export async function getModules(tags, search) {
-// 	const hasTags = tags?.length > 0;
-// 	const hasSearch = !!search;
-
-// 	if (hasTags || hasSearch) {
-// 		// Build query parts
-// 		let filters = [
-// 			'_type in ["module", "serie"]',
-// 			'search == true',
-// 			'!(_id in path("drafts.**"))'
-// 		];
-
-// 		if (hasTags) {
-// 			filters.push('count(tags[@->slug.current in $tags]) > 0');
-// 		}
-
-// 		if (hasSearch) {
-// 			filters.push(`(
-// 				title match $search ||
-// 				project->title match $search ||
-// 				tags[]->title match $search ||
-// 				text1[].children[].text match $search ||
-// 				text2[].children[].text match $search ||
-// 				quotes[].quotation match $search
-// 			)`);
-// 		}
-
-// 		const query = `
-// 			*[${filters.join(' && ')}]
-// 			${hasSearch ? `| score(boost(title match $search, 4)) | order(_score desc)` : `| order(hierarchy desc)`} {
-// 				${module}
-// 				${hasSearch ? `, _score` : ''}
-// 			}
-// 		`;
-
-// 		// Prepare params object safely
-// 		const params = {};
-// 		if (hasTags) params.tags = tags;
-// 		if (hasSearch) params.search = `${search}*`;
-
-// 		return await client.fetch(query, params);
-// 	}
-
-// 	// Default: homepage modules
-// 	return await client.fetch(`
-// 		*[_type == "homepage" && !(_id in path('drafts.**'))][0].modules[]->{
-// 			${module}
-// 		}
-// 	`);
-// }
-// export async function getMapModules(tags) {
-// 	return await client.fetch(`
-// 		*[_type in ["module", "serie"]
-// 		&& search == true
-// 		&& (
-// 			(defined(longitude) && defined(latitude)) ||
-// 			(defined(location->longitude) && defined(location->latitude))
-// 		)
-// 		${tags?.length ? `&& count(tags[@->slug.current in $tags]) > 0` : ''}
-// 		&& !(_id in path('drafts.**'))] {
-// 			${module}
-// 		}|order(hierarchy desc)`, { tags });
-// }
-// export async function getTags() {
-// 	return await client.fetch(`
-// 		*[_type == "tag" && !(_id in path('drafts.**'))] {
-// 			...,
-// 			"homepage": count(*[_type == "homepage" && !(_id in path('drafts.**'))][0].modules[]->tags[@->_id == ^._id]) > 0
-// 		}|order(hierarchy desc, title asc)`
-// 	);
-// }
-// export async function getTags() {
-// 	return await client.fetch(`
-// 		*[_type == "tag" && !(_id in path('drafts.**')) 
-// 		  && count(*[_type in ["module", "serie"] 
-// 		             && !(_id in path('drafts.**')) 
-// 		             && references(^._id)]) > 0] 
-// 		{
-// 			...,
-// 			"homepage": count(*[_type == "homepage" && !(_id in path('drafts.**'))][0].modules[]->tags[@->_id == ^._id]) > 0
-// 		}
-// 		| order(hierarchy desc, title asc)
-// 	`);
-// }
-// export async function getAbout() {
-// 	return await client.fetch(`
-// 		*[_type == "about" && !(_id in path('drafts.**'))][0] {
-// 			...,
-// 			people[]->{
-// 				name,
-// 				surname,
-// 				bio
-// 			}
-// 		}`
-// 	);
-// }
-// export async function getIndex() {
-// 	return await client.fetch(`
-// 		*[_type == "project" && index == true && !(_id in path('drafts.**'))]|order(date desc) {
-// 			...,
-// 			collaborations[]->{
-// 				title,
-// 			},
-// 			clients[]->{
-// 				title,
-// 			},
-// 			tags[]|order(hierarchy desc, title asc)->{
-// 				title, slug, hierarchy
-// 			},
-// 			formats[]->{
-// 				title,
-// 			},
-// 			locations[]->{
-// 				title,
-// 				latitude,
-// 				longitude,
-// 			}
-// 		}`
-// 	);
-// }
-// export async function getProject(slug) {
-// 	return await client.fetch(`
-// 		*[_type == "project" && slug.current == $slug] {
-// 			...,
-// 			modules[]->{
-// 				${module}
-// 			},
-// 			collaborations[]->{
-// 				title,
-// 			},
-// 			clients[]->{
-// 				title,
-// 			},
-// 			tags[]|order(hierarchy desc, title asc)->{
-// 				title, slug, hierarchy
-// 			},
-// 			formats[]->{
-// 				title,
-// 			},
-// 			locations[]->{
-// 				title,
-// 			},
-// 		}`, { slug });
-// }

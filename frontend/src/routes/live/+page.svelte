@@ -43,7 +43,7 @@ $inspect(data)
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: var(--gutter);
-	padding: 2rem var(--margin);
+	padding: var(--margin);
 }
 .event {
 	position: relative;
@@ -54,8 +54,8 @@ $inspect(data)
 .tags {
 	display: flex;
 	flex-wrap: wrap;
-	width: -webkit-fill-available;
-	width: fill-available;
+	max-width: stretch;
+	width: 100%;
 	position: absolute;
 	padding: .2em;
 	gap: .2em;

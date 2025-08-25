@@ -6,10 +6,13 @@ import BoxedTextSliderStyle from "$lib/components/portableTextStyles/BoxedTextSl
 import PersonTextStyle from "$lib/components/portableTextStyles/PersonTextStyle.svelte";
 import StatTextStyle from "$lib/components/portableTextStyles/StatTextStyle.svelte";
 import { urlFor } from "$lib/utils/image";
+import { slide } from "svelte/transition";
+
 let { data } = $props();
-$inspect(data.about.body)
+let innerWidth = $state(undefined)
 
 let activeSection = $state(0)
+let activeSectionMobile = $state(undefined)
 let rawBlocks = data.about.body;
 let processedBlocks = [];
 
@@ -30,7 +33,23 @@ for (let i = 0; i < rawBlocks.length; ) {
 		i++;
 	}
 }
+
+let sections = $state([]);
+let current = $state(null);
+
+for (let block of processedBlocks) {
+	if (block._type === "anchor") {
+		// start new section
+		current = { anchor: block, content: [] };
+		sections.push(current);
+	} else if (current) {
+		// push following content into current anchor
+		current.content.push(block);
+	}
+}
 </script>
+
+<svelte:window bind:innerWidth></svelte:window>
 
 {#if data.about.introduction}
 	<section id="intro">
@@ -39,39 +58,81 @@ for (let i = 0; i < rawBlocks.length; ) {
 {/if}
 
 <section id="about">
-	<nav class="navigator">
-		{#each data.about.body as block, i}
-			{#if block._type === 'anchor'}
-				<a class="navigator-item jost-18 uppercase bold" href="#{block.slug.current}"
-				class:active={activeSection == i}
-				onclick={() => activeSection = i}
-				style={`--color: ${block.activeColor?.hex}`}
-				>{block.title}</a>
+	{#if innerWidth > 800}
+		<nav class="navigator">
+			{#each data.about.body as block, i}
+				{#if block._type === 'anchor'}
+					<a class="navigator-item jost-18 uppercase bold" href="#{block.slug.current}"
+					class:active={activeSection == i}
+					onclick={() => activeSection = i}
+					style={`--color: ${block.activeColor?.hex}`}
+					>{block.title}</a>
+				{/if}
+			{/each}
+		</nav>
+		<div class="body">
+			<PortableText
+			value={processedBlocks}
+			components={{
+			block: {
+				normal: AboutTextStyle,
+				h1: AboutTextStyle,
+			},
+			listItem: AboutTextStyle,
+			marks: {
+				link: AboutTextStyle,
+			},
+			types: {
+				anchor: AboutTextStyle,
+				boxedText: BoxedTextStyle,
+				boxedTextGroup: BoxedTextSliderStyle,
+				person1: PersonTextStyle,
+				person3: PersonTextStyle,
+				stat: StatTextStyle,
+			}
+			}}/>
+		</div>
+	{:else}
+		{#each sections as section, i}
+			<button
+				class="navigator-item jost-18 uppercase bold"
+				class:active={activeSectionMobile === i}
+				onclick={() => activeSectionMobile = activeSectionMobile === i ? null : i}
+				style={`--color: ${section.anchor.activeColor?.hex}`}
+			>
+				{section.anchor.title}
+				<svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path fill="#000" d="M0 12h27v3H0z"/>
+					<path class="minus" fill="#000" d="M12 27V0h3v27z"/>
+				</svg>
+			</button>
+			{#if activeSectionMobile === i}
+				<div class="body" transition:slide>
+					<PortableText
+						value={section.content}
+						components={{
+							block: {
+								normal: AboutTextStyle,
+								h1: AboutTextStyle,
+							},
+							listItem: AboutTextStyle,
+							marks: {
+								link: AboutTextStyle,
+							},
+							types: {
+								anchor: AboutTextStyle,
+								boxedText: BoxedTextStyle,
+								boxedTextGroup: BoxedTextSliderStyle,
+								person1: PersonTextStyle,
+								person3: PersonTextStyle,
+								stat: StatTextStyle,
+							}
+						}}
+					/>
+				</div>
 			{/if}
 		{/each}
-	</nav>
-	<div class="body">
-		<PortableText
-		value={processedBlocks}
-		components={{
-		block: {
-			normal: AboutTextStyle,
-			h1: AboutTextStyle,
-		},
-		listItem: AboutTextStyle,
-		marks: {
-			link: AboutTextStyle,
-		},
-		types: {
-			anchor: AboutTextStyle,
-			boxedText: BoxedTextStyle,
-			boxedTextGroup: BoxedTextSliderStyle,
-			person1: PersonTextStyle,
-			person3: PersonTextStyle,
-			stat: StatTextStyle,
-		}
-		}}/>
-	</div>
+	{/if}
 </section>
 
 <style>
@@ -96,18 +157,71 @@ for (let i = 0; i < rawBlocks.length; ) {
 	height: fit-content;
 }
 .navigator-item {
-	padding: var(--gutter);
-}
-.navigator-item:hover, .navigator-item.active {
-	border-top: none;
-	background-color: var(--color);
+	padding: 1rem var(--margin);
 }
 .navigator-item + .navigator-item {
 	border-top: solid 1px;
 }
+.navigator-item.active {
+	border-top: 0;
+	background-color: var(--color);
+	border-radius: .6rem;
+}
 .body {
 	grid-column: 4 / span 7;
 	display: flex;
+	column-gap: var(--margin);
 	flex-wrap: wrap;
+}
+@media only screen and (max-width: 1080px) {
+	.navigator {
+		grid-column: 1 / span 3;
+		padding-right: var(--gutter);
+	}
+}
+@media only screen and (min-width: 801px) {
+	.navigator-item:not(.active):hover {
+		border-right: solid 5px var(--black);
+		padding-right: calc(var(--gutter) - 5px);
+		border-radius: 0;
+	}
+	.navigator-item:not(:first-of-type).active {
+		margin-top: 1px;
+	}
+	.navigator-item.active + .navigator-item {
+		border-top: 0;
+		margin-top: 1px;
+	}
+}
+@media only screen and (max-width: 800px) {
+	#about {
+		grid-template-columns: repeat(1, 1fr);
+		gap: 4px;
+	}
+	.navigator-item {
+		padding: 2rem var(--margin);
+		border-top: 0;
+		background-color: var(--color);
+		border-radius: .6rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.navigator-item.active .minus {
+		display: none;
+	}
+	.navigator-item svg {
+		height: 1.5em;
+		width: auto;
+	}
+	.navigator-item + .navigator-item {
+		border-top: unset;
+	}
+	.body {
+		margin: 2rem 0 6rem;
+		grid-column: 1 / span 1;
+		width: calc(100vw - var(--margin)*2)
+
+	}
 }
 </style>

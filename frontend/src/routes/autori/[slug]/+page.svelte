@@ -3,94 +3,98 @@ import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
 import { formatDate } from "$lib/utils/date";
+import { formatAuthorName } from '$lib/utils/author.js';
 let { data } = $props();
-$inspect(data.author)
 const author = data.author
+const maxLength = 400
 
+let openHighlights = $state(false)
 let expanded = $state(false)
-let plainTextBody = $derived(blocksToPlainText(author.body));
+let visibleBlocks = $derived.by(() => {
+	if (!author?.authorBody) return []
+
+	let text = ""
+	let truncatedBlocks = []
+	for (const block of author.authorBody) {
+		if (block._type !== "block" || !block.children) continue
+		let blockText = block.children.map(c => c.text).join("")
+
+		if (text.length + blockText.length <= maxLength || expanded) {
+			truncatedBlocks.push(block)
+			text += blockText
+		} else {
+			let remaining = maxLength - text.length
+			if (remaining > 0) {
+				truncatedBlocks.push({
+					...block,
+					children: [{ ...block.children[0], text: blockText.slice(0, remaining) + "…" }]
+				})
+			}
+			break
+		}
+	}
+	return truncatedBlocks
+})
 function blocksToPlainText(blocks) {
-	if (!Array.isArray(blocks)) return '';
+	if (!Array.isArray(blocks)) return ''
 	return blocks
-		.filter(block => block._type === 'block' && block.children)
-		.map(block => block.children.map(child => child.text).join(''))
-		.join('\n'); // Optional: use "\n\n" to preserve paragraph breaks
+		.filter(b => b._type === 'block' && b.children)
+		.map(b => b.children.map(c => c.text).join(''))
+		.join('\n')
 }
 </script>
 
-<!-- <svelte:head>
-	{#if data.seo.SEOTitle}<title>{data.seo.SEOTitle} — {data.project[0].title}</title>{/if}
-	{#if data.project[0].SEODescription}<meta name="description" content={data.project[0].SEODescription}>{/if}
-	{#if !data.project[0].singlePage}
+<svelte:head>
+	{#if data.seo.SEOTitle}<title>{data.seo.SEOTitle} — {formatAuthorName(author)}</title>{/if}
+	{#if author.SEODescription}<meta name="description" content={author.SEODescription}>{/if}
+	{#if author.SEOHidden}
 		<meta name="robots" content="index,follow">
 		<meta name="robots" content="noindex, nofollow" />
 	{/if}
-	{#if data.seo.SEOTitle}<meta property="og:title" content={`${data.seo.SEOTitle} — ${data.project[0].title}`}>{/if}
-	{#if data.project[0].SEODescription}<meta property="og:description" content={data.project[0].SEODescription}>{/if}
-	{#if data.project[0].cover}<meta property="og:image" content={urlFor(data.project[0].cover).width(2000).url()}>{/if}
-	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${data.project[0].title}`}>{/if}
-</svelte:head> -->
+	{#if data.seo.SEOTitle}<meta property="og:title" content={`${data.seo.SEOTitle} — ${author.title}`}>{/if}
+	{#if author.SEODescription}<meta property="og:description" content={author.SEODescription}>{/if}
+	{#if author.portrait}<meta property="og:image" content={urlFor(author.portrait).width(1200).url()}>{/if}
+	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${formatAuthorName(author)}`}>{/if}
+</svelte:head>
 
 <section id="author">
-	<div class="author-wrapper" class:noHighlights={!author.highlightedContents}>
+	<div class="author-wrapper noScrollbar" class:noHighlights={!author.highlightedContents}>
 		<div class="description">
 			<div class="card">
 				<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
 				<div class="names">
-					{#if author.name || author.surname}
-						<h1 class="jost-74 name">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h1>
-					{:else if author.alias}
-						<h1 class="jost-74 name">{author.alias}</h1>
-					{/if}
-					{#if author.occupation}<h3 class="jost-27 occupation">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
+					<h1 class="jost-74 mobile-jost-27 name">{formatAuthorName(author)}</h1>
+					{#if author.occupation}<h3 class="jost-27 mobile-jost-16 occupation">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
 				</div>
 			</div>
-			{#if author.body}
-				{#if plainTextBody.length > 400}
-					{#if expanded}
-						<div class="body bio jost-18">
-							<PortableText
-								value={author.body}
-								components={{
-									block: {
-										normal: PlainTextStyle,
-										h3: PlainTextStyle,
-									},
-									listItem: PlainTextStyle,
-									marks: {
-										link: PlainTextStyle,
-									},
-								}}/>
-						</div>
-						<button class="btn bg-gray" on:click={() => expanded = false}>Leggi meno</button>
-					{:else}
-						<p class="jost-18 bio">{plainTextBody.slice(0, 400)}…</p>
-						<button class="btn bg-gray" on:click={() => expanded = true}>Leggi di più</button>
-					{/if}
-				{:else}
-					<div class="body bio jost-18">
-						<PortableText
-							value={author.body}
-							components={{
-								block: {
-									normal: PlainTextStyle,
-									h3: PlainTextStyle,
-								},
-								listItem: PlainTextStyle,
-								marks: {
-									link: PlainTextStyle,
-								},
-							}}/>
-					</div>
+			{#if author.authorBody}
+				<div class="bio jost-18">
+					<PortableText
+						value={visibleBlocks}
+						components={{
+							block: {
+								normal: PlainTextStyle,
+								h3: PlainTextStyle,
+							},
+							listItem: PlainTextStyle,
+							marks: { link: PlainTextStyle }
+						}}
+					/>
+				</div>
+
+				{#if author?.authorBody && blocksToPlainText(author.authorBody).length > maxLength}
+					<button class="btn bg-gray" onclick={() => expanded = !expanded}>
+						{expanded ? 'Leggi meno' : 'Leggi di più'}
+					</button>
 				{/if}
 			{:else if author.bio}
-				{#if author.bio.length > 400}
+				{#if author.bio.length > maxLength}
 					{#if expanded}
 						<p class="jost-18 bio">{author.bio}</p>
-						<button class="btn bg-gray" on:click={() => expanded = false}>Leggi meno</button>
+						<button class="btn bg-gray" onclick={() => expanded = false}>Leggi meno</button>
 					{:else}
-						<p class="jost-18 bio">{author.bio.slice(0, 400)}…</p>
-						<button class="btn bg-gray" on:click={() => expanded = true}>Leggi di più</button>
+						<p class="jost-18 bio">{author.bio.slice(0, maxLength)}…</p>
+						<button class="btn bg-gray" onclick={() => expanded = true}>Leggi di più</button>
 					{/if}
 				{:else}
 					<p class="jost-18 bio">{author.bio}</p>
@@ -107,8 +111,8 @@ function blocksToPlainText(blocks) {
 							class:_1-1={audio._type == "episode" || audio._type == "podcast"}
 							class:_16-9={audio._type == "video" || audio._type == "playlist"}
 							>
-							<h2 class="jost-18 uppercase bold">{audio.title}</h2>
-							{#if audio.subtitle}<h3 class="jost-18 bold">{audio.subtitle}</h3>{/if}
+							<h2 class="jost-18 uppercase bold tight">{audio.title}</h2>
+							{#if audio.subtitle}<h3 class="jost-18 bold tight">{audio.subtitle}</h3>{/if}
 						</a>
 					{/each}
 				</div>
@@ -124,8 +128,8 @@ function blocksToPlainText(blocks) {
 							class:_1-1={video._type == "episode" || video._type == "podcast"}
 							class:_16-9={video._type == "video" || video._type == "playlist"}
 							>
-							<h2 class="jost-18 uppercase bold">{video.title}</h2>
-							{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
+							<h2 class="jost-18 uppercase bold tight">{video.title}</h2>
+							{#if video.subtitle}<h3 class="jost-18 bold tight">{video.subtitle}</h3>{/if}
 						</a>
 					{/each}
 				</div>
@@ -133,7 +137,7 @@ function blocksToPlainText(blocks) {
 		{/if}
 	</div>
 	{#if author.highlightedContents}	
-		<div class="author-highlighted-contents">
+		<div class="author-highlighted-contents" onclick={() => {openHighlights = !openHighlights}} class:open={openHighlights}>
 			<h4 class="jost-12 uppercase bold">In evidenza</h4>
 			{#each author.highlightedContents as production, i}
 				<a class="author-highlighted-content jost-15" href={`/esplora/${production.slug.current}`}>
@@ -141,8 +145,8 @@ function blocksToPlainText(blocks) {
 					class:_1-1={production._type == "episode" || production._type == "podcast"}
 					class:_16-9={production._type == "video" || production._type == "playlist"}
 					>
-					<h2 class="jost-18 uppercase bold">{production.title}</h2>
-					{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
+					<h2 class="jost-18 uppercase bold tight">{production.title}</h2>
+					{#if production.subtitle}<h3 class="jost-18 bold tight">{production.subtitle}</h3>{/if}
 					<div class="info">
 						{#if production.date}<time class="jost-15" datetime={production.date}>{formatDate(production.date)}</time>{/if}
 						{#if production.authors?.length < 4}
@@ -150,13 +154,7 @@ function blocksToPlainText(blocks) {
 								<p class="episode-authors-label">
 									<span>Con</span>
 									{#each production.authors as author, j}
-										<a class="author" href="/autori/{author.slug.current}">
-											{#if author.name || author.surname}
-												{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}
-											{:else if author.alias}
-												{author.alias}
-											{/if}
-										</a>{@html j < production.authors.length - 1  ? ', ' : ''}
+										<a class="author" href="/autori/{author.slug.current}">{formatAuthorName(author)}</a>{@html j < production.authors.length - 1  ? ', ' : ''}
 									{/each}
 								</p>
 							</div>
@@ -191,7 +189,6 @@ function blocksToPlainText(blocks) {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
 	padding: 0 var(--margin);
-	/* gap: var(--margin); */
 }
 .author-wrapper {
 	grid-column: 1 / span 7;
@@ -203,8 +200,29 @@ function blocksToPlainText(blocks) {
 }
 .author-wrapper.noHighlights {
 	grid-column: 1 / span 10;
+	max-height: unset;
 }
+@media only screen and (max-width: 800px) {
+	#author {
+		display: flex;
+		flex-direction: column;
+	}
+	.author-wrapper {
+		overflow-y: unset;
+		position: relative;
+		top: unset;
+		height: unset;
+		max-height: unset;
+	}
+	.author-wrapper.noHighlights {
+		width: 100%;
+	}
+}
+
 /* Description */
+.description {
+	padding-right: var(--margin);
+}
 .card {
 	display: flex;
 	align-items: center;
@@ -229,6 +247,23 @@ function blocksToPlainText(blocks) {
 	max-width: 700px;
 	margin-bottom: 2rem;
 }
+@media only screen and (max-width: 1080px) {
+	.portrait {
+		width: 150px;
+	}
+	.names {
+		width: auto;
+	}
+}
+@media only screen and (max-width: 800px) {
+	.portrait {
+		width: 30vw;
+	}
+	.occupation {
+		margin-top: .5rem;
+	}
+}
+
 /* Productions */
 .author-appears {
 	margin-top: 8rem;
@@ -244,20 +279,60 @@ h4 {
 	padding-bottom: 4rem;
 }
 .author-contents.podcasts {
-	grid-template-columns: repeat(5, 1fr);
+	grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 }
 .author-contents.videos {
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 }
-.noHighlights .author-contents {
-	grid-template-columns: repeat(6, 1fr);
+.noHighlights .author-contents.podcasts {
+	grid-template-columns: repeat(6, calc((100% - var(--gutter)*5)/6));
+}
+.noHighlights .author-contents.videos {
+	grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 }
 .author-content img {
 	margin-bottom: 1rem;
 }
-.author-content h2, .author-content h3 {
-	line-height: 1.05;
+@media only screen and (max-width: 1280px) {
+	.author-contents.podcasts {
+		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
+	}
+	.author-contents.videos {
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	}
+	.noHighlights .author-contents.podcasts {
+		grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
+	}
+	.noHighlights .author-contents.videos {
+		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
+	}
 }
+@media only screen and (max-width: 1080px) {
+	.author-contents.podcasts {
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	}
+	.author-contents.videos {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+	.noHighlights .author-contents.podcasts {
+		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
+	}
+	.noHighlights .author-contents.videos {
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	}
+}
+@media only screen and (max-width: 800px) {
+	.author-appears, .description {
+		padding-right: 0;
+	}
+	.author-contents.podcasts, .noHighlights .author-contents.podcasts {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+	.author-contents.videos, .noHighlights .author-contents.videos {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+}
+
 /* Highlights */
 .author-highlighted-contents {
 	grid-column: 8 / span 3;
@@ -285,5 +360,10 @@ h4 {
 }
 .author-highlighted-content .body {
 	margin-top: 2rem;
+}
+@media only screen and (max-width: 800px) {
+	.author-highlighted-contents {
+		display: none;
+	}
 }
 </style>

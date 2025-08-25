@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import {VersionsIcon} from '@sanity/icons'
 
 export default {
 	name: 'playlist',
 	type: 'document',
 	icon: VersionsIcon,
+	groups: [{name: 'SEO'}],
 	fieldsets: [
 		{name: 'youtube'},
 	],
@@ -87,6 +89,11 @@ export default {
 			description: "Aspect ratio 21:9. To be used if the playlist is selected in 'Esplora' page",
 			type: 'image',
 		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
+		},
 		body(),
 		{
 			name: 'videos',
@@ -99,5 +106,6 @@ export default {
 			],
 			validation: (Rule) => Rule.required(),
 		},
+		...seoFields()
 	],
 };

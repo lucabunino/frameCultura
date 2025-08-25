@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import { RemoveIcon } from '@sanity/icons'
 
 export default {
 	name: 'event',
 	type: 'document',
 	icon: RemoveIcon,
+	groups: [{name: 'SEO'}],
 	fields: [
 		{
 			name: 'title',
@@ -78,5 +80,6 @@ export default {
 			type: 'image',
 		},
 		body(),
+		...seoFields(),
 	],
 };

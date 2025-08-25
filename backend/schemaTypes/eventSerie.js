@@ -1,10 +1,12 @@
 import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import { TimelineIcon } from '@sanity/icons'
 
 export default {
 	name: 'eventSerie',
 	type: 'document',
 	icon: TimelineIcon,
+	groups: [{name: 'SEO'}],
 	fields: [
 		{
 			name: 'title',
@@ -94,5 +96,6 @@ export default {
 			],
 			validation: (Rule) => Rule.required(),
 		},
+		...seoFields(),
 	],
 };

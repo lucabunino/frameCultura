@@ -1,53 +1,56 @@
 <script>
 import { urlFor } from "$lib/utils/image";
 import { page } from "$app/state";
+import { getHeader } from '$lib/stores/header.svelte';
+import { formatAuthorName } from "$lib/utils/author.js";
+let header = getHeader()
 let { data } = $props();
-$inspect(data)
-
 function getInitial(surname) {
 	if (!surname) return '';
 	return surname.trim()[0].toUpperCase();
 }
-
 let previousInitialAnchor = '';
 let seenHashAnchor = false;
 let previousInitial = '';
 let seenHash = false;
-let activeLetter = $state('A')
+let activeLetters = $state(['A'])
 let scrollY = $state(0)
 let anchors = $state([])
-let menuUp = $state(false)
-let lastScrollY = 0;
 let search = $derived(page.url.searchParams.get('search') ? page.url.searchParams.get('search') : '')
 
-function handleScroll(e) {
-	// headerPosition
-	if (scrollY > lastScrollY && scrollY > 50) {
-		menuUp = true
-	} else {
-		menuUp = false
-	}
-	lastScrollY = scrollY
-	
-	// currentAnchor
-	const current = anchors
-		.filter(el => el.getBoundingClientRect().top - 100 <= 0)
-		.sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)[0];
+function handleScroll() {
+	// get all anchors that are <= scroll position
+	const visibleAnchors = anchors.filter(
+		el => el && el.getBoundingClientRect().top - 100 <= 0
+	);
 
-	if (current && current.id !== activeLetter) {
-		activeLetter = current.id;
+	if (visibleAnchors.length) {
+		// find the bottom-most visible anchor's top position
+		const maxTop = Math.max(...visibleAnchors.map(el => el.getBoundingClientRect().top));
+
+		// keep all anchors that share that same top position (±1px tolerance)
+		const currentLetters = visibleAnchors
+			.filter(el => Math.abs(el.getBoundingClientRect().top - maxTop) <= 1)
+			.map(el => el.id);
+
+		// update state only if it changed
+		if (JSON.stringify(currentLetters) !== JSON.stringify(activeLetters)) {
+			activeLetters = currentLetters;
+		}
+	} else {
+		activeLetters = [];
 	}
 }
 </script>
 
 <svelte:window bind:scrollY onscroll={(e) => handleScroll(e)}></svelte:window>
 
-<section id="anchors" class:up={menuUp}>
+<section id="anchors" class="noScrollbar" class:up={header.up}>
 	<div class="anchors">
 		{#if data.groupedAuthors.length > 0}
 			{#each data.groupedAuthors as group, i}
 				<a href="#{group.letter}" class="anchor jost-18 bold uppercase"
-				class:active={activeLetter == group.letter}
+				class:active={activeLetters.includes(group.letter)}
 				>{group.letter}</a>
 			{/each}
 		{:else}
@@ -82,13 +85,12 @@ function handleScroll(e) {
 		</div>
 		{#each group.authors as author, j}
 			<a class="author" href={`/autori/${author.slug.current}`}>
-				<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-				{#if author.name || author.surname}
-					<h2 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h2>
-				{:else if author.alias}
-					<h2 class="jost-27">{author.alias}</h2>
-				{/if}
-				{#if author.occupation}<h3 class="jost-18">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
+				<div class="portrait-wrapper">
+					<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
+					<div class="more jost-15 bold"><span>+</span></div>
+				</div>
+				<h2 class="jost-27 mobile-jost-16">{formatAuthorName(author)}</h2>
+				{#if author.occupation}<h3 class="jost-18 mobile-jost-12">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
 			</a>
 		{/each}
 	{/each}
@@ -126,12 +128,14 @@ function handleScroll(e) {
 	align-items: center;
 	overflow: scroll;
 }
-.anchor:hover, .anchor.active:hover {
-	color: var(--white) !important;
-	background-color: var(--black);
-}
 .anchor.active {
 	background-color: var(--pink);
+}
+@media only screen and (min-width: 801px) {
+	.anchor:hover, .anchor.active:hover {
+		color: var(--white) !important;
+		background-color: var(--black);
+	}
 }
 
 /* Search */
@@ -152,11 +156,20 @@ input::placeholder {
 #search-submit svg {
 	fill: var(--black);
 }
+@media only screen and (max-width: 500px) {
+	#search-author {
+		width: calc(100vw - var(--margin)*2);
+		justify-content: space-between;
+	}
+	#search {
+		width: calc(100vw - var(--margin)*2 - 3rem);
+	}
+}
 
 /* Authors */
 #authors {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
+	grid-template-columns: repeat(6, calc((100% - var(--gutter)*5)/6));
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 	padding: var(--margin);
@@ -192,22 +205,57 @@ input::placeholder {
 .author h3 {
 	margin-top: .5rem;
 }
-.author .portrait {
+.author .portrait-wrapper {
 	max-width: 200px;
+	position: relative;
 }
+.more {
+	display: flex;
+	padding: 1rem;
+	background-color: var(--gray);
+	border-radius: 100%;
+	aspect-ratio: 1;
+	width: 3rem;
+	height: 3rem;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	position: absolute;
+	right: 7%;
+	top: 7%;
+	opacity: 0;
+}
+.author:hover .more {
+	opacity: 1;
+}
+.more span {
+	padding-bottom: .2rem;
+}
+
 @media only screen and (max-width: 1280px) {
 	#authors {
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 	}
 }
 @media only screen and (max-width: 1080px) {
 	#authors {
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 	}
 }
 @media only screen and (max-width: 800px) {
 	#authors {
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	}
+	.letter {
+		margin-top: 6vw;
+	}
+}
+@media only screen and (max-width: 300px) {
+	#authors {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+	.letter {
+		font-size: 44vw;
 	}
 }
 </style>

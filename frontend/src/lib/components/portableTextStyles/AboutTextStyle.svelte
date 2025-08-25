@@ -21,7 +21,8 @@ let {style, listItem, markDefs} = $derived(value);
 {:else if listItem == 'bullet'}
 	<li>{@render children()}</li>
 {:else if value._type === 'anchor'}
-	<h4 class="jost-12 uppercase bold" class:invisible={!value.visible} id={value.slug.current}>{value.title}</h4>
+	<span id={value.slug.current} class="anchor"></span>
+	<h4 class="jost-12 uppercase bold" class:invisible={!value.visible}>{value.title}</h4>
 {/if}
 
 <style>
@@ -35,9 +36,8 @@ p {
 h4 {
 	flex-basis: 100%;
 	border-bottom: solid 1px var(--black);
-	margin-top: 2rem;
+	padding-top: calc(var(--margin)*2 + 4rem);
 	margin-bottom: 1rem;
-	padding-top: 8rem;
 	padding-bottom: 1rem;
 }
 h4.invisible {
@@ -51,5 +51,10 @@ li {
 	text-indent: 0;
 	list-style-type: "— ";
     list-style-position: inside;
+}
+.anchor {
+	height: 0;
+	overflow: hidden;
+	margin-top: calc((var(--margin)*2 + 4rem)*-1);
 }
 </style>

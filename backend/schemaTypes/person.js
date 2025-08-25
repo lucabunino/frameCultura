@@ -1,4 +1,4 @@
-import body from './fields/body.js'
+import seoFields from './fields/seoFields.js'
 import { UserIcon } from '@sanity/icons'
 
 export default {
@@ -10,25 +10,22 @@ export default {
 		{name: 'team'},
 	],
 	groups: [
-		{name: 'basics'},
 		{name: 'author'},
 		{name: 'team'},
+		{name: 'SEO'},
 	],
 	fields: [
 		{
 			name: 'name',
 			type: 'string',
-			group: 'basics',
 		},
 		{
 			name: 'surname',
 			type: 'string',
-			group: 'basics',
 		},
 		{
 			name: 'alias',
 			type: 'string',
-			group: 'basics',
 		},
 		{
 			name: 'slug',
@@ -38,14 +35,11 @@ export default {
 				source: (doc) => `${doc.name}-${doc.surname}`,
 				maxLength: 96,
 			},
-			group: 'basics',
 		},
 		{
 			name: 'portrait',
 			type: 'image',
-			group: 'basics',
 		},
-		body({ group: 'basics' }),
 		{
 			name: 'isAuthor',
 			type: 'boolean',
@@ -65,6 +59,57 @@ export default {
 			name: 'bio',
 			description: "The 'body' field is temporarily replaced due to a legacy import. Use 'body' to apply styling and links.",
 			type: 'text',
+			hidden: ({ parent }) => parent?.isAuthor !== true,
+			fieldset: 'author',
+			group: 'author',
+		},
+		{
+			name: 'authorBody',
+			title: 'Body',
+			type: 'array',
+			of: [
+				{
+					type: 'block',
+					styles: [
+						{ value: 'normal', title: 'Normal' },
+						{ value: 'h3', title: 'Title' },
+					],
+					lists: [
+						{title: 'Bullet', value: 'bullet'}
+					],
+					marks: {
+						decorators: [
+							{title: 'Bold', value: 'strong'},
+							{title: 'Italic', value: 'em'},
+						],
+						annotations: [
+						{
+							name: 'link',
+							type: 'object',
+							fields: [
+							{
+								name: 'url',
+								type: 'string',
+								validation: Rule =>
+								Rule.custom(href => {
+									if (!href) return true;
+									return /^(https?:\/\/|mailto:|tel:)/.test(href)
+									? true
+									: 'Must be a valid URL, mailto:, or tel: link';
+								}),
+							},
+							{
+								title: 'Open in new tab',
+								name: 'blank',
+								type: 'boolean',
+							},
+							],
+						},
+						],
+					},
+				},
+			],
+			hidden: ({ parent }) => parent?.isAuthor !== true,
 			fieldset: 'author',
 			group: 'author',
 		},
@@ -111,6 +156,65 @@ export default {
 			fieldset: 'team',
 			group: 'team',
 		},
+		{
+			name: 'abstract',
+			type: 'text',
+			rows: 6,
+			hidden: ({ parent }) => parent?.isTeam !== true,
+			fieldset: 'team',
+			group: 'team',
+		},
+		{
+			name: 'teamBody',
+			title: 'Body',
+			type: 'array',
+			of: [
+				{
+					type: 'block',
+					styles: [
+						{ value: 'normal', title: 'Normal' },
+						{ value: 'h3', title: 'Title' },
+					],
+					lists: [
+						{title: 'Bullet', value: 'bullet'}
+					],
+					marks: {
+						decorators: [
+							{title: 'Bold', value: 'strong'},
+							{title: 'Italic', value: 'em'},
+						],
+						annotations: [
+						{
+							name: 'link',
+							type: 'object',
+							fields: [
+							{
+								name: 'url',
+								type: 'string',
+								validation: Rule =>
+								Rule.custom(href => {
+									if (!href) return true;
+									return /^(https?:\/\/|mailto:|tel:)/.test(href)
+									? true
+									: 'Must be a valid URL, mailto:, or tel: link';
+								}),
+							},
+							{
+								title: 'Open in new tab',
+								name: 'blank',
+								type: 'boolean',
+							},
+							],
+						},
+						],
+					},
+				},
+			],
+			hidden: ({ parent }) => parent?.isTeam !== true,
+			fieldset: 'team',
+			group: 'team',
+		},
+		...seoFields(),
 	],
 	orderings: [
 		{

@@ -3,9 +3,10 @@ import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
 import { formatDate } from '$lib/utils/date';
+import { formatEmbed } from '$lib/utils/youtube';
+import { formatAuthorName } from '$lib/utils/author';
 
 let { data } = $props();
-$inspect(data)
 const production = data.production
 let activeVideoIndex = $state(0)
 let activeVideo = $derived(production.videos?.[activeVideoIndex])
@@ -13,41 +14,48 @@ let activeVideoPlay = $state(false)
 let productionVideoPlay = $state(false)
 let videos = $state([])
 let scrollY = $state(0)
+let innerWidth = $state(undefined)
+let activeVideoPlayMobileIndex = $state(null)
 </script>
 
-<!-- <svelte:head>
-	{#if data.seo.SEOTitle}<title>{data.seo.SEOTitle} — {data.project[0].title}</title>{/if}
-	{#if data.project[0].SEODescription}<meta name="description" content={data.project[0].SEODescription}>{/if}
-	{#if !data.project[0].singlePage}
+<svelte:head>
+	{#if data.seo.SEOTitle}<title>{data.seo.SEOTitle} — {production.title}</title>{/if}
+	{#if production.SEODescription}<meta name="description" content={production.SEODescription}>{/if}
+	{#if production.SEOHidden}
 		<meta name="robots" content="index,follow">
 		<meta name="robots" content="noindex, nofollow" />
 	{/if}
-	{#if data.seo.SEOTitle}<meta property="og:title" content={`${data.seo.SEOTitle} — ${data.project[0].title}`}>{/if}
-	{#if data.project[0].SEODescription}<meta property="og:description" content={data.project[0].SEODescription}>{/if}
-	{#if data.project[0].cover}<meta property="og:image" content={urlFor(data.project[0].cover).width(2000).url()}>{/if}
-	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${data.project[0].title}`}>{/if}
-</svelte:head> -->
+	{#if data.seo.SEOTitle}<meta property="og:title" content={`${data.seo.SEOTitle} — ${production.title}`}>{/if}
+	{#if production.SEODescription}<meta property="og:description" content={production.SEODescription}>{/if}
+	{#if production.cover}<meta property="og:image" content={urlFor(production.cover).width(1200).url()}>{/if}
+	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${production.title}`}>{/if}
+</svelte:head>
 
-<svelte:window bind:scrollY></svelte:window>
+<svelte:window bind:scrollY bind:innerWidth></svelte:window>
 
 <section id="production" class={production._type}>
 
 	<!-- Podcast -->
 	{#if production._type == 'podcast'}
-		<div class="description">
-			<h1 class="jost-74 uppercase">{production.title}</h1>
-			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+		<div class="description noScrollbar">
+			{#if production.topics}
+				<div class="topics jost-12 bold uppercase">
+					{#each production.topics as topic, j}
+						<a class="topic hover-gray" href="/cerca?search={topic.title}">{topic.title}</a>
+					{/each}
+				</div>
+			{/if}
+			<div class="titles">
+				<h1 class="jost-74 uppercase">{production.title}</h1>
+				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Un podcast di</p>
 					{#each production.authors as author, j}
-						<a href="/autori/{author.slug.current}" class="author jost-24">
-							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-							{#if author.name || author.surname}
-								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
-							{:else if author.alias}
-								<h3 class="jost-27">{author.alias}</h3>
-							{/if}
+						<a href="/autori/{author.slug.current}" class="author jost-24 hover-gray">
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder).width(1080)} alt="Ritratto di {formatAuthorName(author)}">
+							<h3 class="jost-27">{formatAuthorName(author)}</h3>
 						</a>
 					{/each}
 				</div>
@@ -57,7 +65,12 @@ let scrollY = $state(0)
 			{#if production.cover}
 				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
 					<img class="cover rounded _1-1" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
-					<button class="btn listen">Ascolta</button>
+					<button class="btn listen">
+						<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+						</svg>
+						Ascolta
+					</button>
 				</a>
 			{/if}
 			{#if production.body}
@@ -86,7 +99,10 @@ let scrollY = $state(0)
 					target="_blank" rel="noopener noreferrer"
 					>
 						<h2 class="jost-24 uppercase bold">{#if episode.number}{episode.number}{@html '. '}{/if}{episode.title}</h2>
-						{#if episode.subtitle}<h3 class="jost-24 bold">{episode.subtitle}</h3>{/if}
+						{#if episode.subtitle}<br><h3 class="jost-24 bold">{episode.subtitle}</h3>{/if}
+						<svg width="19" height="15" viewbox="0 0 19 15" fill="black" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+						</svg>
 						{#if episode.date}<time class="jost-15" datetime={episode.date}>{formatDate(episode.date)}</time>{/if}
 						{#if episode.body}
 							<div class="body jost-15">
@@ -112,20 +128,25 @@ let scrollY = $state(0)
 	
 	<!-- Episode -->
 	{#if production._type == 'episode'}
-		<div class="description">
-			<h1 class="jost-74 uppercase">{production.title}</h1>
-			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+		<div class="description noScrollbar">
+			{#if production.topics}
+				<div class="topics jost-12 bold uppercase">
+					{#each production.topics as topic, j}
+						<a class="topic hover-gray" href="/cerca?search={topic.title}">{topic.title}</a>
+					{/each}
+				</div>
+			{/if}
+			<div class="titles">
+				<h1 class="jost-74 uppercase">{production.title}</h1>
+				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Un podcast di</p>
 					{#each production.authors as author, j}
-						<a href="/autori/{author.slug.current}" class="author jost-24">
-							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-							{#if author.name || author.surname}
-								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
-							{:else if author.alias}
-								<h3 class="jost-27">{author.alias}</h3>
-							{/if}
+						<a href="/autori/{author.slug.current}" class="author jost-24 hover-gray">
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder).width(1080)} alt="Ritratto di {formatAuthorName(author)}">
+							<h3 class="jost-27">{formatAuthorName(author)}</h3>
 						</a>
 					{/each}
 				</div>
@@ -135,7 +156,12 @@ let scrollY = $state(0)
 			{#if production.cover}
 				<a class="cover-wrapper" href={production.link} target="_blank" rel="noopener noreferrer">
 					<img class="cover rounded _1-1" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
-					<button class="btn listen">Ascolta</button>
+					<button class="btn listen">
+						<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+						</svg>
+						Ascolta
+					</button>
 				</a>
 			{/if}
 			{#if production.body}
@@ -171,20 +197,25 @@ let scrollY = $state(0)
 
 	<!-- Playlist -->
 	{#if production._type == 'playlist'}
-		<div class="description">
-			<h1 class="jost-74 uppercase">{production.title}</h1>
-			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+		<div class="description noScrollbar">
+			{#if production.topics}
+				<div class="topics jost-12 bold uppercase">
+					{#each production.topics as topic, j}
+						<a class="topic hover-gray" href="/cerca?search={topic.title}">{topic.title}</a>
+					{/each}
+				</div>
+			{/if}
+			<div class="titles">
+				<h1 class="jost-74 uppercase">{production.title}</h1>
+				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Con</p>
 					{#each production.authors as author, j}
-						<a href="/autori/{author.slug.current}" class="author jost-24">
-							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-							{#if author.name || author.surname}
-								<h3 class="jost-27">{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}</h3>
-							{:else if author.alias}
-								<h3 class="jost-27">{author.alias}</h3>
-							{/if}
+						<a href="/autori/{author.slug.current}" class="author jost-24 hover-gray">
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder).width(1080)} alt="Ritratto di {formatAuthorName(author)}">
+							<h3 class="jost-27">{formatAuthorName(author)}</h3>
 						</a>
 					{/each}
 				</div>
@@ -217,10 +248,15 @@ let scrollY = $state(0)
 						>
 							<img class="cover rounded _16-9" src={urlFor(activeVideo.cover ? activeVideo.cover : data.info.placeholder)} alt="">
 							{#if !activeVideoPlay}
-								<span class="btn watch">Guarda</span>
-							{:else if activeVideo.youtubeVideoCode}
-								<iframe class="embed yt"
-								src="https://www.youtube.com/embed/{activeVideo.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1`}"
+								<span class="btn watch">
+									<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+									</svg>
+									Guarda
+								</span>
+							{:else if activeVideo && activeVideo.youtubeVideoCode}
+								<iframe class="embed yt rounded _16-9"
+								src={formatEmbed(activeVideo)}
 								title={activeVideo.title}
 								frameborder="0"
 								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -237,13 +273,38 @@ let scrollY = $state(0)
 							activeVideoIndex = i;
 							activeVideoPlay = false;
 							setTimeout(() => {
-								if (production.videos.length - i > 4) {
-									const offset = scrollY + videos[i].getBoundingClientRect().top - (12*4 + 12*7 - 1);
+								if (production.videos.length - i > 4 || innerWidth <= 800) {
+									const offset = scrollY + videos[i]?.getBoundingClientRect().top - (12*4 + 12*7 - 1);
 									window.scrollTo({ top: offset, behavior: 'smooth' });	
 								}
 							}, 100);
 						}}
 						>
+							{#if innerWidth <= 800 && video.youtubeVideoCode}
+								<div class="mobile-video">
+									<div class="active-video-cover"
+									onclick={() => activeVideoPlayMobileIndex = i}
+									>
+										<img class="cover rounded _16-9" src={urlFor(video.cover ? video.cover : data.info.placeholder)} alt="">
+										{#if activeVideoPlayMobileIndex != i}
+											<span class="btn watch">
+												<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+												</svg>
+												Guarda
+											</span>
+										{:else}
+											<iframe class="embed yt rounded _16-9"
+											src={formatEmbed(video)}
+											title={video.title}
+											frameborder="0"
+											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+											allowfullscreen>
+											</iframe>
+										{/if}
+									</div>
+								</div>
+							{/if}
 							<div class="title">
 								<h2 class="jost-18 uppercase bold">{i+1}. {video.title}</h2>
 								{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
@@ -255,13 +316,7 @@ let scrollY = $state(0)
 										<p class="authors-label">
 											<span>Con</span>
 											{#each video.authors as author, j}
-												<a class="author inline" href="/autori/{author.slug.current}">
-													{#if author.name || author.surname}
-														{author.name}{#if author.surname}{@html ' '}{author.surname}{/if}{#if author.alias}{@html ' '}({author.alias}){/if}
-													{:else if author.alias}
-														{author.alias}
-													{/if}
-												</a>{@html j < video.authors.length - 1  ? ', ' : ''}
+												<a class="author inline hover-gray" href="/autori/{author.slug.current}">{formatAuthorName(author)}</a>{@html j < video.authors.length - 1  ? ', ' : ''}
 											{/each}
 										</p>
 									</div>
@@ -294,16 +349,25 @@ let scrollY = $state(0)
 
 	<!-- Video -->
 	{#if production._type == 'video'}
-		<div class="description">
-			<h1 class="jost-74 uppercase">{production.title}</h1>
-			{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+		<div class="description noScrollbar">
+			{#if production.topics}
+				<div class="topics jost-12 bold uppercase">
+					{#each production.topics as topic, j}
+						<a class="topic hover-gray" href="/cerca?search={topic.title}">{topic.title}</a>
+					{/each}
+				</div>
+			{/if}
+			<div class="titles">
+				<h1 class="jost-74 uppercase">{production.title}</h1>
+				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Con</p>
 					{#each production.authors as author, j}
-						<a href="/autori/{author.slug.current}" class="author jost-24">
-							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-							<h3>{author.name} {author.surname}</h3>
+						<a href="/autori/{author.slug.current}" class="author jost-24 hover-gray">
+							<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder).width(1080)} alt="Ritratto di {formatAuthorName(author)}">
+							<h3>{formatAuthorName(author)}</h3>
 						</a>
 					{/each}
 				</div>
@@ -333,10 +397,15 @@ let scrollY = $state(0)
 					>
 						<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
 						{#if !productionVideoPlay}
-							<span class="btn watch">Guarda</span>
+							<span class="btn watch">
+								<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+								</svg>
+								Guarda
+							</span>
 						{:else if production.youtubeVideoCode}
-							<iframe class="embed yt"
-							src="https://www.youtube.com/embed/{production.youtubeVideoCode}{production.youtubePlaylistCode ? `?list=${production.youtubePlaylistCode}&autoplay=1` : `?autoplay=1&rel=0`}"
+							<iframe class="embed yt rounded _16-9"
+							src={formatEmbed(production)}
 							title="YouTube video with playlist"
 							frameborder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -378,6 +447,14 @@ let scrollY = $state(0)
 	padding-top: calc((var(--margin)*2 + 8rem));
 	padding-bottom: 4rem;
 }
+.topics {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+	column-gap: 1rem;
+	z-index: 1;
+	position: relative;
+}
 .playlist .description {
 	position: relative;
 }
@@ -400,7 +477,7 @@ let scrollY = $state(0)
 }
 .author {
 	display: flex;
-	column-gap: calc(var(--gutter)/2);
+	column-gap: .8rem;
 	align-items: center;
 }
 .author.inline {
@@ -414,14 +491,30 @@ let scrollY = $state(0)
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
+	display: inline-flex;
+	gap: .6em;
+	align-items: center;
 }
-h1 {
+.listen svg, .watch svg {
+	height: 1em;
+	fill: var(--black);
+	width: auto;
+	max-width: unset;
+}
+.listen:hover svg, .watch:hover svg  {
+	fill: var(--white);
+}
+.description h1 {
+	margin-right: var(--margin);
+}
+.description h2 {
 	margin-right: var(--margin);
 }
 .body {
 	margin-top: 3rem;
 	margin-bottom: 4rem;
 	max-width: 700px;
+	padding-right: var(--margin);
 }
 .podcast .cover-wrapper, .episode .cover-wrapper {
 	margin-top: 3rem;
@@ -459,20 +552,92 @@ h1 {
 h4 {
 	margin-bottom: 1rem;
 }
-
+@media screen and (max-width: 800px) {
+	#production {
+		display: flex;
+		flex-direction: column;
+	}
+	.description {
+		top: unset;
+		position: relative;
+		height: auto;
+		display: grid;
+		justify-content: center;
+		grid-template-columns: repeat(1, 1fr);
+	}
+	.description .titles {
+		grid-row: 1;
+	}
+	.description h1, .description h2 {
+		text-align: center;
+		margin-right: unset;
+	}
+	.description .topics {
+		grid-row: 2;
+		margin-bottom: 0;
+		margin-top: 1rem;
+		justify-content: center;
+		text-align: center;
+	}
+	.description .cover-wrapper {
+		grid-row: 3;
+		justify-self: center;
+		max-width: 500px;
+		margin-top: 5rem;
+	}
+	.description .authors {
+		grid-row: 4;
+		margin-top: 2rem;
+	}
+	.description .body {
+		grid-row: 5;
+		margin-top: 4rem;
+	}
+	.body {
+		padding-right: unset;
+	}
+	.playlist .description, .podcast .description {
+		max-height: unset;
+	}
+	.list {
+		padding-top: 0;
+	}
+}
 
 /* Podcast */
 .podcast .episode {
 	display: block;
 	border-top: solid 1px var(--black);
-	padding: 2rem 0;
+	padding: 2rem 20px 4rem 0;
+}
+.podcast .episode h2, .podcast .episode h3 {
+	display: inline;
+}
+.podcast .episode .body {
+	margin-bottom: 0;
+}
+.podcast .episode svg {
+	opacity: 0;
+	display: inline;
+	margin-left: .5rem;
+	height: .7em;
+	width: auto;
 }
 .podcast .episode:hover {
-	opacity: .4;
+	border-right: solid 5px var(--black);
+	padding-right: 15px;
+}
+.podcast .episode:hover svg {
+	opacity: 1;
 }
 .podcast .episode time {
 	display: block;
 	margin: 1rem 0 2rem;
+}
+@media screen and (max-width: 800px) {
+	.podcast .episode {
+		padding-right: 0;
+	}
 }
 
 
@@ -499,7 +664,16 @@ h4 {
 	padding-top: 1rem;
 	padding-bottom: 3rem;
 }
-
+@media screen and (max-width: 800px) {
+	.episode .podcasts {
+		display: grid;
+		grid-template-columns: repeat(2, calc((100% - var(--gutter))/2));
+		column-gap: var(--margin);
+	}
+	.episode .podcasts h4 {
+		grid-column: 1 / span 2;
+	}
+}
 
 
 /* Playlist */
@@ -561,6 +735,58 @@ h4 {
 	height: auto;
 	padding: var(--gutter);
 }
+@media screen and (max-width: 800px) {
+	.playlist .content {
+		grid-column: 1 / span 1;
+		display: flex;
+		flex-direction: column;
+	}
+	.playlist h4 {
+		position: relative;
+		top: unset;
+	}
+	.playlist .titles {
+		border-bottom: solid 1px var(--black);
+		padding-bottom: 6rem;
+	}
+	.playlist .active-video {
+		display: none;
+	}
+	.playlist .videos .mobile-video {
+		margin: 2rem 0;
+	}
+	.playlist .videos .title {
+		padding: 0;
+	}
+	.playlist .videos .item.active .title {
+		background-color: transparent;
+	}
+	.playlist .videos .opener {
+		/* height: auto; */
+		margin-top: 1rem;
+	}
+	.playlist .videos .item.active .opener {
+		/* height: auto; */
+		padding: unset;
+	}
+	.playlist .videos .body {
+		margin-bottom: 0;
+	}
+	.playlist .videos .item {
+		padding-bottom: 6rem;
+	}
+	.playlist .videos .item.active:not(:first-of-type) .title {
+		margin-top: unset;
+	}
+	.playlist .videos .item:not(.active):hover .title {
+		border-right: unset;
+		padding-right: unset;
+		border-radius: unset;
+	}
+	.playlist .videos .item + .item {
+		border-top: solid 1px var(--black);
+	}
+}
 
 /* Video */
 .video .description {
@@ -588,5 +814,15 @@ h4 {
 	display: block;
 	padding-top: 1rem;
 	padding-bottom: 3rem;
+}
+@media screen and (max-width: 800px) {
+	.video .playlists {
+		display: grid;
+		grid-template-columns: repeat(2, calc((100% - var(--gutter))/2));
+		column-gap: var(--margin);
+	}
+	.video .playlists h4 {
+		grid-column: 1 / span 2;
+	}
 }
 </style>

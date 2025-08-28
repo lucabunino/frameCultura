@@ -449,10 +449,10 @@ function onRealIndexChange(e) {
 #highlights {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(1, minmax(300px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
+	grid-template-rows: repeat(1, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
 }
 #highlights.high {
-	grid-template-rows: repeat(2, minmax(300px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
+	grid-template-rows: repeat(2, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
 }
 .highlight {
 	width: 100%;

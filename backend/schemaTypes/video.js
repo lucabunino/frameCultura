@@ -57,13 +57,38 @@ export default {
 			name: 'youtubeVideoCode',
 			title: 'Video Code',
 			type: 'string',
-			validation: (Rule) => Rule.required(),
 			fieldset: 'youtube',
+			validation: (Rule) =>
+				Rule.custom((val, context) => {
+				const { externalLink } = context.document
+				if (!val && !externalLink) {
+					return 'Either a YouTube Video Code or an External Link is required'
+				}
+				return true
+				}),
 		},
 		{
 			name: 'youtubePlaylistCode',
 			title: 'Playlist Code',
 			description: "Required to display the video as part of a Youtube playlist, when loaded in 'Single Video' page",
+			type: 'string',
+			fieldset: 'youtube',
+		},
+		{
+			name: 'externalLink',
+			type: 'url',
+			fieldset: 'youtube',
+			validation: (Rule) =>
+				Rule.custom((val, context) => {
+				const { youtubeVideoCode } = context.document
+				if (!val && !youtubeVideoCode) {
+					return 'Either an External Link or a YouTube Video Code is required'
+				}
+				return true
+				}),
+		},
+		{
+			name: 'externalLinkLabel',
 			type: 'string',
 			fieldset: 'youtube',
 		},

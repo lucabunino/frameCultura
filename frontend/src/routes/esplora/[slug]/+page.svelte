@@ -243,6 +243,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			<div class="content">
 				<h4 class="jost-12 uppercase bold">Episodi</h4>
 				<div class="active-video">
+					{#if activeVideo.youtubeVideoCode}
 						<button class="active-video-cover"
 						onclick={() => activeVideoPlay = true}
 						>
@@ -263,7 +264,18 @@ let activeVideoPlayMobileIndex = $state(null)
 								allowfullscreen>
 								</iframe>
 							{/if}
-					</button>
+						</button>
+					{:else if activeVideo.externalLink}
+						<a class="active-video-cover" href={activeVideo.externalLink} target="_blank" rel="noopener noreferrer">
+							<img class="cover rounded _16-9" src={urlFor(activeVideo.cover ? activeVideo.cover : data.info.placeholder)} alt="">
+							<span class="btn watch">
+								<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+								</svg>
+								{activeVideo.externalLinkLabel ? activeVideo.externalLinkLabel : 'Guarda'}
+							</span>
+						</a>
+					{/if}
 				</div>
 				<div class="list videos">
 					{#each production.videos as video, i}
@@ -392,27 +404,39 @@ let activeVideoPlayMobileIndex = $state(null)
 			{/if}
 			{#if production.cover}
 				<div class="active-video">
-					<button class="active-video-cover"
-					onclick={() => productionVideoPlay = true}
-					>
-						<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
-						{#if !productionVideoPlay}
+					{#if production.youtubeVideoCode}
+						<button class="active-video-cover"
+						onclick={() => productionVideoPlay = true}
+						>
+							<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
+							{#if !productionVideoPlay}
+								<span class="btn watch">
+									<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
+									</svg>
+									Guarda
+								</span>
+							{:else if production.youtubeVideoCode}
+								<iframe class="embed yt rounded _16-9"
+								src={formatEmbed(production)}
+								title="YouTube video with playlist"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+								allowfullscreen>
+								</iframe>
+							{/if}
+						</button>
+					{:else if production.externalLink}
+						<a class="active-video-cover" href={production.externalLink} target="_blank" rel="noopener noreferrer">
+							<img class="cover rounded _16-9" src={urlFor(production.cover ? production.cover : data.info.placeholder)} alt="">
 							<span class="btn watch">
 								<svg width="19" height="15" viewbox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M18.53 7.5 0 15V0l18.53 7.5Z"/>
 								</svg>
-								Guarda
+								{production.externalLinkLabel ? production.externalLinkLabel : 'Guarda'}
 							</span>
-						{:else if production.youtubeVideoCode}
-							<iframe class="embed yt rounded _16-9"
-							src={formatEmbed(production)}
-							title="YouTube video with playlist"
-							frameborder="0"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-							allowfullscreen>
-							</iframe>
-						{/if}
-					</button>
+						</a>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -698,7 +722,7 @@ h4 {
 .playlist .cover {
 	max-height: calc(100vh - (var(--margin)*3 + 8rem));
 	width: 100%;
-	object-fit: contain;
+	object-fit: cover;
 }
 .playlist .videos .item {
 	width: 100%;

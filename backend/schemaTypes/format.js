@@ -1,11 +1,11 @@
-import { TagIcon } from '@sanity/icons'
+import { ListIcon } from '@sanity/icons'
 import RelatedContentInput from './components/RelatedContentInput'
 
 
 export default {
-	name: 'topic',
+	name: 'format',
 	type: 'document',
-	icon: TagIcon,
+	icon: ListIcon,
 	fields: [
 		{
 			name: 'title',

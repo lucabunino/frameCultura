@@ -1,6 +1,5 @@
 <script>
-import { urlFor } from "$lib/utils/image";
-import { slide } from "svelte/transition";
+import Organization from "$lib/components/Organization.svelte";
 let { data } = $props();
 let innerWidth = $state(undefined)
 let activeOrganization = $state(0)
@@ -16,42 +15,25 @@ let activeOrganizationMobile = $state(undefined)
 {/if}
 
 <section id="network">
-	<!-- {#if innerWidth > 800} -->
-		<nav class="navigator">
-			{#each data.network.network as cluster, i}
-				<a class="navigator-item jost-18 uppercase bold" href="#{cluster.slug.current}"
-				class:active={activeOrganization == i}
-				onclick={() => activeOrganization = i}
-				style={`--color: ${cluster.activeColor?.hex}`}
-				>{cluster.title}</a>
-			{/each}
-		</nav>
-		<div class="network">
-			{#each data.network.network as cluster, i}
-				<h4 class="jost-12 uppercase bold" id={cluster.slug.current}>{cluster.title}</h4>
-				<div class="organizations">
-					{#each cluster.organizations as organization, j}
-						<div class="organization">
-							<img class="_1-1" src={urlFor(organization.logo)} alt="">
-							<h2>{organization.title}</h2>
-						</div>
-					{/each}
-				</div>
-			{/each}
-		</div>
-	<!-- {:else}
+	<nav class="navigator">
+		{#each data.network.network as cluster, i}
+			<a class="navigator-item jost-18 uppercase bold" href="#{cluster.slug.current}"
+			class:active={activeOrganization == i}
+			onclick={() => activeOrganization = i}
+			style={`--color: ${cluster.activeColor?.hex}`}
+			>{cluster.title}</a>
+		{/each}
+	</nav>
+	<div class="network">
 		{#each data.network.network as cluster, i}
 			<h4 class="jost-12 uppercase bold" id={cluster.slug.current}>{cluster.title}</h4>
 			<div class="organizations">
 				{#each cluster.organizations as organization, j}
-					<div class="organization">
-						<img class="_1-1" src={urlFor(organization.logo)} alt="">
-						<h2>{organization.title}</h2>
-					</div>
+					<Organization organization={organization}/>
 				{/each}
 			</div>
 		{/each}
-	{/if} -->
+	</div>
 </section>
 
 <style>
@@ -93,16 +75,6 @@ let activeOrganizationMobile = $state(undefined)
 	column-gap: var(--gutter);
 	row-gap: 6rem;
 	align-items: start;
-}
-.organization {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-}
-.organization img {
-	padding: 2rem;
 }
 h4 {
 	flex-basis: 100%;

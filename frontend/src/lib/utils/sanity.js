@@ -187,6 +187,9 @@ export async function getLiveSelection() {
 				topics[]-> {
 					...,
 				},
+				format-> {
+					...,
+				},
 			},
 		}`
 	);
@@ -204,6 +207,9 @@ export async function getLive() {
 		*[_type in ["event", "eventSerie"] && visible == true && !(_id in path('drafts.**'))] {
 			...,
 			topics[]-> {
+				...,
+			},
+			format-> {
 				...,
 			},
 			city-> {

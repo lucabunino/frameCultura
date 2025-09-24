@@ -2,6 +2,7 @@
 import { urlFor } from "$lib/utils/image";
 import { formatDate } from "$lib/utils/date";
 import ProductionsWidget from "$lib/components/ProductionsWidget.svelte";
+import Event from "$lib/components/Event.svelte";
 import { register } from 'swiper/element/bundle';register();
 import { formatAuthorName } from "$lib/utils/author.js";
 
@@ -190,7 +191,7 @@ function onRealIndexChange(e) {
 {/if}
 
 <!-- TODO -->
-<!-- {#if homepage.liveSelection}
+{#if homepage.liveSelection}
 	<section id="live">
 		<h4 class="jost-54 inline-title">Live</h4>{#if homepage.liveIntro}<span class="section-description-inline jost-18">{homepage.liveIntro}</span>{/if}
 		<swiper-container class="events"
@@ -206,26 +207,13 @@ function onRealIndexChange(e) {
 		>
 			{#each homepage.liveSelection as event, i}
 				<swiper-slide>
-					<a class="event" href={`/live/${event.slug.current}`}>
-						{#if event.topics || event.city}
-							<div class="tags">
-								{#each event.topics as topic, j}
-									<button class="tag">{topic.title}</button>
-								{/each}
-								{#if event.city}<button class="tag">{event.city.title}</button>{/if}
-							</div>
-						{/if}
-						<img class="cover _5-7" src={urlFor(event.cover)} alt="">
-						<time class="jost-18" datetime={event.start}>{formatDate(event.start, event.end)}</time>
-						<h2 class="jost-24 uppercase bold">{event.title}</h2>
-						{#if event.subtitle}<h3 class="jost-24 bold">{event.subtitle}</h3>{/if}
-					</a>
+					<Event event={event}/>
 				</swiper-slide>
 			{/each}
 		</swiper-container>
 		<a href="/live" class="btn bg-gray">Vedi tutti</a>
 	</section>
-{/if} -->
+{/if}
 
 {#if homepage.productionsSelection}
 	<section id="productions">
@@ -449,7 +437,6 @@ function onRealIndexChange(e) {
 #highlights {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(1, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
 }
 #highlights.high {
 	grid-template-rows: repeat(2, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
@@ -515,29 +502,6 @@ function onRealIndexChange(e) {
 .events {
 	margin: 2rem calc(var(--margin)*-1) 4rem;
 	display: flex;
-}
-.event {
-	position: relative;
-}
-.event .cover {
-	margin-bottom: 1rem;
-}
-.event:hover {
-	
-}
-.event time {
-	margin-bottom: 1rem;
-	line-height: 1.1;
-	display: block;
-}
-.tags {
-	display: flex;
-	flex-wrap: wrap;
-	max-width: stretch;
-	width: 100%;
-	position: absolute;
-	padding: .4em;
-	gap: .2em;
 }
 
 /* Productions */

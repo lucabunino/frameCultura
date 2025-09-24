@@ -60,6 +60,12 @@ export default {
 			to: [{type: 'city'},],
 		},
 		{
+			name: 'format',
+			type: 'reference',
+			to: [{type: 'format'},],
+			validation: (Rule) => Rule.required(),
+		},
+		{
 			name: 'topics',
 			type: 'array',
 			of: [
@@ -78,6 +84,11 @@ export default {
 			name: 'highlightCover',
 			description: "Aspect ratio 16:9. To be used if the event is selected in 'Live' page",
 			type: 'image',
+		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
 		},
 		body(),
 		...seoFields(),

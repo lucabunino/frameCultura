@@ -1,4 +1,4 @@
-import { EarthGlobeIcon, InfoOutlineIcon, TagsIcon, CalendarIcon, HomeIcon, SchemaIcon, UsersIcon, EditIcon, UserIcon, SparkleIcon, PlayIcon, EnvelopeIcon, FeedbackIcon } from '@sanity/icons'
+import { EarthGlobeIcon, InfoOutlineIcon, TagsIcon, CalendarIcon, HomeIcon, SchemaIcon, UsersIcon, EditIcon, UserIcon, SparkleIcon, PlayIcon, EnvelopeIcon, FeedbackIcon, ListIcon } from '@sanity/icons'
 
 export const myStructure = (S, context) => {
 	const entities = [
@@ -96,6 +96,9 @@ export const myStructure = (S, context) => {
 		S.documentTypeListItem('topic')
 			.icon(TagsIcon)
 			.title('Topics'),
+		S.documentTypeListItem('format')
+			.icon(ListIcon)
+			.title('Formats'),
 		S.documentTypeListItem('city')
 			.title('Cities'),
 		S.divider(),

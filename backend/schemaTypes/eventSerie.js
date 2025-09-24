@@ -60,6 +60,17 @@ export default {
 			to: [{type: 'city'},],
 		},
 		{
+			name: 'formats',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'format'},],
+				}
+			],
+			validation: (Rule) => Rule.required(),
+		},
+		{
 			name: 'topics',
 			type: 'array',
 			of: [
@@ -83,6 +94,11 @@ export default {
 			name: 'horizontalCover',
 			description: 'Aspect ratio 21:9. To be used in single page',
 			type: 'image',
+		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
 		},
 		body(),
 		{

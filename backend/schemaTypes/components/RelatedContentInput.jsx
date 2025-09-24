@@ -4,7 +4,7 @@ import { useClient, useFormValue } from 'sanity'
 export default function RelatedContentInput(props) {
 	const client = useClient({ apiVersion: '2025-01-01' })
 
-	// Get the current topic's _id
+	// Get the current item's _id
 	const docId = useFormValue(['_id'])
 	const [items, setItems] = useState([])
 
@@ -12,7 +12,7 @@ export default function RelatedContentInput(props) {
 		if (!docId) return
 		const cleanId = docId.replace(/^drafts\./, '') // strip "drafts." if present
 		const query = `
-		*[_type in ["video","playlist","episode","podcast"] && references($id)]{
+		*[_type in ["video","playlist","episode","podcast","event","eventSerie"] && references($id)]{
 			_id,
 			_type,
 			title
@@ -30,7 +30,7 @@ export default function RelatedContentInput(props) {
 		<div>
 		{items.length === 0 ? (
 			<p style={{ fontStyle: 'italic', color: '#666' }}>
-			No content currently references this topic.
+			No content currently references this item.
 			</p>
 		) : (
 			<ul>

@@ -176,7 +176,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <!-- Main -->
 {#key data.pathname + cookieAccepted}
-	<main class:marginTop={!page.url.pathname.includes("/esplora")}>
+	<main class:marginTop={!header.inverted}>
 		{@render children()}
 	</main>
 {/key}

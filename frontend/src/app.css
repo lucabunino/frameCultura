@@ -337,6 +337,9 @@ a:any-link.underline,
 	display: inline-block;
 	letter-spacing: .03em;
 }
+.tag:hover {
+	background-color: var(--gray);
+}
 .portrait {
 	border-radius: 100%;
     aspect-ratio: 1;

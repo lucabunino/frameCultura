@@ -10,7 +10,7 @@ export async function load({ url }) {
 	const { pathname } = url
 	const searchTopics = url.searchParams.getAll('topic');
 	const searchString = url.searchParams.get('search');
-	if (info, seo, policies, pathname, exploreHasContent, liveHasContent) {
+	if (info, seo, policies, pathname) {
 		return {
 			info,
 			seo,

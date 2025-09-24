@@ -12,6 +12,7 @@ import event from './event'
 import eventSerie from './eventSerie'
 import person from './person'
 import topic from './topic'
+import format from './format'
 import city from './city'
 import organization from './organization'
 import info from './info'
@@ -33,6 +34,7 @@ export const schemaTypes = [
 	eventSerie,
 	person,
 	topic,
+	format,
 	city,
 	organization,
 	info,

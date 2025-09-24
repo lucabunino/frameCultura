@@ -1,7 +1,7 @@
 <script>
 import { onDestroy, onMount } from 'svelte';
 import { PortableText } from '@portabletext/svelte'
-import PolicyTextStyle from "$lib/components/portableTextStyles/PolicyTextStyle.svelte";
+import PlainTextStyle from "$lib/components/portableTextStyles/PlainTextStyle.svelte";
 
 import { getTags } from '$lib/stores/tag.svelte.js';
 let tagger = getTags()
@@ -30,12 +30,12 @@ onDestroy(() => {
 			value={data.policy.body}
 			components={{
 			block: {
-				normal: PolicyTextStyle,
-				h3: PolicyTextStyle,
+				normal: PlainTextStyle,
+				h3: PlainTextStyle,
 			},
-			listItem: PolicyTextStyle,
+			listItem: PlainTextStyle,
 			marks: {
-				link: PolicyTextStyle,
+				link: PlainTextStyle,
 			},
 			}}/>
 		</div>

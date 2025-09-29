@@ -2,8 +2,10 @@
 import { urlFor } from '$lib/utils/image';
 import { page, navigating } from '$app/state';
 import { formatAuthorName } from '$lib/utils/author.js';
+import Event from '$lib/components/Event.svelte';
+import SearchBar from '$lib/components/SearchBar.svelte';
 let { data } = $props();
-
+$inspect(data)
 let innerWidth = $state(undefined)
 let showAllAuthors = $state(false)
 let showAllExplore = $state(false)
@@ -24,26 +26,12 @@ $effect(() => {
 <div class="wrapper">
 	<section id="intro">
 		<h1 class="jost-27">
-			{#if data.authors.length > 0 || data.explore.length > 0}
+			{#if data.authors.length > 0 || data.explore.length > 0 || data.live.length > 0}
 				Risultati per
 			{:else}
 				Nessun risultato per
 			{/if}
-			<form id="search-bar">
-				<input type="text" name="search" id="search" class="jost-27 bold" bind:value={search}>
-				<button type="submit" id="search-submit">
-					<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<g clip-path="url(#a)">
-							<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063a5.103 5.103 0 0 0 .835 2.813L0 11.57 1.417 13l3.687-3.688c.807.547 1.78.869 2.826.874 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.113a3.073 3.073 0 0 1-3.094-3.05h-.004A3.089 3.089 0 0 1 7.93 1.955a3.072 3.072 0 0 1 3.068 3.05A3.073 3.073 0 0 1 7.96 8.113Z" fill="#000"/>
-						</g>
-						<defs>
-							<clipPath id="a">
-								<path fill="#fff" d="M0 0h13v13H0z"/>
-							</clipPath>
-						</defs>
-					</svg>
-				</button>
-			</form>
+			<SearchBar search={search} fullWidth={true} small={false} mobileAnchorBottom={false} placeholder={"Tutti i contenuti"}/>
 		</h1>
 	</section>
 	<section id="authors">
@@ -53,8 +41,10 @@ $effect(() => {
 				{#each showAllAuthors || innerWidth > 800 ? data.authors : data.authors.slice(0, 10) as author, i}
 					<a class="author hover-gray" href={`/autori/${author.slug.current}`}>
 						<img class="portrait" src={urlFor(author.portrait ? author.portrait : data.info.placeholder)} alt="">
-						<h2 class="jost-18">{formatAuthorName(author)}</h2>
-						<!-- {#if author.occupation}<h3 class="jost-15">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if} -->
+						<div>
+							<h2 class="jost-18">{formatAuthorName(author)}</h2>
+							{#if author.occupation}<h3 class="jost-12">{author.occupation[0].toUpperCase() + author.occupation.slice(1)}</h3>{/if}
+						</div>
 					</a>
 				{/each}
 			</div>
@@ -103,6 +93,25 @@ $effect(() => {
 				<p class="explore noResults jost-18">Nessuna produzione</p>
 			{/if}
 		</section>
+		<section id="live">
+			<h4 class="jost-12 uppercase bold">Live ({data.live.length})</h4>
+			{#if data.live.length > 0}
+				<div class="live">
+					{#each showAllLive ? data.live : data.live.slice(0, 10) as event, i}
+						<Event event={event}/>
+					{/each}
+				</div>
+				{#if data.live.length > 10}
+					{#if !showAllLive}
+						<button class="btn bg-gray mobile-w-100" onclick={(e) => {showAllLive = true}}>Mostra tutto</button>
+					{:else}
+						<button class="btn bg-gray mobile-w-100" onclick={(e) => {showAllLive = false}}>Mostra meno</button>
+					{/if}
+				{/if}
+			{:else}
+				<p class="live noResults jost-18">Nessun evento</p>
+			{/if}
+		</section>
 	</div>
 </div>
 
@@ -110,12 +119,12 @@ $effect(() => {
 .wrapper {
 	padding: var(--margin);
 	display: grid;
-	grid-template-columns:repeat(10, 1fr);
+	grid-template-columns:repeat(12, 1fr);
 	column-gap: var(--gutter);
 	row-gap: 4rem;
 }
 .explore-live-wrapper {
-	grid-column: 3 / span 8;
+	grid-column: 4 / span 9;
 	display: flex;
 	flex-direction: column;
 	gap: 12rem;
@@ -126,12 +135,12 @@ section h4 {
 }
 @media only screen and (max-width: 1280px) {
 	.explore-live-wrapper {
-		grid-column: 4 / span 7;
+		grid-column: 5 / span 8;
 	}
 }
 @media only screen and (max-width: 1080px) {
 	.explore-live-wrapper {
-		grid-column: 5 / span 6;
+		grid-column: 6 / span 7;
 	}
 }
 @media only screen and (max-width: 800px) {
@@ -139,7 +148,7 @@ section h4 {
 		margin-bottom: 12rem;
 	}
 	.explore-live-wrapper {
-		grid-column: 1 / span 10;
+		grid-column: 1 / span 12;
 	}
 }
 
@@ -147,31 +156,23 @@ section h4 {
 #intro {
 	text-align: center;
 	margin-bottom: 4rem;
-	grid-column: 1 / span 10;
+	grid-column: 1 / span 12;
 }
-
-/* Search */
-#search-bar {
-	display: inline;
-	justify-self: center;
-	border-bottom: solid 1px var(--black);
-	padding-bottom: .3rem;
-	margin-bottom: calc((var(--margin)*2 + 4rem));
+#intro h1 {
+	display: flex;
+	gap: var(--gutter);
+	align-items: center;
+	justify-content: center;
 }
-input::placeholder {
-	color: var(--black);
-}
-#search {
-	width: 250px;
-	border: none;
-}
-#search-submit svg {
-	fill: var(--black);
+@media only screen and (max-width: 800px) {
+	#intro h1 {
+		flex-direction: column;
+	}
 }
 
 /* Authors */
 #authors {
-	grid-column: 1 / span 2;
+	grid-column: 1 / span 3;
 	position: sticky;
 	top: calc((var(--margin)*2 + 5.7rem));
 	height: calc(100vh - ((var(--margin)*2 + 5.7rem)));
@@ -184,6 +185,7 @@ input::placeholder {
 	height: 100%;
 	overflow-y: auto;
 	padding: 2rem 0 8rem;
+	margin-top: .5px;
 }
 .author {
 	display: flex;
@@ -194,24 +196,24 @@ input::placeholder {
 	line-height: 1.05;
 }
 .author h3 {
-	margin-top: .5rem;
+	margin-top: .4rem;
 }
 .author .portrait {
-	width: 3rem;
+	width: 6rem;
 }
 @media only screen and (max-width: 1280px) {
-	#authors {
-		grid-column: 1 / span 3;
-	}
-}
-@media only screen and (max-width: 1080px) {
 	#authors {
 		grid-column: 1 / span 4;
 	}
 }
+@media only screen and (max-width: 1080px) {
+	#authors {
+		grid-column: 1 / span 5;
+	}
+}
 @media only screen and (max-width: 800px) {
 	#authors {
-		grid-column: 1 / span 10;
+		grid-column: 1 / span 12;
 		position: relative;
 		height: auto;
 		top: unset;
@@ -227,9 +229,9 @@ input::placeholder {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	column-gap: var(--gutter);
-	row-gap: 4rem;
+	row-gap: 2rem;
 	padding-top: 2rem;
-	margin-bottom: 8rem;
+	margin-bottom: 4rem;
 }
 .production h2, .production h3 {
 	line-height: 1.05;
@@ -256,12 +258,46 @@ input::placeholder {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
+@media only screen and (max-width: 400px) {
+	.explore {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
 
 /* Live */
-/* -- */
+.live {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	column-gap: var(--gutter);
+	row-gap: 4rem;
+	padding-top: 2rem;
+	margin-bottom: 8rem;
+}
+@media screen and (max-width: 1536px) {
+	.live {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+@media screen and (max-width: 1280px) {
+	.live {
+		grid-template-columns: repeat(2, 1fr);
+		margin-bottom: 4rem;
+	}
+}
+@media screen and (max-width: 800px) {
+	.live {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
 
 /* Overwrite */
 .noResults {
 	grid-template-columns: repeat(1, 1fr);
+}
+@media screen and (max-width: 800px) {
+	.btn {
+		width: stretch;
+		text-align: center;
+	}
 }
 </style>

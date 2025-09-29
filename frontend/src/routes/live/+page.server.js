@@ -1,13 +1,24 @@
-import { getLiveSelection, getLive } from '$lib/utils/sanity';
+import { getLiveSelection, getLive, getLiveTopics, getLiveFormats, getLiveCities } from '$lib/utils/sanity';
 import { error } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ url }) {
 	const liveSelection = await getLiveSelection();
-	const live = await getLive();
-	if (liveSelection && live) {
+	const topics = await getLiveTopics();
+	const formats = await getLiveFormats();
+	const cities = await getLiveCities();
+	const searchFormats = url.searchParams.get('format');
+	const searchCity = url.searchParams.get('city');
+	const searchTopic = url.searchParams.get('topic');
+	const searchString = url.searchParams.get('search');
+	const live = await getLive(searchFormats, searchCity, searchTopic, searchString);
+	if (liveSelection && live && topics && formats) {
 		return {
 			liveSelection: liveSelection.liveSelection,
+			liveIntro: liveSelection.liveIntro,
 			live,
+			topics,
+			formats,
+			cities
 		};
 	}
 	throw error(404, 'Not found');

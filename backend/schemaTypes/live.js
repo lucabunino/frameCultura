@@ -12,6 +12,11 @@ export default {
 			hidden: true,
 		},
 		{
+			name: 'liveIntro',
+			type: 'text',
+			rows: 2,
+		},
+		{
 			name: 'liveSelection',
 			title: 'Selection',
 			type: 'array',
@@ -21,6 +26,11 @@ export default {
 					to: [{type: 'event'},{type: 'eventSerie'}],
 				}
 			],
+		},
+		{
+			name: 'liveWidget',
+			type: 'reference',
+			to: [{ type: 'eventLive' }],
 		},
 	],
 };

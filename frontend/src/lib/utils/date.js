@@ -11,11 +11,10 @@ export function formatDate(startStr, endStr) {
 		`${pad(date.getDate())}.${pad(date.getMonth() + 1)}`;
 	const formatTime = (date) => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
-	// ✅ Check time presence in original string
-	const hasTime = (str) => typeof str === 'string' && str.includes('T');
+	const hasRealTime = (date) => date && (date.getHours() !== 0 || date.getMinutes() !== 0);
 
-	const hasStartTime = hasTime(startStr);
-	const hasEndTime = hasTime(endStr);
+	const startHasTime = hasRealTime(start);
+	const endHasTime = hasRealTime(end);
 
 	const sameDay =
 		end &&
@@ -32,17 +31,17 @@ export function formatDate(startStr, endStr) {
 
 	// No end date
 	if (!end) {
-		if (hasStartTime) {
-			return `${formatDate(start)} alle ${formatTime(start)}`;
-		}
+		if (startHasTime) return `${formatDate(start)} alle ${formatTime(start)}`;
 		return formatDate(start);
 	}
 
 	// Same day
 	if (sameDay) {
-		if (hasStartTime && hasEndTime) {
+		if (!startHasTime && endHasTime) {
+			return `${formatDate(start)} fino alle ${formatTime(end)}`;
+		} else if (startHasTime && endHasTime) {
 			return `${formatDate(start)} dalle ${formatTime(start)} alle ${formatTime(end)}`;
-		} else if (hasStartTime) {
+		} else if (startHasTime) {
 			return `${formatDate(start)} alle ${formatTime(start)}`;
 		} else {
 			return formatDate(start);
@@ -50,7 +49,7 @@ export function formatDate(startStr, endStr) {
 	}
 
 	// Date range without times
-	if (!hasStartTime && !hasEndTime) {
+	if (!startHasTime && !endHasTime) {
 		if (sameMonth) {
 			return `${pad(start.getDate())}-${pad(end.getDate())}.${pad(start.getMonth() + 1)}.${start.getFullYear()}`;
 		} else if (sameYear) {
@@ -60,6 +59,13 @@ export function formatDate(startStr, endStr) {
 		}
 	}
 
-	// Date range with times — fallback format
-	return `Dal ${formatDate(start)}${hasStartTime ? ' alle ' + formatTime(start) : ''} al ${formatDate(end)}${hasEndTime ? ' alle ' + formatTime(end) : ''}`;
+	// Date range with times
+	return `Dal ${formatDate(start)}${startHasTime ? ' alle ' + formatTime(start) : ''} al ${formatDate(end)}${endHasTime ? ' alle ' + formatTime(end) : ''}`;
+}
+
+export function isPast(datetime) {
+	if (!datetime) return false;
+	var now = new Date();
+	var start = new Date(datetime);
+	return now >= start;
 }

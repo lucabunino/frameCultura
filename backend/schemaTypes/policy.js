@@ -30,8 +30,8 @@ export default {
 					type: 'block',
 					styles: [
 						{value: 'normal', title: 'Normal'},
+						{value: 'h2', title: 'H2'},
 						{value: 'h3', title: 'H3'},
-						{value: 'h4', title: 'H4'},
 					],
 					lists: [
 						{title: 'Bullet', value: 'bullet'},

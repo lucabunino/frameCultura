@@ -29,6 +29,8 @@ export const myStructure = (S, context) => {
 			.title('Events'),
 		S.documentTypeListItem('eventSerie')
 			.title('Event Series'),
+		S.documentTypeListItem('eventLive')
+			.title('Event Lives'),
 		S.divider(),
 		S.listItem()
 			.title('People')

@@ -20,21 +20,34 @@ let {style, listItem, markDefs} = $derived(value);
 	<p>{@render children()}</p>
 {:else if listItem == 'bullet'}
 	<li>{@render children()}</li>
+{:else if style=== 'h2'}
+	<h2 class="jost-21 uppercase bold">{@render children()}</h2>
 {:else if style=== 'h3'}
 	<h3 class="jost-12 uppercase bold">{@render children()}</h3>
+{:else if style=== 'h4'}
+	<p class="jost-36">{@render children()}</p>
 {/if}
 <style>
 p {
 	flex-basis: 100%;
 }
+:global(.body p:not(:first-child)) {
+	margin-top: 1rem;
+}
 .link {
 	text-decoration: underline;
 	cursor: pointer;
 }
-h3 {
+h2, h3 {
 	flex-basis: 100%;
 	margin-top: 4rem;
 	margin-bottom: 2rem;
+}
+:global(.body .jost-36:not(:first-child)) {
+	margin-top: 3rem;
+}
+.jost-36 {
+	margin-bottom: 3rem;
 }
 li {
 	padding: 0;

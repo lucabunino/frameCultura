@@ -1,36 +1,19 @@
 <script>
-import { onDestroy, onMount } from 'svelte';
 import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from "$lib/components/portableTextStyles/PlainTextStyle.svelte";
-
-import { getTags } from '$lib/stores/tag.svelte.js';
-let tagger = getTags()
-
-import { getHeader } from '$lib/stores/header.svelte.js';
-let header = getHeader()
-
-// Variables
 let { data } = $props()
-
-onMount(() => {
-	header.setBlurred(true);
-	tagger.setMaxTags(0)
-});
-
-onDestroy(() => {
-	tagger.setMaxTags(tagger.firstMaxTags)
-});
 </script>
 
 <section id="policy">
-	{#if data.policy.title}<h1 class="gaisyr-34 mobile-gaisyr-30">{data.policy.title}</h1>{/if}
+	{#if data.policy.title}<h1 class="jost-74">{data.policy.title}</h1>{/if}
 	{#if data.policy.body}
-		<div>
+		<div class="body jost-21">
 			<PortableText
 			value={data.policy.body}
 			components={{
 			block: {
 				normal: PlainTextStyle,
+				h2: PlainTextStyle,
 				h3: PlainTextStyle,
 			},
 			listItem: PlainTextStyle,
@@ -44,16 +27,10 @@ onDestroy(() => {
 
 <style>
 #policy {
-	padding: var(--gutter);
+	padding: var(--margin);
 	max-width: 800px;
-	padding-top: 6rem;
 }
 h1 {
-	margin-bottom: 1rem;
-}
-@media screen and (max-width: 700px) {
-	#policy {
-		padding: calc(var(--gutter)*2.4) var(--gutter) 0;
-	}
+	margin-bottom: 2rem;
 }
 </style>

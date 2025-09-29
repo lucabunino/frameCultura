@@ -34,7 +34,6 @@ let activeVideoPlayMobileIndex = $state(null)
 <svelte:window bind:scrollY bind:innerWidth></svelte:window>
 
 <section id="production" class={production._type}>
-
 	<!-- Podcast -->
 	{#if production._type == 'podcast'}
 		<div class="description noScrollbar">
@@ -80,7 +79,9 @@ let activeVideoPlayMobileIndex = $state(null)
 					components={{
 					block: {
 						normal: PlainTextStyle,
+						h2: PlainTextStyle,
 						h3: PlainTextStyle,
+						h4: PlainTextStyle,
 					},
 					listItem: PlainTextStyle,
 					marks: {
@@ -111,7 +112,9 @@ let activeVideoPlayMobileIndex = $state(null)
 								components={{
 								block: {
 									normal: PlainTextStyle,
+									h2: PlainTextStyle,
 									h3: PlainTextStyle,
+									h4: PlainTextStyle,
 								},
 								listItem: PlainTextStyle,
 								marks: {
@@ -171,7 +174,9 @@ let activeVideoPlayMobileIndex = $state(null)
 					components={{
 					block: {
 						normal: PlainTextStyle,
+						h2: PlainTextStyle,
 						h3: PlainTextStyle,
+						h4: PlainTextStyle,
 					},
 					listItem: PlainTextStyle,
 					marks: {
@@ -229,7 +234,9 @@ let activeVideoPlayMobileIndex = $state(null)
 					components={{
 					block: {
 						normal: PlainTextStyle,
+						h2: PlainTextStyle,
 						h3: PlainTextStyle,
+						h4: PlainTextStyle,
 					},
 					listItem: PlainTextStyle,
 					marks: {
@@ -342,7 +349,9 @@ let activeVideoPlayMobileIndex = $state(null)
 										components={{
 										block: {
 											normal: PlainTextStyle,
+											h2: PlainTextStyle,
 											h3: PlainTextStyle,
+											h4: PlainTextStyle,
 										},
 										listItem: PlainTextStyle,
 										marks: {
@@ -393,7 +402,9 @@ let activeVideoPlayMobileIndex = $state(null)
 					components={{
 					block: {
 						normal: PlainTextStyle,
+						h2: PlainTextStyle,
 						h3: PlainTextStyle,
+						h4: PlainTextStyle,
 					},
 					listItem: PlainTextStyle,
 					marks: {
@@ -469,6 +480,7 @@ let activeVideoPlayMobileIndex = $state(null)
 	top: 0;
 	height: fit-content;
 	padding-top: calc((var(--margin)*2 + 8rem));
+	padding-top: var(--margin);
 	padding-bottom: 4rem;
 }
 .topics {
@@ -564,6 +576,7 @@ let activeVideoPlayMobileIndex = $state(null)
 .list {
 	grid-column: 7 / span 4;
 	padding: calc((var(--margin)*2 + 8rem)) 0 2rem;
+	padding: var(--margin) 0 2rem;
 }
 .playlist .list {
 	padding: 0;

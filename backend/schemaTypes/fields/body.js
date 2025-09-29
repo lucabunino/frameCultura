@@ -7,8 +7,10 @@ export default function body({ group = undefined } = {}) {
 			{
 				type: 'block',
 				styles: [
+					{ value: 'h2', title: 'H2' },
+					{ value: 'h3', title: 'H3' },
+					{ value: 'h4', title: 'Big' },
 					{ value: 'normal', title: 'Normal' },
-					{ value: 'h3', title: 'Title' },
 				],
 				lists: [
 					{title: 'Bullet', value: 'bullet'}

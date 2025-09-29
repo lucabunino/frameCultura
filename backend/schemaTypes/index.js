@@ -10,6 +10,7 @@ import video from './video'
 import playlist from './playlist'
 import event from './event'
 import eventSerie from './eventSerie'
+import eventLive from './eventLive'
 import person from './person'
 import topic from './topic'
 import format from './format'
@@ -32,6 +33,7 @@ export const schemaTypes = [
 	playlist,
 	event,
 	eventSerie,
+	eventLive,
 	person,
 	topic,
 	format,

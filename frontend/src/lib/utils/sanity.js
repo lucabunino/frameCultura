@@ -24,56 +24,33 @@ export async function getSeo() {
 }
 export async function getInfo() {
 	return await client.fetch(`
-		*[_type == "info" && !(_id in path('drafts.**'))][0] {
-			...,
-		}`
+		*[_type == "info" && !(_id in path('drafts.**'))][0] { ... }`
 	);
 }
 export async function getPolicies() {
 	return await client.fetch(`
-		*[_type == "policy" && !(_id in path('drafts.**'))] {
-			...,
-		}`
+		*[_type == "policy" && !(_id in path('drafts.**'))] { ... }`
 	);
 }
 export async function getPolicy(slug) {
 	return await client.fetch(`
-		*[_type == "policy" && kind == $slug && !(_id in path('drafts.**'))][0] {
-			...,
-		}`, { slug });
+		*[_type == "policy" && kind == $slug && !(_id in path('drafts.**'))][0] { ... }`, { slug });
 }
 export async function getHomepage() {
 	return await client.fetch(`
-		*[_type == "homepage" && !(_id in path('drafts.**'))][0] {
-			...,
-			highlights[] {
-				...,
-				ctaReference-> {
-					...,
-				}
+		*[_type == "homepage" && !(_id in path('drafts.**'))][0] { ...,
+			highlights[] { ...,
+				ctaReference-> { ... }
 			},
-			liveSelection[]-> {
-				title,
-				subtitle,
-				slug,
-				start,
-				end,
-				cover,
-				topics[]-> {
-					...,
-				},
-				city-> {
-					...,
-				}
+			liveSelection[]-> { ...,
+				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				format-> { ... },
+				topics[]-> { ... },
+				city-> { ... }
 			},
-			productionsSelection[]-> {
-				...,
-			},
-			authorsSelection[]-> {
-				...,
-				highlightedContents[]-> {
-					...,
-				}
+			productionsSelection[]-> { ... },
+			authorsSelection[]-> { ...,
+				highlightedContents[]-> { ... }
 			},
 		}`
 	);
@@ -101,7 +78,7 @@ export async function getExploreHasContent() {
 	`);
 	return result?.hasContent ?? false;
 }
-export async function getExplore(formats = [], topic = null, search) {
+export async function getExplore(medias = [], topic = null, search) {
   const hasSearch = Boolean(search && search.trim());
   const searchWildcard = hasSearch ? `*${search}*` : null;
   const baseQuery = `
@@ -109,7 +86,7 @@ export async function getExplore(formats = [], topic = null, search) {
       _type in ["episode", "podcast", "video", "playlist"]
       && !(_id in path('drafts.**'))
       && visible == true
-      ${formats?.length ? `&& _type in $formats` : ``}
+      ${medias?.length ? `&& _type in $medias` : ``}
       ${topic ? `&& count(topics[@->slug.current == $topic]) > 0` : ``}
       ${hasSearch ? `
         && (
@@ -128,15 +105,14 @@ export async function getExplore(formats = [], topic = null, search) {
           episodes[]->body[].children[].text match $search
         )
       ` : ``}
-    ]{
-      ...,
+    ]{ ...,
       authors[]->{ ... },
       topics[]->{ ... }
     } | order(hierarchy desc, date desc, title asc)
   `;
-  return client.fetch(baseQuery, { formats, topic, search: searchWildcard });
+  return client.fetch(baseQuery, { medias, topic, search: searchWildcard });
 }
-export async function getTopics() {
+export async function getExploreTopics() {
 	return await client.fetch(`
 		*[
 			_type == "topic"
@@ -151,45 +127,27 @@ export async function getTopics() {
 }
 export async function getProduction(slug) {
 	return await client.fetch(`
-		*[_type in ["episode", "podcast", "video", "playlist"] && slug.current == $slug][0] {
-			...,
-			topics[]-> {
-				...,
+		*[_type in ["episode", "podcast", "video", "playlist"] && slug.current == $slug][0] { ...,
+			topics[]-> { ... },
+			authors[]-> { ... },
+			episodes[]-> { ...,
+				authors[]-> { ... },
 			},
-			authors[]-> {
-				...,
+			videos[]-> { ...,
+				authors[]-> { ... },
 			},
-			episodes[]-> {
-				...,
-				authors[]-> {
-					...,
-				},
-			},
-			videos[]-> {
-				...,
-				authors[]-> {
-					...,
-				},
-			},
-			"podcasts": *[_type == "podcast" && references(^._id)]{
-				...,
-			},
-			"playlists": *[_type == "playlist" && references(^._id)]{
-				...,
-			},
+			"podcasts": *[_type == "podcast" && references(^._id)]{ ... },
+			"playlists": *[_type == "playlist" && references(^._id)]{ ... },
 		}`, { slug });
 }
 export async function getLiveSelection() {
 	return await client.fetch(`
 		*[_type == "live" && !(_id in path('drafts.**'))][0] {
-			liveSelection[]-> {
-				...,
-				topics[]-> {
-					...,
-				},
-				format-> {
-					...,
-				},
+			liveIntro,
+			liveSelection[]-> { ...,
+				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				topics[]-> { ... },
+				format-> { ... },
 			},
 		}`
 	);
@@ -202,24 +160,104 @@ export async function getLiveHasContent() {
 	`);
 	return result?.hasContent ?? false;
 }
-export async function getLive() {
+export async function getLiveTopics() {
 	return await client.fetch(`
-		*[_type in ["event", "eventSerie"] && visible == true && !(_id in path('drafts.**'))] {
-			...,
-			topics[]-> {
-				...,
+		*[
+			_type == "topic"
+			&& !(_id in path('drafts.**'))
+			&& _id in *[
+				_type in ["event", "eventSerie"]
+				&& !(_id in path('drafts.**'))
+				&& visible == true
+			].topics[]._ref
+		] | order(title asc)
+	`);
+}
+export async function getLiveFormats() {
+	return await client.fetch(`
+		*[
+		_type == "format"
+		&& !(_id in path('drafts.**'))
+		&& _id in *[
+			_type in ["event", "eventSerie"]
+			&& !(_id in path('drafts.**'))
+			&& visible == true
+		].format._ref
+		] | order(title asc)
+	`);
+}
+export async function getLiveCities() {
+	return await client.fetch(`
+		*[
+		_type == "city"
+		&& !(_id in path('drafts.**'))
+		&& _id in *[
+			_type in ["event", "eventSerie"]
+			&& !(_id in path('drafts.**'))
+			&& visible == true
+		].city._ref
+		] | order(title asc)
+	`);
+}
+export async function getLive(format = null, city = null, topic = null, search) {
+	const hasSearch = Boolean(search && search.trim());
+  	const searchWildcard = hasSearch ? `*${search}*` : null;
+	const baseQuery = `
+		*[_type in ["event", "eventSerie"]
+		&& visible == true
+		&& !(_id in path('drafts.**'))
+		${format ? `&& format->slug.current == $format` : ``}
+  		${city ? `&& city->slug.current == $city` : ``}
+		${topic ? `&& count(topics[@->slug.current == $topic]) > 0` : ``}
+		${hasSearch ? `
+			&& (
+				title match $search ||
+				subtitle match $search ||
+				body[].children[].text match $search ||
+				people.clusters[].people[].person->name match $search ||
+				people.clusters[].people[].person->surname match $search ||
+				people.clusters[].people[].person->alias match $search ||
+				topics[]->title match $search ||
+				format->title match $search ||
+				city->title match $search
+			)
+		` : ``}
+		] { ...,
+			"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+			topics[]-> { ... },
+			format-> { ... },
+			city-> { ... },
+			authors[]-> { ... },
+		} | order(hierarchy desc, start desc, title asc)
+	`;
+	return client.fetch(baseQuery, { format, city, topic, search: searchWildcard });
+}
+export async function getEvent(slug) {
+	return await client.fetch(`
+		*[_type in ["event", "eventSerie"] && visible == true && slug.current == $slug][0] { ...,
+			people {
+				clusters[] { ...,
+					people[]->{...}
+				}
 			},
-			format-> {
-				...,
+			organizations {
+				clusters[] { ...,
+					organizations[]->{...}
+				}
 			},
-			city-> {
-				...,
+			events[]-> {...,
+				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				topics[]-> { ... },
+				format-> { ... },
+				city-> { ... },
+				authors[]-> { ... },
 			},
-			authors[]-> {
-				...,
-			},
-		}|order(hierarchy desc)`
-	);
+			topics[]-> { ... },
+			format-> { ... },
+			city-> { ... },
+			authors[]-> { ... },
+			live-> { ... },
+		}`, { slug });
 }
 export async function getAuthors(search) {
   const hasSearch = Boolean(search && search.trim());
@@ -251,45 +289,29 @@ export async function getAuthors(search) {
 
 export async function getAuthor(slug) {
 	return await client.fetch(`
-		*[_type == "person" && isAuthor == true && slug.current == $slug][0] {
-			...,
-			highlightedContents[]-> {
-				...,
-				authors[]-> {
-					...,
-				},
+		*[_type == "person" && isAuthor == true && slug.current == $slug][0] { ...,
+			highlightedContents[]-> { ...,
+				authors[]-> { ... },
 			},
-			"audios": *[(_type in ["episode", "podcast"]) && references(^._id) && visibleAuthor == true] {
-				...,
-				authors[]-> {
-					...,
-				},
+			"audios": *[(_type in ["episode", "podcast"]) && references(^._id) && visibleAuthor == true] { ...,
+				authors[]-> { ... },
 			},
-			"videos": *[(_type in ["video", "playlist"]) && references(^._id) && visibleAuthor == true] {
-				...,
-				authors[]-> {
-					...,
-				},
+			"videos": *[(_type in ["video", "playlist"]) && references(^._id) && visibleAuthor == true] { ...,
+				authors[]-> { ... },
 			}
 		}`, { slug });
 }
 export async function getTeamMember(slug) {
 	return await client.fetch(`
-		*[_type == "person" && isTeam == true && slug.current == $slug][0] {
-			...,
-		}`, { slug });
+		*[_type == "person" && isTeam == true && slug.current == $slug][0] { ..., }`, { slug });
 }
 export async function getAbout() {
 	return await client.fetch(`
-		*[_type == "about" && !(_id in path('drafts.**'))][0] {
-			...,
-			body[]{
-				...,
+		*[_type == "about" && !(_id in path('drafts.**'))][0] { ...,
+			body[]{ ...,
 				_type match "person*" => {
 					_type,
-					"person": @->{
-						...,
-					}
+					"person": @->{ ... }
 				}
 			}
 		}`
@@ -297,24 +319,16 @@ export async function getAbout() {
 }
 export async function getNetwork() {
 	return await client.fetch(`
-		*[_type == "network" && !(_id in path('drafts.**'))][0] {
-			...,
-			institutions[]{
-				...,
-			},
-			network[]{
-				...,
-				organizations[]-> {
-					...,
-				}
+		*[_type == "network" && !(_id in path('drafts.**'))][0] { ...,
+			institutions[]{ ... },
+			network[]{ ...,
+				organizations[]-> { ... }
 			},
 		}`
 	);
 }
 export async function getContact() {
 	return await client.fetch(`
-		*[_type == "contact" && !(_id in path('drafts.**'))][0] {
-			...,
-		}`
+		*[_type == "contact" && !(_id in path('drafts.**'))][0] { ... }`
 	);
 }

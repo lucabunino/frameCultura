@@ -32,11 +32,12 @@ let offset = $state(0);
 let headerHeight = $state(undefined)
 let search = $state(undefined)
 let body = $state(undefined)
+let isInitialInverted = $derived(page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathname == '/live' && data.liveHasContent)
 
 // Lifecycle
 $effect(() => {
-	if (page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathname == '/live' && data.liveHasContent) {
-		header.setInverted(true)		
+	if (isInitialInverted) {
+		header.setInverted(true)
 	} else {
 		header.setInverted(false)
 	}
@@ -67,7 +68,11 @@ function rejectCookies() {
 }
 function handleScroll(e) {
 	if (page.url.pathname == '/esplora') {
-		offset = innerWidth/21*9 > 500 ? innerWidth/21*9 : 500
+		// offset = innerWidth/21*9 > 500 ? innerWidth/21*9 : 500
+		offset = 300
+	} else if (page.url.pathname == '/live') {
+		// offset = innerHeight
+		offset = 300
 	} else {
 		offset = headerHeight
 	}
@@ -76,7 +81,7 @@ function handleScroll(e) {
 	} else {
 		header.setUp(false)
 	}
-	if (page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathname == '/live' && data.liveHasContent) {
+	if (isInitialInverted) {
 		if (scrollY > offset - headerHeight) {
 			header.setInverted(false)
 		} else {
@@ -137,10 +142,10 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
 				<a href="/autori">Autori</a>
 			</li>
-			<!-- <li class="menu-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}
+			<li class="menu-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
 				<a href="/live">Live</a>
-			</li> -->
+			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/about"}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
 				<a href="/about">About</a>
@@ -176,7 +181,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <!-- Main -->
 {#key data.pathname + cookieAccepted}
-	<main class:marginTop={!header.inverted}>
+	<main class:marginTop={!isInitialInverted}>
 		{@render children()}
 	</main>
 {/key}
@@ -199,7 +204,10 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 		{#if data.info.newsletter}<p class="jost-18">{data.info.newsletter}</p>{/if}
 		<a class="btn bg-black text-white mobile-w-100" href="http://" target="_blank" rel="noopener noreferrer">Iscriviti</a>
 	</div>
-	{#if data.info.footerPattern}<div class="footer-pattern" style={`background-image: url(${urlFor(data.info.footerPattern)})`}></div>{/if}
+	{#if data.info.footerPatterns}
+		{@const randomIndex = Math.floor(Math.random() * data.info.footerPatterns.length)}
+		<div class="footer-pattern" style={`background-image: url(${urlFor(data.info.footerPatterns[randomIndex])})`}></div>
+	{/if}
 </div>
 <footer class="jost-24 mobile-jost-22">
 	<div>
@@ -231,9 +239,9 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			<li class="footer-item" class:active={page.url.pathname === "/autori" || page.url.pathname.includes("/autori/")}>
 				<a href="/autori">Autori</a>
 			</li>
-			<!-- <li class="footer-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}>
+			<li class="footer-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}>
 				<a href="/live">Live</a>
-			</li> -->
+			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/about"}>
 				<a href="/about">About</a>
 			</li>
@@ -290,7 +298,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	position: fixed;
 	top: 0;
 	width: 100%;
-	z-index: 2;
+	z-index: 3;
 	transition: var(--transition);
 	transition-property: transform;
 	gap: var(--margin);

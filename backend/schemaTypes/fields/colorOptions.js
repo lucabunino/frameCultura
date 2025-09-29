@@ -1,13 +1,13 @@
 export default {
 	disableAlpha: true,
 	colorList: [
-		{ hex: '#F89B22' },
-		{ hex: '#FCCD0D' },
-		{ hex: '#3E2C70' },
-		{ hex: '#EE3923' },
-		{ hex: '#3f77bc' },
-		{ hex: '#20B2E4' },
-		{ hex: '#F16276' },
-		{ hex: '#C14969' },
+		{ hex: '#78aed2' },
+		{ hex: '#355b8a' },
+		{ hex: '#0e7f93' },
+		{ hex: '#474a68' },
+		{ hex: '#99c92f' },
+		{ hex: '#f89b22' },
+		{ hex: '#c23b3f' },
+		{ hex: '#b0216e' },
 	]
 }

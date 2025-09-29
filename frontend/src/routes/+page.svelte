@@ -19,6 +19,7 @@ let swiperProductionsMobileEl = $state(undefined)
 let activeProductionIndex = $state(0)
 let activeProduction = $derived(homepage.productionsSelection[activeProductionIndex])
 let swiperAuthorsMobileEl = $state(undefined)
+let swiperLiveEl = $state(undefined)
 
 $effect(() => {
 	if (swiperProductionsMobileEl) {
@@ -35,6 +36,39 @@ $effect(() => {
 		};
 		Object.assign(swiperAuthorsMobileEl, swiperParams);
 		swiperAuthorsMobileEl.initialize();
+	}
+	if (swiperLiveEl) {
+		const swiperParams = {
+			breakpoints: {
+				0: {
+					slidesPerView: 1.5,
+					slidesOffsetBefore: 15,
+					slidesOffsetAfter: 15,
+				},
+				800: {
+					slidesPerView: 2.5,
+					slidesOffsetBefore: 15,
+					slidesOffsetAfter: 15,
+				},
+				1200: {
+					slidesPerView: 3.5,
+					slidesOffsetBefore: 21,
+					slidesOffsetAfter: 21,
+				},
+				1513: {
+					slidesPerView: 4.5,
+					slidesOffsetBefore: 21,
+					slidesOffsetAfter: 21,
+				},
+				1800: {
+					slidesPerView: 5.5,
+					slidesOffsetBefore: 21,
+					slidesOffsetAfter: 21,
+				},
+			},
+		};
+		Object.assign(swiperLiveEl, swiperParams);
+		swiperLiveEl.initialize();
 	}
 	domLoaded = true
 })
@@ -195,19 +229,18 @@ function onRealIndexChange(e) {
 	<section id="live">
 		<h4 class="jost-54 inline-title">Live</h4>{#if homepage.liveIntro}<span class="section-description-inline jost-18">{homepage.liveIntro}</span>{/if}
 		<swiper-container class="events"
+		bind:this={swiperLiveEl}
+		init={false}
 		class:invisible={!domLoaded}
 		loop={false}
 		space-between={4}
 		grabCursor={true}
-		slides-per-view={3.5}
 		free-mode={false}
 		mousewheel-force-to-axis={true}
-		slides-offset-before={21}
-		slides-offset-after={21}
 		>
 			{#each homepage.liveSelection as event, i}
 				<swiper-slide>
-					<Event event={event}/>
+					<Event event={event} slider={true}/>
 				</swiper-slide>
 			{/each}
 		</swiper-container>

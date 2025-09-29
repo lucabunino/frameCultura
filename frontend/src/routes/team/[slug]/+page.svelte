@@ -41,7 +41,9 @@ const author = data.teamMember
 						components={{
 							block: {
 								normal: PlainTextStyle,
+								h2: PlainTextStyle,
 								h3: PlainTextStyle,
+								h4: PlainTextStyle,
 							},
 							listItem: PlainTextStyle,
 							marks: { link: PlainTextStyle }

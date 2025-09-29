@@ -74,7 +74,9 @@ function blocksToPlainText(blocks) {
 						components={{
 							block: {
 								normal: PlainTextStyle,
+								h2: PlainTextStyle,
 								h3: PlainTextStyle,
+								h4: PlainTextStyle,
 							},
 							listItem: PlainTextStyle,
 							marks: { link: PlainTextStyle }
@@ -162,14 +164,16 @@ function blocksToPlainText(blocks) {
 							<p>di Autori vari</p>
 						{/if}
 					</div>
-					{#if production.body}
+					{#if production.abstract}
 						<div class="body jost-15">
 							<PortableText
-							value={production.body}
+							value={production.abstract}
 							components={{
 							block: {
 								normal: PlainTextStyle,
+								h2: PlainTextStyle,
 								h3: PlainTextStyle,
+								h4: PlainTextStyle,
 							},
 							listItem: PlainTextStyle,
 							marks: {

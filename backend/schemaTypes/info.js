@@ -18,8 +18,13 @@ export default {
 			type: 'image',
 		},
 		{
-			name: 'footerPattern',
-			type: 'image',
+			name: 'footerPatterns',
+			type: 'array',
+			of: [
+				{
+					type: 'image'
+				}
+			]
 		},
 		{
 			name: 'placeholder',

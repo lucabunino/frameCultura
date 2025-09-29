@@ -3,6 +3,8 @@ import { urlFor } from "$lib/utils/image";
 import { page } from "$app/state";
 import { getHeader } from '$lib/stores/header.svelte';
 import { formatAuthorName } from "$lib/utils/author.js";
+    import SearchBar from "$lib/components/Searchbar.svelte";
+    import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
 let header = getHeader()
 let { data } = $props();
 function getInitial(surname) {
@@ -60,21 +62,7 @@ function handleScroll() {
 </section>
 
 <section id="search-author">
-	<form>
-		<input type="text" name="search" id="search" class="jost-15 bold" placeholder="CERCA TRA GLI AUTORI" bind:value={search}>
-		<button type="submit" id="search-submit">
-			<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<g clip-path="url(#a)">
-					<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063a5.103 5.103 0 0 0 .835 2.813L0 11.57 1.417 13l3.687-3.688c.807.547 1.78.869 2.826.874 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.113a3.073 3.073 0 0 1-3.094-3.05h-.004A3.089 3.089 0 0 1 7.93 1.955a3.072 3.072 0 0 1 3.068 3.05A3.073 3.073 0 0 1 7.96 8.113Z" fill="#000"/>
-				</g>
-				<defs>
-					<clipPath id="a">
-						<path fill="#fff" d="M0 0h13v13H0z"/>
-					</clipPath>
-				</defs>
-			</svg>
-		</button>
-	</form>
+	 <FiltersAndSearch data={data} marginTop={false} displayFilters={false} displayFilterTopic={true} section={"explore"} placeholder={'Cerca autore'}/>
 </section>
 
 <section id="authors">
@@ -99,14 +87,13 @@ function handleScroll() {
 <style>
 /* Anchors */
 #anchors {
-	margin-bottom: calc((var(--margin)*2 + 4rem));
 	padding: var(--margin);
 	position: sticky;
 	top: calc((var(--margin)*2 + 4rem));
 	width: 100%;
 	transition: var(--transition);
 	overflow: scroll;
-	z-index: 1;
+	z-index: 2;
 }
 .anchors {
 	display: flex;
@@ -142,9 +129,7 @@ function handleScroll() {
 #search-author {
 	display: flex;
 	justify-self: center;
-	border-bottom: solid 1px var(--black);
-	padding-bottom: .3rem;
-	margin-bottom: calc((var(--margin)*2 + 4rem));
+	margin-bottom: var(--margin);
 }
 input::placeholder {
 	color: var(--black);

@@ -46,7 +46,7 @@ swiper-container::part(pagination) {
 	font-size: .857rem;
 	text-align: left;
 	padding: .5em;
-	width: -webkit-fill-available;
+	width: stretch;
 	bottom: -2.166em;
 }
 swiper-container::part(bullet), swiper-container::part(bullet-active) {

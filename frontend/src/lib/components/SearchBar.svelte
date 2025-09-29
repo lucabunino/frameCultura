@@ -71,7 +71,7 @@ input::placeholder {
 		display: none;
 	}
 	#search-bar input {
-		width: -webkit-fill-available;
+		width: stretch;
 	}
 	#search-bar.open {
 		display: flex;

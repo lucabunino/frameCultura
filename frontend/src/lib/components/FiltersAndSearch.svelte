@@ -2,7 +2,7 @@
 import { page } from "$app/state";
 import { goto, afterNavigate } from '$app/navigation';
 import { getHeader } from '$lib/stores/header.svelte';
-import SearchBar from "./Searchbar.svelte";
+import SearchBar from "./SearchBar.svelte";
 let header = getHeader();
 let { 
 	data,
@@ -305,7 +305,7 @@ input::placeholder {
 		display: none;
 	}
 	#search-form input {
-		width: -webkit-fill-available;
+		width: stretch;
 	}
 	#search-form.open {
 		display: flex;

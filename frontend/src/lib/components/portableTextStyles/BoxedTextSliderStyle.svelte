@@ -79,8 +79,7 @@ slide-to-clicked-slide={true}
 
 <style>
 swiper-container {
-	width: -webkit-fill-available;
-	width: fill-available;
+	width: stretch;
 	margin-top: 4rem;
 	margin-right: calc(var(--margin)*-1);
 }

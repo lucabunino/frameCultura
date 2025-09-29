@@ -42,6 +42,7 @@ $inspect(data)
 	gap: 6rem;
 }
 .box:hover {
+	color: var(--white);
 	background-color: var(--color);
 }
 .box-content {

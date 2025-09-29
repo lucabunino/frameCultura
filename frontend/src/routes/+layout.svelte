@@ -3,13 +3,14 @@
 import "../app.css";
 import { dev } from '$app/environment';
 import { page, navigating } from '$app/state';
-$inspect(navigating)
 import { urlFor } from '$lib/utils/image';
 import { getHeader } from '$lib/stores/header.svelte';
 let header = getHeader()
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { ProgressBar } from "@prgm/sveltekit-progress-bar";
+import { isPast } from "$lib/utils/date";
+import Live from "$lib/components/Live.svelte";
 
 // Variables
 let { data, children } = $props();
@@ -21,7 +22,7 @@ if (page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathna
 let mouse = $state([])
 let domLoaded = $state(false)
 let innerWidth = $state(undefined)
-let placeholder = $derived(innerWidth > 800  ? 'Cerca nel sito' : 'Cerca')
+let placeholder = $derived(innerWidth > 800  ? 'cerca nel sito' : 'cerca')
 let innerHeight = $state(undefined)
 let scrollY = $state(0)
 let lastScrollY = $state(0)
@@ -69,10 +70,10 @@ function rejectCookies() {
 function handleScroll(e) {
 	if (page.url.pathname == '/esplora') {
 		// offset = innerWidth/21*9 > 500 ? innerWidth/21*9 : 500
-		offset = 300
+		offset = 200
 	} else if (page.url.pathname == '/live') {
 		// offset = innerHeight
-		offset = 300
+		offset = 200
 	} else {
 		offset = headerHeight
 	}
@@ -136,27 +137,27 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 		<ul class="jost-74">
 			<li class="menu-item" class:active={page.url.pathname === "/esplora" || page.url.pathname.includes("/esplora/")}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/esplora">Esplora</a>
+				<a href="/esplora">esplora</a>
 			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/autori" || page.url.pathname.includes("/autori/")}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/autori">Autori</a>
+				<a href="/autori">autori</a>
 			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/live">Live</a>
+				<a href="/live">live</a>
 			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/about"}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/about">About</a>
+				<a href="/about">about</a>
 			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/network"}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/network">Network</a>
+				<a href="/network">network</a>
 			</li>
 			<li class="menu-item" class:active={page.url.pathname === "/contatti"}
 			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/contatti">Contatti</a>
+				<a href="/contatti">contatti</a>
 			</li>
 			<form id="search-bar" class="menu-item" onsubmit={(e) => {
 				e.preventDefault()
@@ -165,9 +166,9 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 					menuOpen = false, header.setUp(false), search = undefined
 				}
 			}}>
-				<input type="text" name="search" id="search" placeholder="Cerca" bind:value={search}>
+				<input type="text" name="search" id="search" placeholder="cerca" bind:value={search}>
 				<button type="submit" id="search-submit" class="btn bg-gray">
-					Cerca
+					cerca
 				</button>
 			</form>
 		</ul>
@@ -196,11 +197,11 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	}}>
 		<input type="text" name="search" id="search" placeholder={placeholder} bind:value={search}>
 		<button type="submit" id="search-submit" class="btn bg-gray">
-			Cerca
+			cerca
 		</button>
 	</form>
 	<div class="newsletter mobile-only">
-		<h5>Newsletter</h5>
+		<h5>newsletter</h5>
 		{#if data.info.newsletter}<p class="jost-18">{data.info.newsletter}</p>{/if}
 		<a class="btn bg-black text-white mobile-w-100" href="http://" target="_blank" rel="noopener noreferrer">Iscriviti</a>
 	</div>
@@ -209,7 +210,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 		<div class="footer-pattern" style={`background-image: url(${urlFor(data.info.footerPatterns[randomIndex])})`}></div>
 	{/if}
 </div>
-<footer class="jost-24 mobile-jost-22">
+<footer class="jost-24 mobile-jost-22" class:marginBottom={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}>
 	<div>
 		{#if data.info.ragioneSociale}<p>{data.info.ragioneSociale}</p>{/if}
 		{#if data.info.adressLabel}
@@ -234,27 +235,27 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	<nav>
 		<ul>
 			<li class="footer-item" class:active={page.url.pathname === "/esplora" || page.url.pathname.includes("/esplora/")}>
-				<a href="/esplora">Esplora</a>
+				<a href="/esplora">esplora</a>
 			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/autori" || page.url.pathname.includes("/autori/")}>
-				<a href="/autori">Autori</a>
+				<a href="/autori">autori</a>
 			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}>
-				<a href="/live">Live</a>
+				<a href="/live">live</a>
 			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/about"}>
-				<a href="/about">About</a>
+				<a href="/about">about</a>
 			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/network"}>
-				<a href="/network">Network</a>
+				<a href="/network">network</a>
 			</li>
 			<li class="footer-item" class:active={page.url.pathname === "/contatti"}>
-				<a href="/contatti">Contatti</a>
+				<a href="/contatti">contatti</a>
 			</li>
 		</ul>
 	</nav>
 	<div class="desktop-only">
-		<h5>Newsletter</h5>
+		<h5>newsletter</h5>
 		{#if data.info.newsletter}<p class="jost-18">{data.info.newsletter}</p>{/if}
 		<a class="btn" href="http://" target="_blank" rel="noopener noreferrer">Iscriviti</a>
 	</div>
@@ -266,17 +267,22 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			{/if}
 			{#if data.policies}
 				{#each data.policies as policy}
-					<a href="/{policy.kind}">{policy.kind.charAt(0).toUpperCase() + policy.kind.slice(1)}</a>
+					<!-- <a href="/{policy.kind}">{policy.kind.charAt(0).toUpperCase() + policy.kind.slice(1)}</a> -->
+					<a href="/{policy.kind}">{policy.kind}</a>
 				{/each}
 			{/if}
 		</div>
-		<p>Sviluppo: <a class="underline" href="http://www.lucabunino.com" target="_blank" rel="noopener noreferrer">Luca Bunino</a></p>
+		<p>sviluppo: <a class="underline" href="http://www.lucabunino.com" target="_blank" rel="noopener noreferrer">Luca Bunino</a></p>
 	</div>
 </footer>
 
 <div id="loader">
 	<ProgressBar color="var(--blue)" zIndex={100}/>
 </div>
+
+{#if !page.url.pathname.includes("/live/streaming/") && data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}
+	<Live live={data.liveWidget.liveWidget} />
+{/if}
 
 <!-- {#if showBanner}
 	<div>
@@ -513,13 +519,18 @@ footer > :nth-child(4) p {
 }
 footer > :nth-child(5) {
 	grid-column: 1 / span 10;
-	display: flex;
-	justify-content: space-between;
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
 	margin-top: 6rem;
+	align-items: end;
 }
-footer > :nth-child(5) div {
+footer > :nth-child(5) > div {
 	display: flex;
 	column-gap: var(--margin);
+	grid-column: 1 / span 6;
+}
+footer > :nth-child(5) > p {
+	grid-column: 7 / span 4;
 }
 footer a:hover:not(.btn) {
 	opacity: .3;
@@ -532,12 +543,17 @@ footer .btn {
 	footer > :nth-child(2) {grid-column: 6 / span 5;}
 	footer > :nth-child(3) {grid-column: 1 / span 5;}
 	footer > :nth-child(4) {grid-column: 6 / span 5;}
+	footer > :nth-child(5) > div {grid-column: 1 / span 5;}
+	footer > :nth-child(5) > p {grid-column: 6 / span 5;}
 }
 @media screen and (max-width: 800px) {
 	footer {
 		display: flex;
 		flex-direction: column;
 		padding: 4rem var(--margin);
+	}
+	footer.marginBottom {
+		padding: 4rem var(--margin) 8rem;
 	}
 	footer h4 {
 		margin-top: 4rem;

@@ -61,6 +61,7 @@ let activeOrganizationMobile = $state(undefined)
 .navigator-item.active {
 	border-top: 0;
 	background-color: var(--color);
+	color: var(--white) !important;
 	border-radius: .6rem;
 }
 /* Network */

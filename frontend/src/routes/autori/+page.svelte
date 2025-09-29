@@ -116,7 +116,8 @@ function handleScroll() {
 	overflow: scroll;
 }
 .anchor.active {
-	background-color: var(--pink);
+	color: var(--white) !important;
+	background-color: var(--blue);
 }
 @media only screen and (min-width: 801px) {
 	.anchor:hover, .anchor.active:hover {

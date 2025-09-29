@@ -20,11 +20,11 @@ let {
 			{#if event.city}
 				<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
-			{#if event.topics}
+			<!-- {#if event.topics}
 				{#each event.topics as topic, j}
 					<a class="tag" href="/cerca?search={topic.title}">{topic.title}</a>
 				{/each}
-			{/if}
+			{/if} -->
 		</div>
 	{/if}
 	<time>{formatDate(event.start, event.end)}</time>

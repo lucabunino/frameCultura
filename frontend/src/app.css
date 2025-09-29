@@ -193,8 +193,8 @@
 	--black: #000;
 	--gray: #E7E7E7;
 	--darkGray: #999999;
+
 	--azure: #20B2E4;
-	--blue: #3f77bc;
 	--orange: #F89B22;
 	--yellow: #FCCD0D;
 	--purple: #3E2C70;
@@ -202,10 +202,11 @@
 	--pink: #F16276;
 	--cabaret: #C14969;
 	
+	--blue: #3f77bc;
 	--sky: #78aed2;
 	--navy: #355b8a;
 	--teal: #0e7f93;
-	--slate: #474a68;
+	--slate: #478a68;
 	--green: #99c92f;
 	--orange: #f89b22;
 	--red: #c23b3f;

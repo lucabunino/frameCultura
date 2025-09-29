@@ -12,3 +12,5 @@ export function isDark(hex) {
 		return false;
 	}
 }
+
+export const colors = ["#78aed2", "#355b8a", "#0e7f93", "#478a68", "#99c92f", "#f89b22", "#c23b3f", "#b0216e"]

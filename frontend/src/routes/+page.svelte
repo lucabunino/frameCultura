@@ -5,6 +5,7 @@ import ProductionsWidget from "$lib/components/ProductionsWidget.svelte";
 import Event from "$lib/components/Event.svelte";
 import { register } from 'swiper/element/bundle';register();
 import { formatAuthorName } from "$lib/utils/author.js";
+import { colors } from "$lib/utils/color.js";
 
 let { data } = $props();
 const homepage = data.homepage
@@ -376,8 +377,9 @@ function onRealIndexChange(e) {
 				{#if homepage.authorsIntro}<span class="section-description jost-18">{homepage.authorsIntro}</span>{/if}
 				{#each homepage.authorsSelection as author, i}
 					<a class="author jost-54" href={`/autori/${author.slug.current}`}
-					onmouseover={() => {activeAuthorIndex = i}}
+					style={"--activeColor: " + colors[i%8]}
 					class:active={activeAuthorIndex == i}
+					onmouseover={() => {activeAuthorIndex = i}}
 					bind:this={authorEls[i]}
 					>
 						<h2>{formatAuthorName(author)}</h2>
@@ -470,6 +472,7 @@ function onRealIndexChange(e) {
 #highlights {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
+	color: var(--white);
 }
 #highlights.high {
 	grid-template-rows: repeat(2, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
@@ -539,7 +542,7 @@ function onRealIndexChange(e) {
 
 /* Productions */
 #productions {
-	margin: 24rem 0;
+	margin: 8rem 0 14rem;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -672,12 +675,16 @@ function onRealIndexChange(e) {
 	line-height: 0;
 }
 .active-author .highlighted-contents::part(bullet) {
-	margin: 0 3px;
-	background-color: var(--gray);
+	margin: 0 2px;
+	background-color: transparent;
+	border: solid 1px var(--black);
 	opacity: 1;
 }
 .active-author .highlighted-contents::part(bullet-active) {
-	background-color: var(--orange);
+	margin: 0 2px;
+	background-color: var(--black);
+	border: solid 1px var(--black);
+	opacity: 1;
 }
 .active-author .highlighted-content {
 	display: flex;
@@ -695,9 +702,7 @@ function onRealIndexChange(e) {
 .authors {
 	padding: 2rem var(--margin);
 }
-.author.active h2 {
-	color: var(--orange);
-}
+.author.active h2 {color: var(--activeColor);}
 .authors .btn {
 	margin-top: 4rem;
 }

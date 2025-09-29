@@ -1,4 +1,4 @@
-import { getInfo, getSeo, getPolicies, getExploreHasContent, getLiveHasContent } from '$lib/utils/sanity';
+import { getInfo, getSeo, getPolicies, getExploreHasContent, getLiveHasContent, getLiveWidget } from '$lib/utils/sanity';
 import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {
@@ -7,10 +7,11 @@ export async function load({ url }) {
 	const policies = await getPolicies();
 	const exploreHasContent = await getExploreHasContent();
 	const liveHasContent = await getLiveHasContent();
+	const liveWidget = await getLiveWidget();
 	const { pathname } = url
 	const searchTopics = url.searchParams.getAll('topic');
 	const searchString = url.searchParams.get('search');
-	if (info, seo, policies, pathname) {
+	if (info, seo, policies, pathname, liveWidget) {
 		return {
 			info,
 			seo,
@@ -19,7 +20,8 @@ export async function load({ url }) {
 			searchTopics,
 			searchString,
 			exploreHasContent,
-			liveHasContent
+			liveHasContent,
+			liveWidget
 		};
 	}
 	throw error(404, 'Not found');

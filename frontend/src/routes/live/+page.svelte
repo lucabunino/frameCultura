@@ -83,11 +83,19 @@ function handleMouseMove(e) {
 						<time>{formatDate(event.start, event.end)}</time>
 						<h2 class="jost-45 mobile-jost-27 uppercase bold">{event.title}</h2>
 						{#if event.subtitle}<h3 class="jost-45 mobile-jost-27 bold">{event.subtitle}</h3>{/if}
-						{#if event.topics}
-							<div class="topics jost-15 bold uppercase">
-								{#each event.topics as topic, j}
-									<a class="tag" href="/cerca?search={topic.title}">{topic.title}</a>
-								{/each}
+						{#if event.city || event.format}
+							<div class="tags jost-15 bold uppercase">
+								{#if event.format}
+									<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
+								{/if}
+								{#if event.city}
+									<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
+								{/if}
+								<!-- {#if event.topics}
+									{#each event.topics as topic, j}
+										<a class="tag" href="/cerca?search={topic.title}">{topic.title}</a>
+									{/each}
+								{/if} -->
 							</div>
 						{/if}
 						{#if event.people}
@@ -199,7 +207,7 @@ function handleMouseMove(e) {
 	display: block;
 	margin-bottom: 1rem;
 }
-#liveSelection .topics {
+#liveSelection .tags {
 	display: inline-flex;
 	column-gap: .2em;
 	row-gap: 1rem;
@@ -293,17 +301,6 @@ function handleMouseMove(e) {
 }
 .events {
 	display: flex;
-}
-.tags {
-	display: flex;
-	flex-wrap: wrap;
-	max-width: stretch;
-	width: 100%;
-	position: absolute;
-	left: 0;
-	top: 0;
-	padding: .2em;
-	gap: .2em;
 }
 @media screen and (max-width: 1536px) {
 	#live {

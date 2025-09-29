@@ -148,6 +148,7 @@ export async function getLiveSelection() {
 				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
 				topics[]-> { ... },
 				format-> { ... },
+				city-> { ... },
 			},
 		}`
 	);
@@ -159,6 +160,19 @@ export async function getLiveHasContent() {
 		}
 	`);
 	return result?.hasContent ?? false;
+}
+export async function getLiveWidget() {
+	return await client.fetch(`
+		*[_type == "live" && !(_id in path('drafts.**'))][0]{
+			liveWidget->{...}
+		}
+	`);
+}
+export async function getLiveStreaming(slug) {
+	return await client.fetch(`
+		*[_type == "eventLive" && slug.current == $slug][0]{
+			...
+		}`, { slug });
 }
 export async function getLiveTopics() {
 	return await client.fetch(`

@@ -1,17 +1,30 @@
 <script>
+import { browser } from "$app/environment";
 import { isPast } from "$lib/utils/date";
 import { urlFor } from "$lib/utils/image";
 import { onMount } from "svelte";
+import { fade, fly, slide } from "svelte/transition";
+import LiveFrame from "./LiveFrame.svelte";
 let {
 	live,
 } = $props()
-
 let now = $state(new Date());
+let clientReady = $state(false);
+let liveOpen = $state(false);
+$effect(() => {
+	if (browser && clientReady) {
+		localStorage.setItem("liveOpen", liveOpen);
+	}
+});
 onMount(() => {
-	const interval = setInterval(() => now = Date.now(), 1000);
+	if (browser) {
+		const stored = localStorage.getItem("liveOpen");
+		liveOpen = stored !== null ? stored === "true" : true;
+		clientReady = true;
+	}
+	const interval = setInterval(() => (now = Date.now()), 1000);
 	return () => clearInterval(interval);
 });
-
 let countdown = $derived.by(() => {
 	if (!live?.start) return 0;
 	const liveStart = new Date(live.start);
@@ -36,77 +49,132 @@ function extractVimeoID(url) {
 }
 </script>
 
-<div id="live" class="rounded jost-15 bold" style="background-color:{live.bgColor.hex}">
-	<div class="title-container">
+<svelte:window></svelte:window>
+
+{#if clientReady}
+<div id="live" class="rounded shadow jost-15 bold" style="--bgColor:{live.bgColor.hex}"
+transition:slide={{ axis: "y", duration: 500 }}
+>
+	<a href="/live/streaming/{live.slug.current}" class="title-container">
+		<div class="dot"></div>
 		<h1 class="uppercase">{live.title}</h1>
 		{#if live.subtitle}<h2>{live.subtitle}</h2>{/if}
-	</div>
-	<div class="live-container">
-		{#if isPast(live.start)}
-			{#if live.embed && live.embed.url}
-				{#if live.embed.provider === 'YouTube'}
-					<iframe
-					width="560"
-					height="315"
-					src={`https://www.youtube.com/embed/${extractYouTubeID(live.embed.url)}`}
-					title="YouTube video"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-					allowfullscreen
-					></iframe>
-				{:else if live.embed.provider === 'Vimeo'}
-					<iframe
-					src={`https://player.vimeo.com/video/${extractVimeoID(live.embed.url)}`}
-					width="640"
-					height="360"
-					frameborder="0"
-					allow="autoplay; fullscreen; picture-in-picture"
-					allowfullscreen
-					></iframe>
-				{:else if live.embed.provider === 'Facebook'}
-					<iframe
-					src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(live.embed.url)}&show_text=0&width=560`}
-					width="560"
-					height="315"
-					style="border:none;overflow:hidden"
-					scrolling="no"
-					frameborder="0"
-					allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-					allowfullscreen
-					></iframe>
-				{/if}
-			{/if}
-		{:else}
-			<img src={urlFor(live.cover)} alt="">
-			<button class="countdown btn bg-white">Live tra {formatCountdown(countdown)}</button>
-		{/if}
-	</div>
+		<button id="liveSwitch" onclick={(e) => {e.preventDefault(); liveOpen = !liveOpen}} class:crossed={liveOpen}>
+			<div class="line"></div>
+			<div class="line"></div>
+		</button>
+	</a>
+	{#if liveOpen}
+		<div class="live-container"
+		transition:slide={{ axis: "y", duration: 500 }}
+		>
+			<LiveFrame live={live}/>
+		</div>
+	{/if}
 </div>
+{/if}
 
 <style>
+/* Box */
 #live {
-	width: 400px;
+	width: stretch;
 	height: auto;
 	position: fixed;
+	margin-left: calc(var(--margin)/2);
 	right: calc(var(--margin)/2);
-	bottom: 2rem;
+	bottom: var(--margin);
 	color: var(--white);
+	overflow: hidden;
+	transition: var(--transition);
+	z-index: 2;
+	max-width: 400px;
+	background-color: var(--bgColor);
 }
 .title-container {
 	display: flex;
-	gap: var(--margin);
-}
-.live-container {
+	gap: .5em;
+	padding: 1rem var(--margin);
+	align-items: center;
 	position: relative;
 }
-.countdown {
-	width: 50%;
-	background-color: var();
-	white-space: pre;
-	text-align: center;
+.title-container .dot {
+	background-color: var(--white);
+	width: .9em;
+	height: .9em;
+	aspect-ratio: 1;
+	border-radius: 999em;
+	animation: blink 1s step-start 0s infinite;
+	margin-bottom: .05em;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.title-container h1 {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex-shrink: 1;
+	min-width: 0;
+	font-weight: bold;
+}
+.title-container h2 {
+	margin-left: 1em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex-shrink: 100;
+	min-width: 0;
+	padding-right: 3rem;
+}
+#liveSwitch {
+	z-index: 2;
+	height: 100%;
+	cursor: pointer;
+	display: block;
 	position: absolute;
-	left: 50%;
+	right: 0;
+	aspect-ratio: 1;
+	align-self: center;
+	background-color: var(--bgColor);
+	justify-items: center;
+}
+#liveSwitch.off .line {
+	width: 0;
+}
+#liveSwitch .line {
+	width: 50%;
+	height: 2px;
+	background-color: var(--white);
+	position: absolute;
+	transition: var(--transition);
+	transition-property: top, transform, transform-origin, width;
+	transform-origin: center;
+}
+.menu.inverted:not(.open) #liveSwitch .line {
+	background-color: var(--white);
+}
+#liveSwitch .line:nth-child(1) {transform: translateY(-50%)}
+#liveSwitch .line:nth-child(2) {transform: translateY(-50%) rotate(-90deg);}
+#liveSwitch.crossed .line:nth-child(1) {
+	transform: translateY(-50%) rotate(45deg);
 	top: 50%;
-	transform: translateX(-50%) translateY(-50%);
+}
+#liveSwitch.crossed .line:nth-child(2) {
+	transform: translateY(-50%) rotate(-45deg);
+	top: 50%;
+}
+
+/* Live container */
+.live-container {
+	position: relative;
+	aspect-ratio: 16/9;
+	width: 100%;
+}
+@media screen and (max-width: 800px) {
+	#live {
+		max-width: unset;
+	}
 }
 </style>

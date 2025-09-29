@@ -165,6 +165,7 @@ for (let block of processedBlocks) {
 .navigator-item.active {
 	border-top: 0;
 	background-color: var(--color);
+	color: var(--white) !important;
 	border-radius: .6rem;
 }
 .body {

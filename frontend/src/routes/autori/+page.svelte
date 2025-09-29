@@ -3,8 +3,8 @@ import { urlFor } from "$lib/utils/image";
 import { page } from "$app/state";
 import { getHeader } from '$lib/stores/header.svelte';
 import { formatAuthorName } from "$lib/utils/author.js";
-    import SearchBar from "$lib/components/Searchbar.svelte";
-    import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
+import SearchBar from "$lib/components/SearchBar.svelte";
+import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
 let header = getHeader()
 let { data } = $props();
 function getInitial(surname) {

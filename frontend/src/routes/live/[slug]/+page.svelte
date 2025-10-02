@@ -192,7 +192,6 @@ $effect(() => {
 <a class="btn bg-gray back" href="/live">Torna a: live</a>
 
 {#if event.live && isPast(event.live.displayStart)}
-{$inspect(event.live)}
 	<Live live={event.live} />
 {/if}
 

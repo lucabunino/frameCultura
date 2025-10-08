@@ -102,11 +102,13 @@ function handleMouseMove(e) {
 							<p class="people jost-18" style={!event.abstract ? "margin-top: 1em;" : ''}>Con
 								{#if event.people?.length < 4}
 									{#each event.people as person, i}
-										{#if person.isAuthor}
-											<a class="person" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
-										{:else}
-											<span class="person">{formatAuthorName(person)}</span>
-										{/if}{@html event.people.length > i+1 ? ', ' : ''}
+										{#if person}
+											{#if person.isAuthor}
+												<a class="person" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
+											{:else}
+												<span class="person">{formatAuthorName(person)}</span>
+											{/if}{@html event.people.length > i+1 ? ', ' : ''}
+										{/if}
 									{/each}
 								{:else if event.people?.length >= 4}
 									Autori vari
@@ -132,11 +134,10 @@ function handleMouseMove(e) {
 
 {#if data.liveIntro}<h3 id="live-intro" class:marginTop={data.liveSelection}>{data.liveIntro}</h3>{/if}
 <FiltersAndSearch data={data} displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} section="live" placeholder="Cerca evento"/>
-
 {#if data.live.length > 0}
 	<section id="live" class:marginTop={!data.liveSelection}>
 		{#each data.live as event, i}
-			<Event event={event}/>
+			<Event event={event} placeholder={data.info.placeholder}/>
 		{/each}
 	</section>
 {:else}

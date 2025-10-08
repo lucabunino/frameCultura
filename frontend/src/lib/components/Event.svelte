@@ -4,16 +4,18 @@ import { formatDate } from "$lib/utils/date";
 import { urlFor } from "$lib/utils/image";
 let {
 	event,
-	slider = false
+	slider = false,
+	placeholder
 } = $props()
 </script>
 
 <div class="event jost-15" class:slider={slider}>
 	<a href={`/live/${event.slug.current}`}>
-		<img class="cover _5-7" src={urlFor(event.cover)} alt="">
+		<img class="cover _5-7" src={urlFor(event.cover ? event.cover : placeholder)} alt="">
 	</a>
 	{#if event.city || event.format}
 		<div class="tags">
+			{$inspect(event)}
 			{#if event.format}
 				<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
 			{/if}
@@ -37,11 +39,13 @@ let {
 		<p class="people" style={!event.abstract ? "margin-top: 1em;" : ''}>Con
 			{#if event.people?.length < 4}
 				{#each event.people as person, i}
-					{#if person.isAuthor}
-						<a class="person hover-gray" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
-					{:else}
-						<span class="person">{formatAuthorName(person)}</span>
-					{/if}{@html event.people.length > i+1 ? ', ' : ''}
+					{#if person}
+						{#if person.isAuthor}
+							<a class="person hover-gray" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
+						{:else}
+							<span class="person">{formatAuthorName(person)}</span>
+						{/if}{@html event.people.length > i+1 ? ', ' : ''}
+					{/if}
 				{/each}
 			{:else if event.people?.length >= 4}
 				Autori vari

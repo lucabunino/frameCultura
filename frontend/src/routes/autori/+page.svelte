@@ -113,7 +113,6 @@ function handleScroll() {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	overflow: scroll;
 }
 .anchor.active {
 	color: var(--white) !important;

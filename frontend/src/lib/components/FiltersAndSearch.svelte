@@ -31,7 +31,7 @@ function toggleMedias(mediaSlugs) {
 	if (mediaSlugs) {
 		mediaSlugs.forEach(f => url.searchParams.append('media', f));
 	}
-	goto(`?${url.searchParams.toString()}${section ? section : ''}`, { preload: true, replaceState: false, noScroll: true })
+	goto(`?${url.searchParams.toString()}${section ? "#" + section : ''}`, { preload: true, replaceState: false, noScroll: true })
 }
 function toggleTopic(topicSlug) {
 	const url = new URL(window.location.href);
@@ -39,7 +39,7 @@ function toggleTopic(topicSlug) {
 	if (topicSlug) {
 		url.searchParams.append('topic', topicSlug)
 	}
-	goto(`?${url.searchParams.toString()}${section ? section : ''}`, { preload: true, replaceState: false, noScroll: true })	
+	goto(`?${url.searchParams.toString()}${section ? "#" + section : ''}`, { preload: true, replaceState: false, noScroll: true })	
 }
 function toggleFormat(formatSlug) {
 	const url = new URL(window.location.href);
@@ -47,7 +47,7 @@ function toggleFormat(formatSlug) {
 	if (formatSlug) {
 		url.searchParams.append('format', formatSlug)
 	}
-	goto(`?${url.searchParams.toString()}${section ? section : ''}`, { preload: true, replaceState: false, noScroll: true })	
+	goto(`?${url.searchParams.toString()}${section ? "#" + section : ''}`, { preload: true, replaceState: false, noScroll: true })	
 }
 function toggleCity(citySlug) {
 	const url = new URL(window.location.href);
@@ -55,7 +55,7 @@ function toggleCity(citySlug) {
 	if (citySlug) {
 		url.searchParams.append('city', citySlug)
 	}
-	goto(`?${url.searchParams.toString()}${section ? section : ''}`, { preload: true, replaceState: false, noScroll: true })	
+	goto(`?${url.searchParams.toString()}${section ? "#" + section : ''}`, { preload: true, replaceState: false, noScroll: true })	
 }
 function toggleSearch(e, searchString) {
 	e.preventDefault()

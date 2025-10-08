@@ -175,15 +175,11 @@ export default {
 			to: [{type: 'city'},],
 		},
 		{
-			name: 'formats',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{type: 'format'},],
-				}
-			],
+			name: 'format',
+			type: 'reference',
+			to: [{type: 'format'},],
 			validation: (Rule) => Rule.required(),
+			group: 'Basics',
 		},
 		{
 			name: 'topics',

@@ -241,7 +241,7 @@ function onRealIndexChange(e) {
 		>
 			{#each homepage.liveSelection as event, i}
 				<swiper-slide>
-					<Event event={event} slider={true}/>
+					<Event event={event} slider={true} placeholder={data.info.placeholder}/>
 				</swiper-slide>
 			{/each}
 		</swiper-container>

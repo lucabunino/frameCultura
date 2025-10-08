@@ -6,11 +6,11 @@ export async function load({ url }) {
 	const topics = await getLiveTopics();
 	const formats = await getLiveFormats();
 	const cities = await getLiveCities();
-	const searchFormats = url.searchParams.get('format');
+	const searchFormat = url.searchParams.get('format');
 	const searchCity = url.searchParams.get('city');
 	const searchTopic = url.searchParams.get('topic');
 	const searchString = url.searchParams.get('search');
-	const live = await getLive(searchFormats, searchCity, searchTopic, searchString);
+	const live = await getLive(searchFormat, searchCity, searchTopic, searchString);
 	if (liveSelection && live && topics && formats) {
 		return {
 			liveSelection: liveSelection.liveSelection,

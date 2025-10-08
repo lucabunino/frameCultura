@@ -149,7 +149,7 @@ $effect(() => {
 	{/if}
 {/snippet}
 
-<section id={event._type}>
+<section id={event._type} class={event.horizontalCover ? "marginTop" : ""}>
 	{#if event._type == "event"}
 		<div class="left">
 			{@render eventContent(event)}
@@ -276,6 +276,8 @@ a.person:hover {
 /* Serie */
 #eventSerie {
 	display: block;
+}
+#eventSerie.marginTop {
 	margin-top: calc((var(--margin) * 2 + 6rem)*-1);
 }
 #eventSerie .hero {

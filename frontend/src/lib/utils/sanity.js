@@ -248,7 +248,7 @@ export async function getLive(format = null, city = null, topic = null, search) 
 }
 export async function getEvent(slug) {
 	return await client.fetch(`
-		*[_type in ["event", "eventSerie"] && visible == true && slug.current == $slug][0] { ...,
+		*[_type in ["event", "eventSerie"] && slug.current == $slug][0] { ...,
 			people {
 				clusters[] { ...,
 					people[]->{...}
@@ -309,10 +309,10 @@ export async function getAuthor(slug) {
 			},
 			"audios": *[(_type in ["episode", "podcast"]) && references(^._id) && visibleAuthor == true] { ...,
 				authors[]-> { ... },
-			},
+			} | order(hierarchy desc, date desc, title asc),
 			"videos": *[(_type in ["video", "playlist"]) && references(^._id) && visibleAuthor == true] { ...,
 				authors[]-> { ... },
-			}
+			} | order(hierarchy desc, date desc, title asc),
 		}`, { slug });
 }
 export async function getTeamMember(slug) {

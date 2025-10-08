@@ -15,7 +15,6 @@ let {
 	</a>
 	{#if event.city || event.format}
 		<div class="tags">
-			{$inspect(event)}
 			{#if event.format}
 				<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
 			{/if}

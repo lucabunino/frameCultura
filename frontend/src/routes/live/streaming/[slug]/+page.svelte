@@ -24,7 +24,7 @@ let { data } = $props();
 	{#if data.liveStreaming.subtitle}<h2 class="jost-74">{data.liveStreaming.subtitle}</h2>{/if}
 	<h3 class="jost-18 bold bold uppercase"><div class="dot"></div>{isPast(data.liveStreaming.start) ? "Live streaming" : "In programma"}</h3>
 	<time class="jost-18 bold bold uppercase" datetime={data.liveStreaming.start}>{formatDate(data.liveStreaming.start)}</time>
-	<div class="live-container rounded">
+	<div class="live-container rounded _16-9">
 		<LiveFrame live={data.liveStreaming}/>
 	</div>
 </section>
@@ -61,5 +61,7 @@ time {
 	margin-top: 4rem;
 	overflow: hidden;
 	position: relative;
+	max-height: calc(100vh - (var(--margin)*2 + 4rem) - 2rem);
+	background-color: var(--black);
 }
 </style>

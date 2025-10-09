@@ -1,4 +1,5 @@
 import body from './fields/body.js'
+import colorOptions from './fields/colorOptions.js';
 import seoFields from './fields/seoFields.js'
 import { RemoveIcon, UsersIcon } from '@sanity/icons'
 
@@ -8,6 +9,9 @@ export default {
 	icon: RemoveIcon,
 	groups: [
 		{name: 'Basics'},
+		{name: 'Who'},
+		{name: 'Where'},
+		{name: 'Access'},
 		{name: 'Preview'},
 		{name: 'Live'},
 		{name: 'Reserve'},
@@ -109,7 +113,7 @@ export default {
 				],
 				},
 			],
-			group: 'Basics',
+			group: 'Who',
 		},
 		{
 			name: 'organizations',
@@ -156,18 +160,28 @@ export default {
 				],
 				},
 			],
-			group: 'Basics',
+			group: 'Who',
 		},
 		{
 			name: 'location',
 			type: 'string',
-			group: 'Basics',
+			group: 'Where',
 		},
 		{
 			name: 'city',
 			type: 'reference',
 			to: [{type: 'city'},],
-			group: 'Basics',
+			group: 'Where',
+		},
+		{
+			name: 'adress',
+			type: 'string',
+			group: 'Where',
+		},
+		{
+			name: 'adressLink',
+			type: 'string',
+			group: 'Where',
 		},
 		{
 			name: 'format',
@@ -187,6 +201,42 @@ export default {
 			],
 			group: 'Basics',
 		},
+		{
+			name: 'accessDisplay',
+			title: 'Display access link in single page',
+			type: 'boolean',
+			initialValue: false,
+			group: 'Access',
+		},
+		{
+			name: 'accessPrice',
+			title: 'Price',
+			description: 'Use 0 to set as Free',
+			type: 'number',
+			validation: Rule => Rule.precision(2)
+			.min(0)
+			.warning('Price must be positive and up to 2 decimal places'),
+			group: 'Access',
+		},
+		{
+			name: 'accessLink',
+			title: 'Link',
+			type: 'url',
+			group: 'Access',
+		},
+		{
+			name: 'accessLabel',
+			title: 'Label',
+			type: 'string',
+			group: 'Access',
+		},
+		{
+			name: 'accessColor',
+			title: 'Color',
+			type: 'color',
+			options: colorOptions,
+			group: 'Access',
+		},
 		body('Basics'),
 		{
 			name: 'visible',
@@ -198,7 +248,7 @@ export default {
 		},
 		{
 			name: 'hierarchy',
-			description: 'Higher number means it will be displayed higher in Esplora',
+			description: 'Higher number means it will be displayed higher in Live',
 			type: 'number',
 			initialValue: 1,
 			validation: (Rule) => Rule.required(),
@@ -233,6 +283,12 @@ export default {
 			title: 'Live',
 			type: 'reference',
 			to: [{ type: 'eventLive' }],
+			group: 'Live',
+		},
+		{
+			name: 'production',
+			type: 'reference',
+			to: [{type: 'video'},{type: 'playlist'},{type: 'podcast'}],
 			group: 'Live',
 		},
 		...seoFields(),

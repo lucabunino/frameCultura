@@ -25,5 +25,6 @@ let {organization} = $props()
 }
 .organization img {
 	padding: 2rem;
+	object-fit: contain;
 }
 </style>

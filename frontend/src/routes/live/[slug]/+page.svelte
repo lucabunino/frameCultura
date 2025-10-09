@@ -2,12 +2,14 @@
 import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
-import { formatDate, isPast } from '$lib/utils/date';
+import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
+import { formatPrice } from '$lib/utils/price.js';
 import { formatAuthorName } from '$lib/utils/author';
 import { register } from 'swiper/element/bundle';register();
 import OrganizationSmall from '$lib/components/OrganizationSmall.svelte';
 import Live from '$lib/components/Live.svelte';
 import Event from '$lib/components/Event.svelte';
+import ProductionLive from '$lib/components/ProductionLive.svelte';
 
 let { data } = $props();
 const event = data.event
@@ -68,19 +70,25 @@ $effect(() => {
 {#snippet eventContent(event)}
 	<h1 class="jost-74 uppercase">{event.title}</h1>
 	{#if event.subtitle}<h2 class="jost-74">{event.subtitle}</h2>{/if}
-	{#if event.city || event.format}
+	{#if event.city || event.format || event.accessPrice || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
+			{#if isUpcoming(event.start, event.end)}
+				<span class="tag upcoming">In programma</span>
+			{/if}
+			{#if isOngoing(event.start, event.end)}
+				<span class="tag ongoing">In corso</span>
+			{/if}
 			{#if event.format}
 				<a class="tag bg-gray" href="/cerca?search={event.format.title}">{event.format.title}</a>
 			{/if}
 			{#if event.city}
 				<a class="tag bg-gray" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
-			<!-- {#if event.topics}
-				{#each event.topics as topic, j}
-					<a class="tag bg-gray" href="/cerca?search={topic.title}">{topic.title}</a>
-				{/each}
-			{/if} -->
+			{#if event.accessPrice}
+				<span class="tag price"
+				style={event.accessColor ? "background-color: " + event.accessColor.hex : ""}
+				>{event.accessPrice == 0 ? 'Ingresso gratuito' : 'A pagamento: ' + formatPrice(event.accessPrice) + '€'}</span>
+			{/if}
 		</div>
 	{/if}
 	<time>{formatDate(event.start, event.end)}</time>
@@ -88,6 +96,13 @@ $effect(() => {
 		<p class="place">
 			{#if event.location}{event.location}{/if}{#if event.city}{#if event.location}{@html ", "}{/if}{event.city.title}{/if}
 		</p>
+	{/if}
+	{#if event.adress}
+		{#if event.adressLink}
+			<a class="underline hover-gray" href={event.adressLink} target="_blank" rel="noopener noreferrer">{event.adress}</a>
+		{:else}
+			<p>{event.adress}</p>
+		{/if}
 	{/if}
 	{#if event.people}
 		<div class="people">
@@ -111,6 +126,12 @@ $effect(() => {
 					</div>
 				</div>
 			{/each}
+		</div>
+	{/if}
+	{#if event.production}
+		<div class="production">
+			<h4 class="jost-12 uppercase bold">Video dell'evento</h4>
+			<ProductionLive production={event.production}/>
 		</div>
 	{/if}
 	{#if event.body}
@@ -166,33 +187,40 @@ $effect(() => {
 				{@render eventContent(event)}
 			</div>
 		</div>
-		<div class="events-wrapper">
-				{#if event.events}
-					<h4 class="jost-12 uppercase bold">Tutti gli appuntamenti</h4>
-					<swiper-container class="events"
-					bind:this={swiperLiveEl}
-					init={false}
-					class:invisible={!domLoaded}
-					loop={false}
-					space-between={4}
-					grabCursor={true}
-					free-mode={false}
-					mousewheel-force-to-axis={true}
-					>
-						{#each event.events as event, i}
-							<swiper-slide>
-								<Event event={event} slider={true}/>
-							</swiper-slide>
-						{/each}
-					</swiper-container>
-				{/if}
+		{#if event.events}
+			<div class="events-wrapper">
+				<h4 class="jost-12 uppercase bold">Tutti gli appuntamenti</h4>
+				<swiper-container class="events"
+				bind:this={swiperLiveEl}
+				init={false}
+				class:invisible={!domLoaded}
+				loop={false}
+				space-between={4}
+				grabCursor={true}
+				free-mode={false}
+				mousewheel-force-to-axis={true}
+				>
+					{#each event.events as event, i}
+						<swiper-slide>
+							<Event event={event} slider={true}/>
+						</swiper-slide>
+					{/each}
+				</swiper-container>
 			</div>
+			<a class="access shadow btn bg-gray" href={event.accessLink} target="_blank" rel="noopener noreferrer"
+			style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
+			>{event.accessLabel}</a>
+		{/if}
 	{/if}
 </section>
 <a class="btn bg-gray back" href="/live">Torna a: live</a>
-
 {#if event.live && isPast(event.live.displayStart)}
 	<Live live={event.live} />
+{/if}
+{#if event.accessDisplay && event.accessLink && event.accessLabel}
+	<a class="access shadow  btn bg-gray" href={event.accessLink} target="_blank" rel="noopener noreferrer"
+	style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
+	>{event.accessLabel}</a>
 {/if}
 
 <style>
@@ -258,6 +286,14 @@ a.person:hover {
 .person img {
 	width: 1.5em;
 }
+.production {
+	margin-top: 1rem;
+	padding: 2rem 0 1rem;
+	border-top: solid 1px var(--black);
+}
+.production h4 {
+	margin-bottom: 1rem;
+}
 .body {
 	margin-top: 1rem;
 	padding-top: 1rem;
@@ -265,6 +301,9 @@ a.person:hover {
 }
 .organizations {
 	margin-top: 8rem;
+	display: flex;
+	flex-direction: column;
+	gap: 4rem;
 }
 .organization-container {
 	display: flex;
@@ -306,5 +345,14 @@ a.person:hover {
 .back {
 	margin-top: 8rem;
 	margin-left: var(--margin);
+}
+.access {
+	position: fixed;
+	left: 50%;
+	bottom: var(--margin);
+	z-index: 2;
+	min-width: 250px;
+	text-align: center;
+	transform: translateX(-50%);
 }
 </style>

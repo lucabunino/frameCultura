@@ -65,7 +65,22 @@ export function formatDate(startStr, endStr) {
 
 export function isPast(datetime) {
 	if (!datetime) return false;
-	var now = new Date();
-	var start = new Date(datetime);
+	const now = new Date();
+	const start = new Date(datetime);
 	return now >= start;
+}
+
+export function isOngoing(start, end) {
+	if (!start || !end) return false;
+	const now = new Date();
+	const startDate = new Date(start);
+	const endDate = new Date(end);
+	return now >= startDate && now <= endDate;
+}
+
+export function isUpcoming(start, end) {
+	if (!start) return false;
+	const now = new Date();
+	const startDate = new Date(start);
+	return now < startDate;
 }

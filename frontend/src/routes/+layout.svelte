@@ -27,13 +27,13 @@ let innerHeight = $state(undefined)
 let scrollY = $state(0)
 let lastScrollY = $state(0)
 let menuOpen = $state(false)
-let showBanner = $state(true)
 let cookieAccepted = $state(false)
 let offset = $state(0);
 let headerHeight = $state(undefined)
 let search = $state(undefined)
 let body = $state(undefined)
 let isInitialInverted = $derived(page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathname == '/live' && data.liveHasContent)
+let showBanner = $state()
 
 // Lifecycle
 $effect(() => {
@@ -49,6 +49,11 @@ $effect(() => {
 		body.style.overflow = 'hidden';
 	} else {
 		body.style.overflow = '';
+	}
+	if (localStorage.getItem('cookieConsent') === 'accepted') {
+		showBanner = false;
+	} else {
+		showBanner = true;
 	}
 })
 
@@ -285,14 +290,22 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 {/if}
 
 <!-- {#if showBanner}
-	<div>
-		<p>Questo sito utilizza servizi di terze parti come Vimeo e Mapbox che possono impostare cookie. Avviando la riproduzione di un video o accettando questa policy, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}
-		<div id="cookie-btns">
-			<button id="accept-cookies" onclick={acceptCookies} class="btn ronzino-12 uppercase">Accetta</button>
-			<button id="reject-cookies" onclick={rejectCookies} class="btn ronzino-12 uppercase">Rifiuta</button>
-		</div>
+	<div class="monument-14 bg-gray fixed z-99 bottom-0 left-0 py-2 px-[var(--gutter)] max-w-[600px] flex flex-col">
+		<p>Questo sito utilizza esclusivamente cookie tecnici, necessari al suo corretto funzionamento. Non vengono utilizzati cookie di profilazione o di terze parti.</p>
+		<p>Per maggiori dettagli, consulta la nostra <a href="/cookies" class="underline hover:text-blue">cookie policy</a>.</p>
+		<button id="accept-cookies" onclick={acceptCookies} class="block uppercase mt-4 w-fit cursor-pointer px-[.75em] py-[.5em] rounded-full uppercase bg-black text-white hover:bg-blue">Ok, ho capito</button>
 	</div>
 {/if} -->
+
+{#if showBanner}
+	<div id="cookie-banner">
+		<p>Questo sito utilizza servizi di terze parti come Vimeo e Mapbox che possono impostare cookie. Avviando la riproduzione di un video o accettando questa policy, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}
+		<div id="cookie-btns">
+			<button id="accept-cookies" onclick={acceptCookies} class="btn">Accetta</button>
+			<button id="reject-cookies" onclick={rejectCookies} class="btn">Rifiuta</button>
+		</div>
+	</div>
+{/if}
 
 <style>
 /* Header */

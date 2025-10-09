@@ -1,6 +1,7 @@
 <script>
 import { formatAuthorName } from "$lib/utils/author";
-import { formatDate } from "$lib/utils/date";
+import { formatDate, isUpcoming, isOngoing } from "$lib/utils/date";
+import { formatPrice } from "$lib/utils/price";
 import { urlFor } from "$lib/utils/image";
 let {
 	event,
@@ -13,19 +14,25 @@ let {
 	<a href={`/live/${event.slug.current}`}>
 		<img class="cover _5-7" src={urlFor(event.cover ? event.cover : placeholder)} alt="">
 	</a>
-	{#if event.city || event.format}
+	{#if event.city || event.format || event.accessPrice || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
+			{#if isUpcoming(event.start, event.end)}
+				<span class="tag upcoming">In programma</span>
+			{/if}
+			{#if isOngoing(event.start, event.end)}
+				<span class="tag ongoing">In corso</span>
+			{/if}
 			{#if event.format}
 				<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
 			{/if}
 			{#if event.city}
 				<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
-			<!-- {#if event.topics}
-				{#each event.topics as topic, j}
-					<a class="tag" href="/cerca?search={topic.title}">{topic.title}</a>
-				{/each}
-			{/if} -->
+			{#if event.accessPrice}
+				<span class="tag price"
+				style={event.accessColor ? "background-color: " + event.accessColor.hex : ""}
+				>{event.accessPrice == 0 ? 'Ingresso gratuito' : 'A pagamento: ' + formatPrice(event.accessPrice) + '€'}</span>
+			{/if}
 		</div>
 	{/if}
 	<time>{formatDate(event.start, event.end)}</time>

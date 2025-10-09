@@ -102,6 +102,7 @@ export default {
 				}
 			],
 			fieldset: 'live',
+			validation: Rule => Rule.max(20).warning('You can select up to 20 items only.'),
 		},
 		{
 			name: 'productionsIntro',
@@ -121,6 +122,7 @@ export default {
 				}
 			],
 			fieldset: 'productions',
+			validation: Rule => Rule.max(10).warning('You can select up to 10 items only.'),
 		},
 		{
 			name: 'authorsIntro',

@@ -11,7 +11,7 @@ let {organization} = $props()
 {:else}
 	<div class="organization">
 		<img class="_1-1" src={urlFor(organization.logo)} alt="">
-		<h2 class="jost-15 bold">{organization.title}</h2>
+		<h2 class="jost-15">{organization.title}</h2>
 	</div>
 {/if}
 
@@ -23,5 +23,8 @@ let {organization} = $props()
 	justify-content: center;
 	text-align: center;
 	max-width: 120px;
+}
+.organization img {
+	object-fit: contain;
 }
 </style>

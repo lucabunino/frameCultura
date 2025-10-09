@@ -271,6 +271,7 @@ export async function getEvent(slug) {
 			city-> { ... },
 			authors[]-> { ... },
 			live-> { ... },
+			production-> { ... },
 		}`, { slug });
 }
 export async function getAuthors(search) {

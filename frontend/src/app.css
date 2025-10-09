@@ -358,8 +358,24 @@ a:any-link.underline,
 	display: inline-block;
 	letter-spacing: .03em;
 }
-.tag:hover {
+.tag.upcoming {
+	background-color: var(--teal);
+	color: var(--white);
+}
+.tag.ongoing {
+	background-color: var(--sky);
+	color: var(--white);
+}
+.tag.price {
+	background-color: var(--magenta);
+	color: var(--white);
+}
+a.tag:hover {
 	background-color: var(--gray);
+}
+.hover-black:hover {
+	background-color: var(--black) !important;
+	color: var(--white);
 }
 .portrait {
 	border-radius: 100%;

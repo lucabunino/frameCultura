@@ -1,6 +1,7 @@
 import body from './fields/body.js'
-import seoFields from './fields/seoFields.js'
-import { TimelineIcon, UsersIcon } from '@sanity/icons'
+import colorOptions from './fields/colorOptions.js';
+import seoFields from './fields/seoFields.js';
+import { TimelineIcon, UsersIcon } from '@sanity/icons';
 
 export default {
 	name: 'eventSerie',
@@ -8,6 +9,9 @@ export default {
 	icon: TimelineIcon,
 	groups: [
 		{name: 'Basics'},
+		{name: 'Who'},
+		{name: 'Where'},
+		{name: 'Access'},
 		{name: 'Preview'},
 		{name: 'Live'},
 		{name: 'Reserve'},
@@ -18,10 +22,12 @@ export default {
 		{
 			name: 'title',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'subtitle',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'slug',
@@ -31,6 +37,7 @@ export default {
 				source: 'title',
 				maxLength: 96,
 			},
+			group: 'Basics',
 		},
 		{
 			name: 'visible',
@@ -38,24 +45,51 @@ export default {
 			type: 'boolean',
 			initialValue: false,
 			validation: (Rule) => Rule.required(),
+			group: 'Preview',
 		},
 		{
 			name: 'hierarchy',
-			description: 'Higher number means it will be displayed higher in Esplora',
+			description: 'Higher number means it will be displayed higher in Live',
 			type: 'number',
 			initialValue: 1,
 			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
+			name: 'format',
+			type: 'reference',
+			to: [{type: 'format'},],
+			validation: (Rule) => Rule.required(),
+			group: 'Basics',
+		},
+		{
+			name: 'topics',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'topic'},],
+				}
+			],
 		},
 		{
 			name: 'start',
 			description: "Set time to '00:00' to only display date",
 			type: 'datetime',
 			validation: (Rule) => Rule.required(),
+			group: 'Basics',
 		},
 		{
 			name: 'end',
 			description: "Leave this field empty if you just want 'start'. Set time to '00:00' to only display date",
 			type: 'datetime',
+			group: 'Basics',
+		},
+		{
+			name: 'detailColor',
+			type: 'color',
+			options: colorOptions,
+			group: 'Basics',
 		},
 		{
 			name: 'people',
@@ -118,6 +152,7 @@ export default {
 				],
 				},
 			],
+			group: 'Who',
 		},
 		{
 			name: 'organizations',
@@ -164,32 +199,28 @@ export default {
 				],
 				},
 			],
+			group: 'Who',
 		},
 		{
 			name: 'location',
 			type: 'string',
+			group: 'Where',
 		},
 		{
 			name: 'city',
 			type: 'reference',
 			to: [{type: 'city'},],
+			group: 'Where',
 		},
 		{
-			name: 'format',
-			type: 'reference',
-			to: [{type: 'format'},],
-			validation: (Rule) => Rule.required(),
-			group: 'Basics',
+			name: 'adress',
+			type: 'string',
+			group: 'Where',
 		},
 		{
-			name: 'topics',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{type: 'topic'},],
-				}
-			],
+			name: 'adressLink',
+			type: 'string',
+			group: 'Where',
 		},
 		{
 			name: 'horizontalCover',

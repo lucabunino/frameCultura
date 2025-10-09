@@ -289,20 +289,11 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	<Live live={data.liveWidget.liveWidget} />
 {/if}
 
-<!-- {#if showBanner}
-	<div class="monument-14 bg-gray fixed z-99 bottom-0 left-0 py-2 px-[var(--gutter)] max-w-[600px] flex flex-col">
-		<p>Questo sito utilizza esclusivamente cookie tecnici, necessari al suo corretto funzionamento. Non vengono utilizzati cookie di profilazione o di terze parti.</p>
-		<p>Per maggiori dettagli, consulta la nostra <a href="/cookies" class="underline hover:text-blue">cookie policy</a>.</p>
-		<button id="accept-cookies" onclick={acceptCookies} class="block uppercase mt-4 w-fit cursor-pointer px-[.75em] py-[.5em] rounded-full uppercase bg-black text-white hover:bg-blue">Ok, ho capito</button>
-	</div>
-{/if} -->
-
 {#if showBanner}
-	<div id="cookie-banner">
-		<p>Questo sito utilizza servizi di terze parti come Vimeo e Mapbox che possono impostare cookie. Avviando la riproduzione di un video o accettando questa policy, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}
+	<div id="cookie-banner" class="jost-15 shadow rounded">
+		<p>Questo sito utilizza servizi di terze parti come Youtube che possono impostare cookie. Avviando la riproduzione di un video, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}
 		<div id="cookie-btns">
-			<button id="accept-cookies" onclick={acceptCookies} class="btn">Accetta</button>
-			<button id="reject-cookies" onclick={rejectCookies} class="btn">Rifiuta</button>
+			<button id="accept-cookies" onclick={acceptCookies} class="jost-12 bold uppercase">Ok, ho capito</button>
 		</div>
 	</div>
 {/if}
@@ -592,6 +583,20 @@ footer .btn {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	z-index: 99;
+}
+
+/* Banner */
+#cookie-banner {
+	position: fixed;
+	left: calc(var(--margin)/2);
+	bottom: 1rem;
+	background-color: var(--white);
+	max-width: 500px;
+	padding: 1rem var(--margin);
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
 	z-index: 99;
 }
 </style>

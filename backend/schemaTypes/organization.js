@@ -10,6 +10,11 @@ fields: [
 		type: 'string',
 	},
 	{
+		name: 'displayTitle',
+		type: 'boolean',
+		initialValue: 'true',
+	},
+	{
 		name: 'link',
 		type: 'url',
 	},

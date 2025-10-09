@@ -43,7 +43,7 @@ export async function getHomepage() {
 				ctaReference-> { ... }
 			},
 			liveSelection[]-> { ...,
-				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				peoplePreview[]-> { ... },
 				format-> { ... },
 				topics[]-> { ... },
 				city-> { ... }
@@ -145,7 +145,7 @@ export async function getLiveSelection() {
 		*[_type == "live" && !(_id in path('drafts.**'))][0] {
 			liveIntro,
 			liveSelection[]-> { ...,
-				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				peoplePreview[]-> { ... },
 				topics[]-> { ... },
 				format-> { ... },
 				city-> { ... },
@@ -237,7 +237,7 @@ export async function getLive(format = null, city = null, topic = null, search) 
 			)
 		` : ``}
 		] { ...,
-			"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+			peoplePreview[]-> { ... },
 			topics[]-> { ... },
 			format-> { ... },
 			city-> { ... },
@@ -260,7 +260,7 @@ export async function getEvent(slug) {
 				}
 			},
 			events[]-> {...,
-				"people": people.clusters[].people[]->{ ... } | order(person.surname asc, person.alias asc),
+				peoplePreview[]-> { ... },
 				topics[]-> { ... },
 				format-> { ... },
 				city-> { ... },

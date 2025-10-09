@@ -1,7 +1,6 @@
 <script>
 import { formatAuthorName } from "$lib/utils/author";
 import { formatDate, isUpcoming, isOngoing } from "$lib/utils/date";
-import { formatPrice } from "$lib/utils/price";
 import { urlFor } from "$lib/utils/image";
 let {
 	event,
@@ -14,7 +13,7 @@ let {
 	<a href={`/live/${event.slug.current}`}>
 		<img class="cover _5-7" src={urlFor(event.cover ? event.cover : placeholder)} alt="">
 	</a>
-	{#if event.city || event.format || event.accessPrice || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
+	{#if event.city || event.format || event.accessCtaDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
 			{#if isUpcoming(event.start, event.end)}
 				<span class="tag upcoming">In programma</span>
@@ -28,10 +27,10 @@ let {
 			{#if event.city}
 				<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
-			{#if event.accessPrice}
-				<span class="tag price"
-				style={event.accessColor ? "background-color: " + event.accessColor.hex : ""}
-				>{event.accessPrice == 0 ? 'Ingresso gratuito' : 'A pagamento: ' + formatPrice(event.accessPrice) + '€'}</span>
+			{#if event.accessTagDisplay && event.accessTagLabel}
+				<span class="tag customTag"
+				style={event.accessColor ? `background-color: ${event.accessColor.hex}; color: var(--white);` : ""}
+				>{event.accessTagLabel}</span>
 			{/if}
 		</div>
 	{/if}
@@ -41,19 +40,19 @@ let {
 	{#if event.abstract}
 		<p class="abstract" style="margin-top: 1em;">{event.abstract}</p>
 	{/if}
-	{#if event.people}
+	{#if event.peoplePreview}
 		<p class="people" style={!event.abstract ? "margin-top: 1em;" : ''}>Con
-			{#if event.people?.length < 4}
-				{#each event.people as person, i}
+			{#if event.peoplePreview?.length < 4}
+				{#each event.peoplePreview as person, i}
 					{#if person}
 						{#if person.isAuthor}
 							<a class="person hover-gray" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
 						{:else}
 							<span class="person">{formatAuthorName(person)}</span>
-						{/if}{@html event.people.length > i+1 ? ', ' : ''}
+						{/if}{@html event.peoplePreview.length > i+1 ? ', ' : ''}
 					{/if}
 				{/each}
-			{:else if event.people?.length >= 4}
+			{:else if event.peoplePreview?.length >= 4}
 				Autori vari
 			{/if}
 		</p>

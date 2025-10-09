@@ -6,7 +6,6 @@ import sliderInjectedStyle from '$lib/utils/sliderInjectedStyle.js';
 import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
 import { formatAuthorName } from "$lib/utils/author.js";
 import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
-import { formatPrice } from '$lib/utils/price.js';
 import Event from "$lib/components/Event.svelte";
 let header = getHeader()
 let { data } = $props();
@@ -84,7 +83,7 @@ function handleMouseMove(e) {
 						<time>{formatDate(event.start, event.end)}</time>
 						<h2 class="jost-45 mobile-jost-27 uppercase bold">{event.title}</h2>
 						{#if event.subtitle}<h3 class="jost-45 mobile-jost-27 bold">{event.subtitle}</h3>{/if}
-						{#if event.city || event.format || event.accessPrice || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
+						{#if event.city || event.format || event.accessTagDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 							<div class="tags jost-15 bold uppercase">
 								{#if isUpcoming(event.start, event.end)}
 									<span class="tag upcoming">In programma</span>
@@ -98,26 +97,26 @@ function handleMouseMove(e) {
 								{#if event.city}
 									<a class="tag bg-gray" href="/cerca?search={event.city.title}">{event.city.title}</a>
 								{/if}
-								{#if event.accessPrice}
-									<span class="tag price"
-									style={event.accessColor ? "background-color: " + event.accessColor.hex : ""}
-									>{event.accessPrice == 0 ? 'Ingresso gratuito' : 'A pagamento: ' + formatPrice(event.accessPrice) + '€'}</span>
+								{#if event.accessTagDisplay && event.accessTagLabel}
+									<span class="tag customTag"
+									style={event.accessColor ? `background-color: ${event.accessColor.hex}; color: var(--white);` : ""}
+									>{event.accessTagLabel}</span>
 								{/if}
 							</div>
 						{/if}
-						{#if event.people}
+						{#if event.peoplePreview}
 							<p class="people jost-18" style={!event.abstract ? "margin-top: 1em;" : ''}>Con
-								{#if event.people?.length < 4}
-									{#each event.people as person, i}
+								{#if event.peoplePreview?.length < 4}
+									{#each event.peoplePreview as person, i}
 										{#if person}
 											{#if person.isAuthor}
 												<a class="person" href="/autori/{person.slug.current}">{formatAuthorName(person)}</a>
 											{:else}
 												<span class="person">{formatAuthorName(person)}</span>
-											{/if}{@html event.people.length > i+1 ? ', ' : ''}
+											{/if}{@html event.peoplePreview.length > i+1 ? ', ' : ''}
 										{/if}
 									{/each}
-								{:else if event.people?.length >= 4}
+								{:else if event.peoplePreview?.length >= 4}
 									Autori vari
 								{/if}
 							</p>

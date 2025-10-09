@@ -18,6 +18,10 @@ export default {
 		{name: 'Related'},
 		{name: 'SEO'},
 	],
+	fieldsets: [
+		{name: 'CTA'},
+		{name: 'Tag'},
+	],
 	fields: [
 		{
 			name: 'title',
@@ -116,6 +120,18 @@ export default {
 			group: 'Who',
 		},
 		{
+			name: 'peoplePreview',
+			type: 'array',
+			of: [
+				{
+					name: 'person',
+					type: 'reference',
+					to: [{ type: 'person' }],
+				},
+			],
+			group: 'Who',
+		},
+		{
 			name: 'organizations',
 			type: 'object',
 			fields: [
@@ -202,40 +218,48 @@ export default {
 			group: 'Basics',
 		},
 		{
-			name: 'accessDisplay',
-			title: 'Display access link in single page',
-			type: 'boolean',
-			initialValue: false,
-			group: 'Access',
-		},
-		{
-			name: 'accessPrice',
-			title: 'Price',
-			description: 'Use 0 to set as Free',
-			type: 'number',
-			validation: Rule => Rule.precision(2)
-			.min(0)
-			.warning('Price must be positive and up to 2 decimal places'),
-			group: 'Access',
-		},
-		{
-			name: 'accessLink',
-			title: 'Link',
-			type: 'url',
-			group: 'Access',
-		},
-		{
-			name: 'accessLabel',
-			title: 'Label',
-			type: 'string',
-			group: 'Access',
-		},
-		{
 			name: 'accessColor',
 			title: 'Color',
 			type: 'color',
 			options: colorOptions,
 			group: 'Access',
+		},
+		{
+			name: 'accessCtaDisplay',
+			title: 'Display CTA',
+			type: 'boolean',
+			initialValue: false,
+			group: 'Access',
+			fieldset: 'CTA',
+		},
+		{
+			name: 'accessCtaLabel',
+			title: 'Label',
+			type: 'string',
+			group: 'Access',
+			fieldset: 'CTA',
+		},
+		{
+			name: 'accessCtaLink',
+			title: 'Link',
+			type: 'url',
+			group: 'Access',
+			fieldset: 'CTA',
+		},
+		{
+			name: 'accessTagDisplay',
+			title: 'Display Tag',
+			type: 'boolean',
+			initialValue: false,
+			group: 'Access',
+			fieldset: 'Tag',
+		},
+		{
+			name: 'accessTagLabel',
+			title: 'Label',
+			type: 'string',
+			group: 'Access',
+			fieldset: 'Tag',
 		},
 		body('Basics'),
 		{

@@ -6,12 +6,12 @@ let {organization} = $props()
 {#if organization.link}
 	<a href={organization.link} target="_blank" rel="noopener noreferrer" class="organization">
 		<img class="_1-1" src={urlFor(organization.logo)} alt="">
-		<h2 class="jost-15 bold">{organization.title}</h2>
+		{#if organization.displayTitle}<h2 class="jost-15">{organization.title}</h2>{/if}
 	</a>
 {:else}
 	<div class="organization">
 		<img class="_1-1" src={urlFor(organization.logo)} alt="">
-		<h2 class="jost-15">{organization.title}</h2>
+		{#if organization.displayTitle}<h2 class="jost-15">{organization.title}</h2>{/if}
 	</div>
 {/if}
 

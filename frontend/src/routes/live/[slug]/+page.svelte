@@ -3,7 +3,6 @@ import { PortableText } from '@portabletext/svelte'
 import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
 import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
-import { formatPrice } from '$lib/utils/price.js';
 import { formatAuthorName } from '$lib/utils/author';
 import { register } from 'swiper/element/bundle';register();
 import OrganizationSmall from '$lib/components/OrganizationSmall.svelte';
@@ -70,7 +69,7 @@ $effect(() => {
 {#snippet eventContent(event)}
 	<h1 class="jost-74 uppercase">{event.title}</h1>
 	{#if event.subtitle}<h2 class="jost-74">{event.subtitle}</h2>{/if}
-	{#if event.city || event.format || event.accessPrice || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
+	{#if event.city || event.format || event.accessCtaDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
 			{#if isUpcoming(event.start, event.end)}
 				<span class="tag upcoming">In programma</span>
@@ -84,10 +83,10 @@ $effect(() => {
 			{#if event.city}
 				<a class="tag bg-gray" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
-			{#if event.accessPrice}
-				<span class="tag price"
-				style={event.accessColor ? "background-color: " + event.accessColor.hex : ""}
-				>{event.accessPrice == 0 ? 'Ingresso gratuito' : 'A pagamento: ' + formatPrice(event.accessPrice) + '€'}</span>
+			{#if event.accessTagDisplay && event.accessTagLabel}
+				<span class="tag bg-gray customTag"
+				style={event.accessColor ? `background-color: ${event.accessColor.hex}; color: var(--white);` : ""}
+				>{event.accessTagLabel}</span>
 			{/if}
 		</div>
 	{/if}
@@ -217,10 +216,10 @@ $effect(() => {
 {#if event.live && isPast(event.live.displayStart)}
 	<Live live={event.live} />
 {/if}
-{#if event.accessDisplay && event.accessLink && event.accessLabel}
-	<a class="access shadow  btn bg-gray" href={event.accessLink} target="_blank" rel="noopener noreferrer"
+{#if event.accessCtaDisplay && event.accessCtaLink && event.accessCtaLabel}
+	<a class="access shadow  btn bg-gray" href={event.accessCtaLink} target="_blank" rel="noopener noreferrer"
 	style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
-	>{event.accessLabel}</a>
+	>{event.accessCtaLabel}</a>
 {/if}
 
 <style>

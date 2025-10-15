@@ -12,6 +12,9 @@ let {
 <div class="event jost-15" class:slider={slider}>
 	<a href={`/live/${event.slug.current}`}>
 		<img class="cover _5-7" src={urlFor(event.cover ? event.cover : placeholder)} alt="">
+		<time>{formatDate(event.start, event.end)}</time>
+		<h2 class="jost-24 bold uppercase leading-105">{event.title}</h2>
+		{#if event.subtitle}<h3 class="jost-24 bold leading-105">{event.subtitle}</h3>{/if}
 	</a>
 	{#if event.city || event.format || event.accessCtaDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
@@ -34,9 +37,6 @@ let {
 			{/if}
 		</div>
 	{/if}
-	<time>{formatDate(event.start, event.end)}</time>
-	<h2 class="jost-24 bold uppercase leading-105">{event.title}</h2>
-	{#if event.subtitle}<h3 class="jost-24 bold leading-105">{event.subtitle}</h3>{/if}
 	{#if event.abstract}
 		<p class="abstract" style="margin-top: 1em;">{event.abstract}</p>
 	{/if}

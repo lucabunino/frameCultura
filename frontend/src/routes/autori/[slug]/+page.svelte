@@ -4,6 +4,7 @@ import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.sv
 import { urlFor } from "$lib/utils/image";
 import { formatDate } from "$lib/utils/date";
 import { formatAuthorName } from '$lib/utils/author.js';
+    import Event from '$lib/components/Event.svelte';
 let { data } = $props();
 const author = data.author
 const maxLength = 400
@@ -137,6 +138,16 @@ function blocksToPlainText(blocks) {
 				</div>
 			</div>
 		{/if}
+		{#if author.events.length > 0}
+			<div class="author-appears">
+				<h4 class="jost-12 uppercase bold">Eventi</h4>
+				<div class="author-contents events">
+					{#each author.events as event, i}
+						<Event event={event}/>
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
 	{#if author.highlightedContents}	
 		<div class="author-highlighted-contents" onclick={() => {openHighlights = !openHighlights}} class:open={openHighlights}>
@@ -206,6 +217,11 @@ function blocksToPlainText(blocks) {
 	grid-column: 1 / span 10;
 	max-height: unset;
 }
+@media only screen and (max-width: 1728px) {
+	.author-wrapper {
+		grid-column: 1 / span 8;
+	}
+}
 @media only screen and (max-width: 800px) {
 	#author {
 		display: flex;
@@ -273,6 +289,9 @@ function blocksToPlainText(blocks) {
 	margin-top: 8rem;
 	padding-right: var(--margin);
 }
+.noHighlights .author-appears {
+	padding-right: 0;
+}
 h4 {
 	margin-bottom: 1rem;
 }
@@ -288,11 +307,17 @@ h4 {
 .author-contents.videos {
 	grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 }
+.author-contents.events {
+	grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+}
 .noHighlights .author-contents.podcasts {
 	grid-template-columns: repeat(6, calc((100% - var(--gutter)*5)/6));
 }
 .noHighlights .author-contents.videos {
 	grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
+}
+.noHighlights .author-contents.events {
+	grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 }
 .author-content img {
 	margin-bottom: 1rem;
@@ -364,6 +389,14 @@ h4 {
 }
 .author-highlighted-content .body {
 	margin-top: 2rem;
+}
+@media only screen and (max-width: 1728px) {
+	.author-highlighted-contents {
+		grid-column: 9 / span 2;
+		padding-top: 2rem;
+		border-left: solid 1px;
+		padding-left: var(--margin);
+	}
 }
 @media only screen and (max-width: 800px) {
 	.author-highlighted-contents {

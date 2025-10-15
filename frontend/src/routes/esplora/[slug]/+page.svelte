@@ -46,7 +46,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{/if}
 			<div class="titles">
 				<h1 class="jost-74 uppercase">{production.title}</h1>
-				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
@@ -141,7 +141,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{/if}
 			<div class="titles">
 				<h1 class="jost-74 uppercase">{production.title}</h1>
-				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
@@ -212,7 +212,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{/if}
 			<div class="titles">
 				<h1 class="jost-74 uppercase">{production.title}</h1>
-				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">
@@ -380,7 +380,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{/if}
 			<div class="titles">
 				<h1 class="jost-74 uppercase">{production.title}</h1>
-				{#if production.subtitle}<h2 class="jost-74">{production.subtitle}</h2>{/if}
+				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
 			{#if production.authors?.length < 4}
 				<div class="authors">

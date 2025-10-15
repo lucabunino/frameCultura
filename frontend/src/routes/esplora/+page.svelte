@@ -85,7 +85,7 @@ function handleMouseMove(e) {
 							</div>
 						{/if}
 						<h2 class="jost-45 mobile-jost-27 uppercase bold">{production.title}</h2>
-						{#if production.subtitle}<h3 class="jost-45 mobile-jost-27 bold">{production.subtitle}</h3>{/if}
+						{#if production.subtitle}<h3 class="jost-36 subtitle mobile-jost-27 bold">{production.subtitle}</h3>{/if}
 						{#if production.authors?.length < 4}
 							<p class="jost-18">di {#each production.authors as author, j}{formatAuthorName(author)}{@html production.authors.length > j+1 ? ', ' : ''}{/each}</p>
 						{:else if production.authors?.length >= 4}

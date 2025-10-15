@@ -424,6 +424,9 @@ a.tag:hover {
 .hover-gray:hover {
 	color: var(--darkGray) !important;
 }
+.subtitle {
+	margin-top: 1rem;
+}
 @media screen and (max-width: 800px) {
 	.btn {
 		font-size: 1.2rem;

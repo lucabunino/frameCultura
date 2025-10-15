@@ -314,6 +314,13 @@ export async function getAuthor(slug) {
 			"videos": *[(_type in ["video", "playlist"]) && references(^._id) && visibleAuthor == true] { ...,
 				authors[]-> { ... },
 			} | order(hierarchy desc, date desc, title asc),
+			"events": *[_type in ["event", "eventSerie"] && visible == true && references(^._id, [], "people.clusters[].people[].person")] | order(start desc) { ...,
+				peoplePreview[]-> { ... },
+				topics[]-> { ... },
+				format-> { ... },
+				city-> { ... },
+				authors[]-> { ... },
+			},
 		}`, { slug });
 }
 export async function getTeamMember(slug) {

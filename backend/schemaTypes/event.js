@@ -312,7 +312,7 @@ export default {
 		{
 			name: 'production',
 			type: 'reference',
-			to: [{type: 'video'},{type: 'playlist'},{type: 'podcast'}],
+			to: [{type: 'video'},{type: 'playlist'}],
 			group: 'Live',
 		},
 		...seoFields(),

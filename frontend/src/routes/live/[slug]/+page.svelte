@@ -9,11 +9,21 @@ import OrganizationSmall from '$lib/components/OrganizationSmall.svelte';
 import Live from '$lib/components/Live.svelte';
 import Event from '$lib/components/Event.svelte';
 import ProductionLive from '$lib/components/ProductionLive.svelte';
+import { entersViewport } from '$lib/utils/entersViewport.js';
+    import { slide } from 'svelte/transition';
 
 let { data } = $props();
 const event = data.event
 let domLoaded = $state(false)
 let swiperLiveEl = $state(undefined)
+let displayAnchor = $state(false)
+
+function showAnchor() {
+	displayAnchor = false;
+}
+function hideAnchor() {
+	displayAnchor = true;
+}
 
 $effect(() => {
 	if (swiperLiveEl) {
@@ -68,7 +78,7 @@ $effect(() => {
 
 {#snippet eventContent(event)}
 	<h1 class="jost-74 uppercase">{event.title}</h1>
-	{#if event.subtitle}<h2 class="jost-74">{event.subtitle}</h2>{/if}
+	{#if event.subtitle}<h2 class="jost-45 subtitle">{event.subtitle}</h2>{/if}
 	{#if event.city || event.format || event.accessCtaDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
 			{#if isUpcoming(event.start, event.end)}
@@ -187,7 +197,9 @@ $effect(() => {
 			</div>
 		</div>
 		{#if event.events}
-			<div class="events-wrapper">
+			<div id="eventi" class="events-wrapper"
+			use:entersViewport={{ onVisible: showAnchor, onHidden: hideAnchor }}
+			>
 				<h4 class="jost-12 uppercase bold">Tutti gli appuntamenti</h4>
 				<swiper-container class="events"
 				bind:this={swiperLiveEl}
@@ -206,9 +218,12 @@ $effect(() => {
 					{/each}
 				</swiper-container>
 			</div>
-			<a class="access shadow btn bg-gray" href={event.accessLink} target="_blank" rel="noopener noreferrer"
-			style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
-			>{event.accessLabel}</a>
+			{#if displayAnchor}
+				<a class="access shadow btn bg-gray" href=#eventi
+				style={event.detailColor ? "background-color: " + event.detailColor.hex + "; color: white;" : ""}
+				transition:slide={{ axis: "y", duration: 300 }}
+				>Tutti gli appuntamenti ↓</a>
+			{/if}
 		{/if}
 	{/if}
 </section>

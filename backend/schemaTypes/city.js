@@ -1,4 +1,5 @@
 import { MarkerIcon } from '@sanity/icons'
+import RelatedContentInput from './components/RelatedContentInput'
 
 export default {
 	name: 'city',
@@ -18,5 +19,22 @@ export default {
 				maxLength: 96,
 			},
 		},
+		{
+			name: 'relatedContent',
+			title: 'Referenced In',
+			type: 'array',
+			of: [{ type: 'reference', to: [
+				{ type: 'video' },
+				{ type: 'playlist' },
+				{ type: 'episode' },
+				{ type: 'podcast' },
+				{ type: 'event' },
+				{ type: 'eventSerie' },
+			]}],
+			components: {
+				input: RelatedContentInput
+			},
+			readOnly: true
+		}
 	],
 };

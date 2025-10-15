@@ -81,8 +81,8 @@ function handleMouseMove(e) {
 					>
 					<div class="info">
 						<time>{formatDate(event.start, event.end)}</time>
-						<h2 class="jost-45 mobile-jost-27 uppercase bold">{event.title}</h2>
-						{#if event.subtitle}<h3 class="jost-45 mobile-jost-27 bold">{event.subtitle}</h3>{/if}
+						<h2 class="jost-45 mobile-jost-27  uppercase bold">{event.title}</h2>
+						{#if event.subtitle}<h3 class="jost-36 subtitle mobile-jost-27 bold">{event.subtitle}</h3>{/if}
 						{#if event.city || event.format || event.accessTagDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 							<div class="tags jost-15 bold uppercase">
 								{#if isUpcoming(event.start, event.end)}

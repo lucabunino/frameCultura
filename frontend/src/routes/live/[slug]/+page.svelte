@@ -10,9 +10,10 @@ import Live from '$lib/components/Live.svelte';
 import Event from '$lib/components/Event.svelte';
 import ProductionLive from '$lib/components/ProductionLive.svelte';
 import { entersViewport } from '$lib/utils/entersViewport.js';
-    import { slide } from 'svelte/transition';
+import { slide } from 'svelte/transition';
 
 let { data } = $props();
+$inspect(data)
 const event = data.event
 let domLoaded = $state(false)
 let swiperLiveEl = $state(undefined)
@@ -78,7 +79,7 @@ $effect(() => {
 
 {#snippet eventContent(event)}
 	<h1 class="jost-74 uppercase">{event.title}</h1>
-	{#if event.subtitle}<h2 class="jost-45 subtitle">{event.subtitle}</h2>{/if}
+	{#if event.subtitle}<h2 class="jost-45 mobile-jost-27 subtitle">{event.subtitle}</h2>{/if}
 	{#if event.city || event.format || event.accessCtaDisplay || isUpcoming(event.start, event.end) || isOngoing(event.start, event.end)}
 		<div class="tags">
 			{#if isUpcoming(event.start, event.end)}
@@ -219,7 +220,9 @@ $effect(() => {
 				</swiper-container>
 			</div>
 			{#if displayAnchor}
-				<a class="access shadow btn bg-gray" href=#eventi
+				<a class="access shadow btn bg-gray"
+				class:withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}
+				href=#eventi
 				style={event.detailColor ? "background-color: " + event.detailColor.hex + "; color: white;" : ""}
 				transition:slide={{ axis: "y", duration: 300 }}
 				>Tutti gli appuntamenti ↓</a>
@@ -232,7 +235,9 @@ $effect(() => {
 	<Live live={event.live} />
 {/if}
 {#if event.accessCtaDisplay && event.accessCtaLink && event.accessCtaLabel}
-	<a class="access shadow  btn bg-gray" href={event.accessCtaLink} target="_blank" rel="noopener noreferrer"
+	<a class="access shadow  btn bg-gray"
+	class:withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}
+	href={event.accessCtaLink} target="_blank" rel="noopener noreferrer"
 	style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
 	>{event.accessCtaLabel}</a>
 {/if}
@@ -253,11 +258,28 @@ $effect(() => {
 }
 #event .right {
 	grid-column: 7 / span 4;
+	margin-left: 1rem;
 }
 #event .right img {
 	max-height: 80vh;
 	width: auto;
 	justify-self: right;
+}
+@media screen and (max-width: 800px) {
+	#event {
+		display: flex;
+		flex-direction: column-reverse;
+		padding-top: 0;
+	}
+	#event .right {
+		margin-left: unset;
+	}
+	#event .right img {
+		max-height: unset;
+		width: 100%;
+		justify-self: unset;
+		margin-bottom: 1rem;
+	}
 }
 
 /* EventContent */
@@ -325,6 +347,66 @@ a.person:hover {
 	column-gap: var(--margin);
 	row-gap: 1rem;
 }
+@media screen and (max-width: 800px) {
+	.tags {
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: .2em;
+	}
+	time {
+		display: block;
+		margin-top: 4rem;
+	}
+	.people {
+		flex-direction: column;
+	}
+	.label {
+		margin-bottom: .5rem;
+	}
+	.person-container {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: var(--margin);
+		row-gap: 1rem;
+	}
+	.person {
+		display: flex;
+		align-items: center;
+		gap: .7rem;
+	}
+	a.person:hover {
+		color: var(--darkGray);
+	}
+	.person img {
+		width: 1.5em;
+	}
+	.production {
+		margin-top: 1rem;
+		padding: 2rem 0 1rem;
+		border-top: solid 1px var(--black);
+	}
+	.production h4 {
+		margin-bottom: 1rem;
+	}
+	.body {
+		margin-top: 1rem;
+		padding-top: 1rem;
+		border-top: solid 1px var(--black);
+	}
+	.organizations {
+		margin-top: 8rem;
+		display: flex;
+		flex-direction: column;
+		gap: 4rem;
+	}
+	.organization-container {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: var(--margin);
+		row-gap: 1rem;
+	}
+}
 
 /* Serie */
 #eventSerie {
@@ -368,5 +450,13 @@ a.person:hover {
 	min-width: 250px;
 	text-align: center;
 	transform: translateX(-50%);
+}
+@media screen and (max-width: 800px) {
+	.access {
+		width: calc(100% - var(--margin));
+	}
+	.access.withLive {
+		bottom: calc((2rem + 1.6rem*1.3) + var(--margin) + .5rem);
+	}
 }
 </style>

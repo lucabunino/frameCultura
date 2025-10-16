@@ -139,7 +139,7 @@ function handleMouseMove(e) {
 {/if} 
 
 {#if data.liveIntro}<h3 id="live-intro" class:marginTop={data.liveSelection}>{data.liveIntro}</h3>{/if}
-<FiltersAndSearch data={data} displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} section="live" placeholder="Cerca evento"/>
+<FiltersAndSearch data={data} withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)} displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} section="live" placeholder="Cerca evento"/>
 {#if data.live.length > 0}
 	<section id="live" class:marginTop={!data.liveSelection}>
 		{#each data.live as event, i}
@@ -155,7 +155,7 @@ function handleMouseMove(e) {
 <style>
 /* Highlights */
 #liveSelection {
-	height: 100vh;
+	height: 90vh;
 	display: block;
 	overflow: hidden;
 }
@@ -216,8 +216,9 @@ function handleMouseMove(e) {
 }
 #liveSelection .tags {
 	display: inline-flex;
+	flex-wrap: wrap;
 	column-gap: .2em;
-	row-gap: 1rem;
+	row-gap: .2em;
 	margin: 1rem 0;
 	color: var(--black);
 }
@@ -322,6 +323,13 @@ function handleMouseMove(e) {
 @media screen and (max-width: 800px) {
 	#live {
 		grid-template-columns: repeat(2, 1fr);
+	}
+	#liveSelection {
+		height: calc(100vh - calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem)));
+		height: calc(100svh - calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem)));
+	}
+	#see-all {
+		display: none;
 	}
 }
 @media only screen and (max-width: 400px) {

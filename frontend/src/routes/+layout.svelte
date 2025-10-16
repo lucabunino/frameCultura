@@ -308,7 +308,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	position: fixed;
 	top: 0;
 	width: 100%;
-	z-index: 3;
+	z-index: 10;
 	transition: var(--transition);
 	transition-property: transform;
 	gap: var(--margin);

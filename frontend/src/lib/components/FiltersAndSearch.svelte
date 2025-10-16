@@ -15,6 +15,7 @@ let {
 	displayFilterFormat = false,
 	displaySearch = true,
 	placeholder = "Cerca",
+	withLive = false
 } = $props();
 let fullWidth = $derived(!displayFilters || !displaySearch ? true : false)
 let search = $derived(page.url.searchParams.get('search') ? page.url.searchParams.get('search') : '')
@@ -75,7 +76,9 @@ function toggleSearch(e, searchString) {
 }
 </script>
 
-<section id="filters-and-search" style={fullWidth ? "width:100%; left:0" : ""} class="jost-15 uppercase bold" class:up={header.up} class:marginTop={marginTop} class:open={openFilters || openSearch}>
+<section id="filters-and-search"
+class:withLive={withLive}
+style={fullWidth ? "width:100%; left:0" : ""} class="jost-15 uppercase bold" class:up={header.up} class:marginTop={marginTop} class:open={openFilters || openSearch}>
 	{#if displayFilters}
 		<div id="filters" class:open={openFilters}>
 			{#if displayFilterMedia}
@@ -228,7 +231,7 @@ select:hover {
 		display: block;
 		margin: 0;
 		padding: 0;
-		z-index: 9;
+		z-index: 8;
 		transition: none;
 	}
 	#filters-and-search.open {
@@ -340,6 +343,18 @@ input::placeholder {
 	}
 	#search-switch.open svg {
 		fill: var(--white);
+	}
+}
+
+
+@media screen and (max-width: 800px) {
+	.withLive#filters-and-search {
+		bottom: calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
+	}
+	.withLive #filters-switch,
+	.withLive #search-switch {
+		height: calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
+		padding-bottom: calc(((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
 	}
 }
 </style>

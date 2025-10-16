@@ -25,7 +25,7 @@ let {style, listItem, markDefs} = $derived(value);
 {:else if style=== 'h3'}
 	<h3 class="jost-12 uppercase bold">{@render children()}</h3>
 {:else if style=== 'h4'}
-	<p class="jost-36">{@render children()}</p>
+	<p class="jost-36 mobile-jost-27">{@render children()}</p>
 {/if}
 <style>
 p {

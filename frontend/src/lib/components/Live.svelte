@@ -86,7 +86,7 @@ transition:slide={{ axis: "y", duration: 500 }}
 	color: var(--white);
 	overflow: hidden;
 	transition: var(--transition);
-	z-index: 2;
+	z-index: 9;
 	max-width: 400px;
 	background-color: var(--bgColor);
 }
@@ -129,7 +129,7 @@ transition:slide={{ axis: "y", duration: 500 }}
 	padding-right: 3rem;
 }
 #liveSwitch {
-	z-index: 2;
+	z-index: 9;
 	height: 100%;
 	cursor: pointer;
 	display: block;

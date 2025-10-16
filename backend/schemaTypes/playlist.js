@@ -73,9 +73,6 @@ export default {
 				{
 					type: 'reference',
 					to: [{type: 'person'},],
-					options: {
-						filter: 'isAuthor == true'
-					}
 				}
 			],
 		},

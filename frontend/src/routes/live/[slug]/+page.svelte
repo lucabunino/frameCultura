@@ -11,6 +11,9 @@ import Event from '$lib/components/Event.svelte';
 import ProductionLive from '$lib/components/ProductionLive.svelte';
 import { entersViewport } from '$lib/utils/entersViewport.js';
 import { slide } from 'svelte/transition';
+import { onDestroy, onMount } from 'svelte';
+import { getHeader } from '$lib/stores/header.svelte';
+let header = getHeader()
 
 let { data } = $props();
 $inspect(data)
@@ -19,13 +22,15 @@ let domLoaded = $state(false)
 let swiperLiveEl = $state(undefined)
 let displayAnchor = $state(false)
 
-function showAnchor() {
-	displayAnchor = false;
-}
-function hideAnchor() {
-	displayAnchor = true;
-}
-
+// Lifecycle
+onMount(() => { if (event.horizontalCover) {
+	header.setInverted(true)
+	header.setInitialInverted(true)
+} })
+onDestroy(() => {
+	header.setInverted(false)
+	header.setInitialInverted(false)
+})
 $effect(() => {
 	if (swiperLiveEl) {
 		const swiperParams = {
@@ -62,6 +67,14 @@ $effect(() => {
 	}
 	domLoaded = true
 })
+
+// Functions
+function showAnchor() {
+	displayAnchor = false;
+}
+function hideAnchor() {
+	displayAnchor = true;
+}
 </script>
 
 <svelte:head>
@@ -262,8 +275,16 @@ $effect(() => {
 }
 #event .right img {
 	max-height: 80vh;
+	height: 100%;
 	width: auto;
 	justify-self: right;
+}
+@media screen and (max-width: 1280px) {
+	#event .right img {
+		width: 100%;
+		height: unset;
+	}
+
 }
 @media screen and (max-width: 800px) {
 	#event {
@@ -416,8 +437,10 @@ a.person:hover {
 	margin-top: calc((var(--margin) * 2 + 6rem)*-1);
 }
 #eventSerie .hero {
+	width: 100%;
 	min-height: 500px;
 	margin-bottom: var(--margin);
+	object-fit: cover;
 }
 #eventSerie .content-wrapper {
 	display: grid;
@@ -451,9 +474,17 @@ a.person:hover {
 	text-align: center;
 	transform: translateX(-50%);
 }
+@media screen and (max-width: 1280px) {
+	.access {
+		left: var(--margin);
+		transform: unset;
+	}
+}
 @media screen and (max-width: 800px) {
 	.access {
 		width: calc(100% - var(--margin));
+		left: 50%;
+		transform: translateX(-50%);
 	}
 	.access.withLive {
 		bottom: calc(var(--liveHeight) + var(--margin) + .5rem);

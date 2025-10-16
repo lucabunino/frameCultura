@@ -7,6 +7,7 @@ import sliderInjectedStyle from '$lib/utils/sliderInjectedStyle.js';
 import { formatAuthorName } from "$lib/utils/author.js";
 import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
     import { isPast } from "$lib/utils/date.js";
+    import { onDestroy, onMount } from "svelte";
 
 let header = getHeader()
 let { data } = $props();
@@ -18,6 +19,14 @@ const swiperParams = {
 };
 
 // Lifecycle
+onMount(() => { if (data.exploreHasContent) {
+	header.setInverted(true)
+	header.setInitialInverted(true)
+} })
+onDestroy(() => {
+	header.setInverted(false)
+	header.setInitialInverted(false)
+})
 $effect(() => {
 	if (swiperEl) {
 		Object.assign(swiperEl, swiperParams);

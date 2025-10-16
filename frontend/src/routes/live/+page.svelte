@@ -7,6 +7,7 @@ import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
 import { formatAuthorName } from "$lib/utils/author.js";
 import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
 import Event from "$lib/components/Event.svelte";
+import { onDestroy, onMount } from "svelte";
 let header = getHeader()
 let { data } = $props();
 $inspect(data)
@@ -18,6 +19,14 @@ const swiperParams = {
 };
 
 // Lifecycle
+onMount(() => { if (data.liveHasContent) {
+	header.setInverted(true)
+	header.setInitialInverted(true)
+} })
+onDestroy(() => {
+	header.setInverted(false)
+	header.setInitialInverted(false)
+})
 $effect(() => {
 	if (swiperEl) {
 		Object.assign(swiperEl, swiperParams);

@@ -451,4 +451,7 @@ a.tag:hover {
 	.btn {
 		font-size: 1.2rem;
 	}
+	.mobile-w-100 {
+		width: stretch;
+	}
 }

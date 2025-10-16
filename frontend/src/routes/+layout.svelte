@@ -28,20 +28,13 @@ let scrollY = $state(0)
 let lastScrollY = $state(0)
 let menuOpen = $state(false)
 let cookieAccepted = $state(false)
-let offset = $state(0);
 let headerHeight = $state(undefined)
 let search = $state(undefined)
 let body = $state(undefined)
-let isInitialInverted = $derived(page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathname == '/live' && data.liveHasContent)
 let showBanner = $state()
 
 // Lifecycle
 $effect(() => {
-	if (isInitialInverted) {
-		header.setInverted(true)
-	} else {
-		header.setInverted(false)
-	}
 	if (navigating.to) {
 		header.setUp(false)
 	}
@@ -73,22 +66,13 @@ function rejectCookies() {
   cookieAccepted = false;
 }
 function handleScroll(e) {
-	if (page.url.pathname == '/esplora') {
-		// offset = innerWidth/21*9 > 500 ? innerWidth/21*9 : 500
-		offset = 200
-	} else if (page.url.pathname == '/live') {
-		// offset = innerHeight
-		offset = 200
-	} else {
-		offset = headerHeight
-	}
-	if (scrollY > lastScrollY && scrollY > headerHeight) {
+	if (scrollY > lastScrollY && scrollY > 50) {
 		header.setUp(true)
 	} else {
 		header.setUp(false)
 	}
-	if (isInitialInverted) {
-		if (scrollY > offset - headerHeight) {
+	if (header.initialInverted) {
+		if (scrollY > 250 - headerHeight) {
 			header.setInverted(false)
 		} else {
 			header.setInverted(true)
@@ -187,7 +171,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 <!-- Main -->
 {#key data.pathname + cookieAccepted}
-	<main class:marginTop={!isInitialInverted}>
+	<main class:marginTop={!header.initialInverted}>
 		{@render children()}
 	</main>
 {/key}
@@ -453,6 +437,14 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 }
 .pre-footer #search-bar input {
 	border-color: var(--black);
+}
+@media screen and (max-width: 800px) {
+	#search-bar {
+		display: none;
+	}
+	.pre-footer {
+		border-top: solid 1px var(--black);
+	}
 }
 
 /* Main */

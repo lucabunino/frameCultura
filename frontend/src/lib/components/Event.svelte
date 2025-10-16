@@ -88,4 +88,9 @@ let {
 .hover-gray {
 	text-decoration: underline;
 }
+@media screen and (max-width: 800px) {
+	.event time {
+		margin-bottom: 0;
+	}
+}
 </style>

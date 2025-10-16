@@ -92,10 +92,10 @@ function handleMouseMove(e) {
 									<span class="tag ongoing">In corso</span>
 								{/if}
 								{#if event.format}
-									<a class="tag bg-gray" href="/cerca?search={event.format.title}">{event.format.title}</a>
+									<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
 								{/if}
 								{#if event.city}
-									<a class="tag bg-gray" href="/cerca?search={event.city.title}">{event.city.title}</a>
+									<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
 								{/if}
 								{#if event.accessTagDisplay && event.accessTagLabel}
 									<span class="tag customTag"
@@ -139,7 +139,9 @@ function handleMouseMove(e) {
 {/if} 
 
 {#if data.liveIntro}<h3 id="live-intro" class:marginTop={data.liveSelection}>{data.liveIntro}</h3>{/if}
-<FiltersAndSearch data={data} withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)} displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} section="live" placeholder="Cerca evento"/>
+<FiltersAndSearch data={data}
+withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}
+displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} section="live" placeholder="Cerca evento"/>
 {#if data.live.length > 0}
 	<section id="live" class:marginTop={!data.liveSelection}>
 		{#each data.live as event, i}
@@ -155,7 +157,7 @@ function handleMouseMove(e) {
 <style>
 /* Highlights */
 #liveSelection {
-	height: 90vh;
+	height: calc(100vh - var(--liveHeight) - var(--margin)*2);
 	display: block;
 	overflow: hidden;
 }
@@ -286,6 +288,7 @@ function handleMouseMove(e) {
 #live-intro {
 	text-align: center;
 	margin-bottom: 6rem;
+	padding: 0 var(--margin);
 }
 #live-intro.marginTop {
 	padding-top: 6rem;
@@ -294,7 +297,7 @@ function handleMouseMove(e) {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	column-gap: var(--gutter);
-	row-gap: 4rem;
+	row-gap: 6rem;
 	padding: var(--margin);
 }
 #live.marginTop {
@@ -325,8 +328,11 @@ function handleMouseMove(e) {
 		grid-template-columns: repeat(2, 1fr);
 	}
 	#liveSelection {
-		height: calc(100vh - calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem)));
-		height: calc(100svh - calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem)));
+		height: calc(100vh - calc(5rem + var(--liveHeight) + var(--margin)));
+		height: calc(100svh - calc(5rem + var(--liveHeight) + var(--margin)));
+	}
+	#live-intro {
+		white-space: normal;
 	}
 	#see-all {
 		display: none;
@@ -338,36 +344,3 @@ function handleMouseMove(e) {
 	}
 }
 </style>
-
-
-
-<!-- <style>
-
-
-
-/* Explore */
-#explore {
-	display: grid;
-	grid-template-columns: repeat(6, 1fr);
-	column-gap: var(--gutter);
-	row-gap: 4rem;
-	padding: 0 var(--margin);
-}
-#explore.marginTop {
-	margin-top: calc(var(--margin)*2 + 4rem);
-}
-#noResults {
-	padding: 4rem var(--margin);
-	text-align:center;
-}
-.production h2, .production h3 {
-	line-height: 1.05;
-}
-.production p {
-	margin-top: 1rem;
-}
-.production .cover {
-	margin-bottom: 1rem;
-}
-
-</style> -->

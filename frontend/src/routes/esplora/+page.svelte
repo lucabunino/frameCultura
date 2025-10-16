@@ -6,6 +6,7 @@ import { register } from 'swiper/element/bundle';register();
 import sliderInjectedStyle from '$lib/utils/sliderInjectedStyle.js';
 import { formatAuthorName } from "$lib/utils/author.js";
 import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
+    import { isPast } from "$lib/utils/date.js";
 
 let header = getHeader()
 let { data } = $props();
@@ -117,7 +118,9 @@ function handleMouseMove(e) {
 	</section>
 {/if}
 
-<FiltersAndSearch data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} displayFilterTopic={true} section={"explore"} placeholder={'Cerca produzione'}/>
+<FiltersAndSearch
+withLive={data.liveWidget && isPast(data.liveWidget.liveWidget.displayStart)}
+data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} displayFilterTopic={true} section={"explore"} placeholder={'Cerca produzione'}/>
 
 
 {#if data.explore.length > 0}

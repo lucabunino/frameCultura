@@ -143,7 +143,7 @@ let activeVideoPlayMobileIndex = $state(null)
 				<h1 class="jost-74 uppercase">{production.title}</h1>
 				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
-			{#if production.authors?.length < 4}
+			{#if production.authors?.length < 6}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Un podcast di</p>
 					{#each production.authors as author, j}
@@ -153,7 +153,7 @@ let activeVideoPlayMobileIndex = $state(null)
 						</a>
 					{/each}
 				</div>
-			{:else if production.authors?.length >= 4}
+			{:else if production.authors?.length >= 6}
 				<p class="jost-27 authors">di Autori vari</p>
 			{/if}
 			{#if production.cover}
@@ -214,7 +214,7 @@ let activeVideoPlayMobileIndex = $state(null)
 				<h1 class="jost-74 uppercase">{production.title}</h1>
 				{#if production.subtitle}<h2 class="jost-45 subtitle">{production.subtitle}</h2>{/if}
 			</div>
-			{#if production.authors?.length < 4}
+			{#if production.authors?.length < 5}
 				<div class="authors">
 					<p class="authors-label jost-12 uppercase bold">Con</p>
 					{#each production.authors as author, j}
@@ -224,7 +224,7 @@ let activeVideoPlayMobileIndex = $state(null)
 						</a>
 					{/each}
 				</div>
-			{:else if production.authors?.length >= 4}
+			{:else if production.authors?.length >= 5}
 				<p class="jost-27 authors">di Autori vari</p>
 			{/if}
 			{#if production.body}
@@ -330,7 +330,7 @@ let activeVideoPlayMobileIndex = $state(null)
 							</div>
 							<div class="opener">
 								{#if video.date}<time class="jost-15" datetime={video.date}>{video.date}</time>{/if}
-								{#if video.authors?.length < 4}
+								{#if video.authors?.length < 6}
 									<div class="authors jost-15">
 										<p class="authors-label">
 											<span>Con</span>
@@ -339,7 +339,7 @@ let activeVideoPlayMobileIndex = $state(null)
 											{/each}
 										</p>
 									</div>
-								{:else if video.authors?.length >= 4}
+								{:else if video.authors?.length >= 6}
 									<p class="authors">di Autori vari</p>
 								{/if}
 								{#if video.body}

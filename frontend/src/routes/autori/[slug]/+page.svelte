@@ -329,11 +329,17 @@ h4 {
 	.author-contents.videos {
 		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
 	}
+	.author-contents.events {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
 	.noHighlights .author-contents.podcasts {
 		grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 	}
 	.noHighlights .author-contents.videos {
 		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
+	}
+	.noHighlights .author-contents.events {
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
 	}
 }
 @media only screen and (max-width: 1080px) {
@@ -358,6 +364,9 @@ h4 {
 		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
 	}
 	.author-contents.videos, .noHighlights .author-contents.videos {
+		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+	.author-contents.events, .noHighlights .author-contents.events {
 		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
 	}
 }

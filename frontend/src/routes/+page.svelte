@@ -163,17 +163,25 @@ function onRealIndexChange(e) {
 					<div class="highlight"
 					class:left={i == 0}
 					class:right={i > 0}
+					class:wide={homepage.highlights.length == 1}
+					class:high={homepage.highlights.length == 3 && i == 0}
+					style={
+						(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
+						(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
+					}
 					>
-						{#if highlight.subtitle}<h3 class="jost-24">{highlight.subtitle}</h3>{/if}
-						{#if highlight.title}<h2 class="jost-54 mobile-jost-27">{highlight.title}</h2>{/if}
-						{#if highlight.abstract}<p class="jost-18">{highlight.abstract}</p>{/if}
+						<div>
+							{#if highlight.subtitle}<h3 class="jost-24">{highlight.subtitle}</h3>{/if}
+							{#if highlight.title}<h2 class="jost-54 mobile-jost-27">{highlight.title}</h2>{/if}
+							{#if highlight.abstract}<p class="jost-18">{highlight.abstract}</p>{/if}
+						</div>
 						{#if highlight.ctaLabel}<button class="btn bg-white">{highlight.ctaLabel}</button>{/if}
 					</div>
 				{/if}
 			{/each}
 		</section>
 	{:else}
-		<swiper-container id="highligths"
+		<swiper-container id="highlights"
 			class:invisible={!domLoaded}
 			loop={false}
 			slides-per-view={1.1}
@@ -212,10 +220,18 @@ function onRealIndexChange(e) {
 							<div class="highlight"
 							class:left={i == 0}
 							class:right={i > 0}
+							class:wide={homepage.highlights.length == 1}
+							class:high={homepage.highlights.length == 3 && i == 0}
+							style={
+								(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
+								(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
+							}
 							>
-								{#if highlight.subtitle}<h3 class="jost-24">{highlight.subtitle}</h3>{/if}
-								{#if highlight.title}<h2 class="jost-54 mobile-jost-27">{highlight.title}</h2>{/if}
-								{#if highlight.abstract}<p class="jost-18">{highlight.abstract}</p>{/if}
+								<div>
+									{#if highlight.subtitle}<h3 class="jost-24">{highlight.subtitle}</h3>{/if}
+									{#if highlight.title}<h2 class="jost-54 mobile-jost-27">{highlight.title}</h2>{/if}
+									{#if highlight.abstract}<p class="jost-18">{highlight.abstract}</p>{/if}
+								</div>
 								{#if highlight.ctaLabel}<button class="btn bg-white">{highlight.ctaLabel}</button>{/if}
 							</div>
 						{/if}
@@ -476,6 +492,7 @@ function onRealIndexChange(e) {
 }
 #highlights.high {
 	grid-template-rows: repeat(2, minmax(400px, calc((100vh - (var(--margin)*2 + 4rem))/2)));
+	grid-template-rows: repeat(2, minmax(400px, 50vh));
 }
 .highlight {
 	width: 100%;
@@ -525,6 +542,9 @@ function onRealIndexChange(e) {
 	margin-top: 4rem;
 }
 @media screen and (max-width: 800px) {
+	#highlights {
+		display: flex;
+	}
 	.highlight {
 		height: 50vh;
 	}

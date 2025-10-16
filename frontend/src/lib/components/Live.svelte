@@ -52,7 +52,7 @@ function extractVimeoID(url) {
 <svelte:window></svelte:window>
 
 {#if clientReady}
-<div id="live" class="rounded shadow jost-15 bold" style="--bgColor:{live.bgColor.hex}"
+<div id="live" class="rounded shadow jost-15 mobile-jost-12 bold" style="--bgColor:{live.bgColor.hex}"
 transition:slide={{ axis: "y", duration: 500 }}
 >
 	<a href="/live/streaming/{live.slug.current}" class="title-container">
@@ -93,7 +93,7 @@ transition:slide={{ axis: "y", duration: 500 }}
 .title-container {
 	display: flex;
 	gap: .5em;
-	padding: 1rem var(--margin);
+	padding: 1em 2em;
 	align-items: center;
 	position: relative;
 }

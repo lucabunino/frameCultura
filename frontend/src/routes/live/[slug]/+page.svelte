@@ -456,7 +456,7 @@ a.person:hover {
 		width: calc(100% - var(--margin));
 	}
 	.access.withLive {
-		bottom: calc((2rem + 1.6rem*1.3) + var(--margin) + .5rem);
+		bottom: calc(var(--liveHeight) + var(--margin) + .5rem);
 	}
 }
 </style>

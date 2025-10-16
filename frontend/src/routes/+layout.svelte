@@ -557,7 +557,7 @@ footer .btn {
 		padding: 4rem var(--margin);
 	}
 	footer.marginBottom {
-		padding: 4rem var(--margin) 8rem;
+		padding: 4rem var(--margin) calc(5rem + var(--liveHeight) + var(--margin)*2);
 	}
 	footer h4 {
 		margin-top: 4rem;
@@ -589,7 +589,7 @@ footer .btn {
 /* Banner */
 #cookie-banner {
 	position: fixed;
-	left: calc(var(--margin)/2);
+	left: 0;
 	bottom: 1rem;
 	background-color: var(--white);
 	max-width: 500px;
@@ -598,5 +598,6 @@ footer .btn {
 	flex-direction: column;
 	gap: 2rem;
 	z-index: 99;
+	margin: 0 calc(var(--margin)/2);
 }
 </style>

@@ -11,10 +11,18 @@ export function formatDate(startStr, endStr) {
 		`${pad(date.getDate())}.${pad(date.getMonth() + 1)}`;
 	const formatTime = (date) => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
-	const hasRealTime = (date) => date && (date.getHours() !== 0 || date.getMinutes() !== 0);
+	// Detect if original field was a date-only (no time)
+	const isDateOnly = (str) => str && !str.includes('T');
 
-	const startHasTime = hasRealTime(start);
-	const endHasTime = hasRealTime(end);
+	const hasRealTime = (date, str) => {
+		if (!date) return false;
+		// If no "T" → no time field was set
+		if (isDateOnly(str)) return false;
+		return date.getHours() !== 0 || date.getMinutes() !== 0;
+	};
+
+	const startHasTime = hasRealTime(start, startStr);
+	const endHasTime = hasRealTime(end, endStr);
 
 	const sameDay =
 		end &&
@@ -62,6 +70,7 @@ export function formatDate(startStr, endStr) {
 	// Date range with times
 	return `Dal ${formatDate(start)}${startHasTime ? ' alle ' + formatTime(start) : ''} al ${formatDate(end)}${endHasTime ? ' alle ' + formatTime(end) : ''}`;
 }
+
 
 export function isPast(datetime) {
 	if (!datetime) return false;

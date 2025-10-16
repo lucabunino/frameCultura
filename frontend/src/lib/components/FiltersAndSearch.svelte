@@ -349,12 +349,12 @@ input::placeholder {
 
 @media screen and (max-width: 800px) {
 	.withLive#filters-and-search {
-		bottom: calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
+		bottom: calc(5rem + var(--liveHeight) + var(--margin));
 	}
 	.withLive #filters-switch,
 	.withLive #search-switch {
-		height: calc(5rem + ((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
-		padding-bottom: calc(((2rem + 1.6rem*1.3) + var(--margin) + .5rem));
+		height: calc(5rem + var(--liveHeight) + var(--margin));
+		padding-bottom: calc(var(--liveHeight) + var(--margin));
 	}
 }
 </style>

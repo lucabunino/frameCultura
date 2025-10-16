@@ -9,7 +9,7 @@ let {
 } = $props()
 </script>
 
-<form id="search-bar" class="btn" class:small={small} class:mobileFullWidth={mobileFullWidth} class:open={openSearch}>
+<form id="search-bar" class="btn" class:small={small} class:mobileFullWidth={mobileFullWidth} class:open={openSearch} class:mobileAnchorBottom={mobileAnchorBottom}>
 	<input type="text" name="search" id="search" class="{small ? "jost-15 mobile-jost-12 bold uppercase" : "jost-27 bold"}" bind:value={search} placeholder={placeholder}>
 	<button type="submit" id="search-submit" class="jost-27">
 		<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" style={search ? 'fill: var(--black)' : ''}>
@@ -69,6 +69,9 @@ input::placeholder {
 @media screen and (max-width: 800px) {
 	#search-bar {
 		display: none;
+	}
+	#search-bar:not(.mobileAnchorBottom) {
+		display: block;
 	}
 	#search-bar input {
 		width: stretch;

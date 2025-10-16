@@ -102,8 +102,8 @@ for (let block of processedBlocks) {
 			>
 				{section.anchor.title}
 				<svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path fill="#000" d="M0 12h27v3H0z"/>
-					<path class="minus" fill="#000" d="M12 27V0h3v27z"/>
+					<path fill="#fff" d="M0 12h27v3H0z"/>
+					<path class="minus" fill="#fff" d="M12 27V0h3v27z"/>
 				</svg>
 			</button>
 			{#if activeSectionMobile === i}
@@ -207,6 +207,7 @@ for (let block of processedBlocks) {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		color: var(--white) !important;
 	}
 	.navigator-item.active .minus {
 		display: none;

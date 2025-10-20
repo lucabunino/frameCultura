@@ -295,7 +295,8 @@ h4 {
 	grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 }
 .author-contents.events {
-	grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	grid-template-columns: repeat(4, calc((100% - var(--gutter)*2)/3));
+	column-gap: var(--margin);
 }
 .noHighlights .author-contents.podcasts {
 	grid-template-columns: repeat(6, calc((100% - var(--gutter)*5)/6));
@@ -304,7 +305,7 @@ h4 {
 	grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 }
 .noHighlights .author-contents.events {
-	grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
+	grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
 }
 .author-content img {
 	margin-bottom: 1rem;
@@ -317,7 +318,7 @@ h4 {
 		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
 	}
 	.author-contents.events {
-		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
 	}
 	.noHighlights .author-contents.podcasts {
 		grid-template-columns: repeat(5, calc((100% - var(--gutter)*4)/5));
@@ -326,7 +327,7 @@ h4 {
 		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 	}
 	.noHighlights .author-contents.events {
-		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+		grid-template-columns: repeat(4, calc((100% - var(--gutter)*3)/4));
 	}
 }
 @media only screen and (max-width: 1080px) {
@@ -342,6 +343,9 @@ h4 {
 	.noHighlights .author-contents.videos {
 		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
 	}
+	.noHighlights .author-contents.events {
+		grid-template-columns: repeat(3, calc((100% - var(--gutter)*2)/3));
+	}
 }
 @media only screen and (max-width: 800px) {
 	.author-appears, .description {
@@ -355,6 +359,17 @@ h4 {
 	}
 	.author-contents.events, .noHighlights .author-contents.events {
 		grid-template-columns: repeat(2, calc((100% - var(--gutter)*1)/2));
+	}
+}
+@media only screen and (max-width: 350px) {
+	.author-contents.podcasts, .noHighlights .author-contents.podcasts {
+		grid-template-columns: repeat(1, calc((100% - var(--gutter)*0)/1));
+	}
+	.author-contents.videos, .noHighlights .author-contents.videos {
+		grid-template-columns: repeat(1, calc((100% - var(--gutter)*0)/1));
+	}
+	.author-contents.events, .noHighlights .author-contents.events {
+		grid-template-columns: repeat(1, calc((100% - var(--gutter)*0)/1));
 	}
 }
 

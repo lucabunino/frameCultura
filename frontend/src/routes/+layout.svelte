@@ -439,11 +439,21 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	border-color: var(--black);
 }
 @media screen and (max-width: 800px) {
-	#search-bar {
+	.pre-footer #search-bar {
 		display: none;
 	}
 	.pre-footer {
 		border-top: solid 1px var(--black);
+	}
+	#search-bar {
+		position: absolute;
+		left: var(--margin);
+		bottom: 2rem;
+		right: var(--margin);
+		border-bottom: solid 1px var(--black);
+	}
+	#search-bar button {
+		opacity: 1;
 	}
 }
 

@@ -305,7 +305,7 @@ displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} se
 #live {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
-	column-gap: var(--gutter);
+	column-gap: var(--margin);
 	row-gap: 6rem;
 	padding: var(--margin);
 }
@@ -347,7 +347,7 @@ displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} se
 		display: none;
 	}
 }
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 350px) {
 	#live {
 		grid-template-columns: repeat(1, 1fr);
 	}

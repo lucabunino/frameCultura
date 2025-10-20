@@ -107,6 +107,7 @@ export async function getExplore(medias = [], topic = null, search) {
       ` : ``}
     ]{ ...,
       authors[]->{ ... },
+	  authorsPreview[]->{ ... },
       topics[]->{ ... }
     } | order(hierarchy desc, date desc, title asc)
   `;

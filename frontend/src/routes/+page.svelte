@@ -363,7 +363,7 @@ function onRealIndexChange(e) {
 						loop={false}
 						space-between={10}
 						grabCursor={true}
-						slides-per-view={2.5}
+						slides-per-view={2}
 						free-mode={false}
 						mousewheel-force-to-axis={true}
 						pagination-clickable={true}
@@ -378,7 +378,7 @@ function onRealIndexChange(e) {
 										>
 										<div>
 											<h2 class="uppercase bold">{production.title}</h2>
-											{#if production.subtitle}<h3>{production.subtitle}</h3>{/if}
+											<!-- {#if production.subtitle}<h3>{production.subtitle}</h3>{/if} -->
 											<p>
 												{#if production._type == "video"}Guarda il video{/if}
 												{#if production._type == "playlist"}Guarda la playlist{/if}
@@ -699,6 +699,13 @@ function onRealIndexChange(e) {
 }
 .active-author .highlighted-contents {
 	margin-top: -2rem;
+}
+.active-author .highlighted-contents h2 {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2; /* limit to 2 lines */
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .active-author .highlighted-contents swiper-slide {
 	margin-top: 2rem;

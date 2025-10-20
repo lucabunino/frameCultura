@@ -236,7 +236,7 @@ section h4 {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 350px) {
 	.explore {
 		grid-template-columns: repeat(1, 1fr);
 	}
@@ -246,7 +246,7 @@ section h4 {
 .live {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	column-gap: var(--gutter);
+	column-gap: var(--margin);
 	row-gap: 4rem;
 	padding-top: 2rem;
 	margin-bottom: 8rem;

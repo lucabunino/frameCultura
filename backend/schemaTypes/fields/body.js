@@ -1,3 +1,5 @@
+import {DownloadIcon, StopIcon} from '@sanity/icons'
+
 export default function body({ group = undefined } = {}) {
 	return {
 		name: 'body',
@@ -21,29 +23,82 @@ export default function body({ group = undefined } = {}) {
 						{title: 'Italic', value: 'em'},
 					],
 					annotations: [
-					{
-						name: 'link',
-						type: 'object',
-						fields: [
 						{
-							name: 'url',
-							type: 'string',
-							validation: Rule =>
-							Rule.custom(href => {
-								if (!href) return true;
-								return /^(https?:\/\/|mailto:|tel:)/.test(href)
-								? true
-								: 'Must be a valid URL, mailto:, or tel: link';
-							}),
+							name: 'link',
+							type: 'object',
+							fields: [
+							{
+								name: 'url',
+								type: 'string',
+								validation: Rule =>
+								Rule.custom(href => {
+									if (!href) return true;
+									return /^(https?:\/\/|mailto:|tel:)/.test(href)
+									? true
+									: 'Must be a valid URL, mailto:, or tel: link';
+								}),
+							},
+							{
+								title: 'Open in new tab',
+								name: 'blank',
+								type: 'boolean',
+							},
+							],
 						},
-						{
-							title: 'Open in new tab',
-							name: 'blank',
-							type: 'boolean',
-						},
-						],
-					},
 					],
+				},
+			},
+			{
+				name: 'download',
+				type: 'object',
+				icon: DownloadIcon,
+				fields: [
+				{
+					name: 'title',
+					type: 'string',
+				},
+				{
+					name: 'file',
+					type: 'file',
+				},
+				{
+					name: 'externalLink',
+					type: 'url',
+				},
+				],
+			},
+			{
+				type: 'object',
+				name: 'accordionTitle',
+				fields: [
+					{
+						name: 'title',
+						type: 'string',
+						validation: (Rule) => Rule.required(),
+					},
+				]
+			},
+			{
+				type: 'object',
+				name: 'accordionEnd',
+				icon: StopIcon,
+				fields: [
+					{
+					name: 'placeholder',
+					title: 'Placeholder',
+					type: 'string',
+					hidden: true,
+					initialValue: '',
+					}
+				],
+				preview: {
+					prepare() {
+						return {
+							title: 'Accordion end',
+							subtitle: 'Closes all accordion sections',
+							media: StopIcon,
+						}
+					},
 				},
 			},
 		]

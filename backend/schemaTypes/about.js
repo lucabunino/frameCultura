@@ -57,8 +57,6 @@ export default {
 						],
 					},
 				},
-
-				// Anchor
 				{
 					type: 'object',
 					name: 'anchor',

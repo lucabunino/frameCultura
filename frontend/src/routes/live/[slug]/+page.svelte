@@ -13,8 +13,44 @@ import { entersViewport } from '$lib/utils/entersViewport.js';
 import { slide } from 'svelte/transition';
 import { onDestroy, onMount } from 'svelte';
 import { getHeader } from '$lib/stores/header.svelte';
-let header = getHeader()
+import DownloadTextStyle from '$lib/components/portableTextStyles/DownloadTextStyle.svelte';
+import AccordionTextStyle from '$lib/components/portableTextStyles/AccordionTextStyle.svelte';
 
+function groupMultiAccordions(blocks) {
+  const output = [];
+  let currentAccordions = [];
+  for (const block of blocks) {
+    if (block._type === 'accordionTitle') {
+      const newAccordion = {
+        _type: 'accordion',
+        title: block.title,
+        content: [],
+        first: currentAccordions.length === 0,
+        last: false,
+      };
+      currentAccordions.push(newAccordion);
+    } else if (block._type === 'accordionEnd') {
+      if (currentAccordions.length > 0) {
+        currentAccordions[currentAccordions.length - 1].last = true;
+      }
+      output.push(...currentAccordions);
+      currentAccordions = [];
+    } else if (currentAccordions.length > 0) {
+      currentAccordions[currentAccordions.length - 1].content.push(block);
+    } else {
+      output.push(block);
+    }
+  }
+  if (currentAccordions.length > 0) {
+    currentAccordions[currentAccordions.length - 1].last = true;
+    output.push(...currentAccordions);
+  }
+
+  return output;
+}
+
+
+let header = getHeader()
 let { data } = $props();
 $inspect(data)
 const event = data.event
@@ -160,7 +196,7 @@ function hideAnchor() {
 	{#if event.body}
 		<div class="body jost-21">
 			<PortableText
-			value={event.body}
+			value={groupMultiAccordions(event.body)}
 			components={{
 			block: {
 				normal: PlainTextStyle,
@@ -172,6 +208,10 @@ function hideAnchor() {
 			marks: {
 				link: PlainTextStyle,
 			},
+			types: {
+				download: DownloadTextStyle,
+				accordion: AccordionTextStyle,
+			}
 			}}/>
 		</div>
 	{/if}

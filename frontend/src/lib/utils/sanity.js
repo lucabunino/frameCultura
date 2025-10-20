@@ -273,6 +273,18 @@ export async function getEvent(slug) {
 			authors[]-> { ... },
 			live-> { ... },
 			production-> { ... },
+			body[]{
+    ...,
+    download {
+      file {
+        asset->{
+          _id,
+          url
+        }
+      },
+      cta
+    }
+  }
 		}`, { slug });
 }
 export async function getAuthors(search) {
@@ -354,4 +366,9 @@ export async function getContact() {
 	return await client.fetch(`
 		*[_type == "contact" && !(_id in path('drafts.**'))][0] { ... }`
 	);
+}
+export function fileUrl(file) {
+  if (!file?.asset?._ref) return ''
+  const [_, id, ext] = file.asset._ref.split('-')
+  return `https://cdn.sanity.io/files/${client.config().projectId}/${client.config().dataset}/${id}.${ext}`
 }

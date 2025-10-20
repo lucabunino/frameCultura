@@ -261,7 +261,7 @@ export default {
 			group: 'Access',
 			fieldset: 'Tag',
 		},
-		body('Basics'),
+		body({ group: 'Basics' }),
 		{
 			name: 'visible',
 			title: "Visible in 'Live' page",
@@ -314,6 +314,17 @@ export default {
 			type: 'reference',
 			to: [{type: 'video'},{type: 'playlist'}],
 			group: 'Live',
+		},
+		{
+			name: 'related',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'event'},{type: 'eventSerie'},{type: 'video'},{type: 'playlist'},{type: 'episode'},{type: 'podcast'}],
+				}
+			],
+			group: 'Related',
 		},
 		...seoFields(),
 	],

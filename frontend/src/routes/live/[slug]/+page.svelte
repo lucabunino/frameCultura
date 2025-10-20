@@ -102,10 +102,10 @@ function hideAnchor() {
 				<span class="tag ongoing">In corso</span>
 			{/if}
 			{#if event.format}
-				<a class="tag bg-gray" href="/cerca?search={event.format.title}">{event.format.title}</a>
+				<a class="tag" href="/cerca?search={event.format.title}">{event.format.title}</a>
 			{/if}
 			{#if event.city}
-				<a class="tag bg-gray" href="/cerca?search={event.city.title}">{event.city.title}</a>
+				<a class="tag" href="/cerca?search={event.city.title}">{event.city.title}</a>
 			{/if}
 			{#if event.accessTagDisplay && event.accessTagLabel}
 				<span class="tag bg-gray customTag"
@@ -278,11 +278,13 @@ function hideAnchor() {
 	height: 100%;
 	width: auto;
 	justify-self: right;
+	object-fit: contain;
 }
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 1440px) {
 	#event .right img {
 		width: 100%;
 		height: unset;
+		max-height: unset;
 	}
 
 }
@@ -459,7 +461,16 @@ a.person:hover {
 	margin: 2rem calc(var(--margin)*-1) 4rem;
 	display: flex;
 }
-
+@media screen and (max-width: 1280px) {
+	#eventSerie .content {
+		grid-column: 1 / span 8;
+	}
+}
+@media screen and (max-width: 800px) {
+	#eventSerie .content {
+		grid-column: 1 / span 10;
+	}
+}
 /* Back */
 .back {
 	margin-top: 8rem;

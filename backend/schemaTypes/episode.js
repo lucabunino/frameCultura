@@ -6,19 +6,23 @@ export default {
 	name: 'episode',
 	type: 'document',
 	icon: SquareIcon,
-	groups: [{name: 'SEO'}],
+	groups: [
+		{name: 'Basics'},
+		{name: 'Who'},
+		{name: 'Preview'},
+		{name: 'Related'},
+		{name: 'SEO'},
+	],
 	fields: [
 		{
 			name: 'title',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'subtitle',
 			type: 'string',
-		},
-		{
-			name: 'number',
-			type: 'number',
+			group: 'Basics',
 		},
 		{
 			name: 'slug',
@@ -28,33 +32,29 @@ export default {
 				source: 'title',
 				maxLength: 96,
 			},
+			group: 'Basics',
+		},
+		{
+			name: 'number',
+			type: 'number',
+			group: 'Basics',
+		},
+		{
+			name: 'cover',
+			description: 'Aspect ratio 1:1',
+			type: 'image',
+			group: 'Basics',
 		},
 		{
 			name: 'date',
 			type: 'date',
-		},
-		{
-			name: 'visible',
-			title: "Visible in 'Esplora' page",
-			type: 'boolean',
-			initialValue: false,
-		},
-		{
-			name: 'visibleAuthor',
-			title: "Visible in 'Author' page",
-			type: 'boolean',
-			initialValue: false,
-		},
-		{
-			name: 'hierarchy',
-			description: "Higher number means it will be displayed higher in 'Esplora' page",
-			type: 'number',
-			initialValue: 1,
+			group: 'Basics',
 		},
 		{
 			name: 'link',
 			type: 'url',
 			validation: (Rule) => Rule.required(),
+			group: 'Basics',
 		},
 		{
 			name: 'topics',
@@ -65,7 +65,9 @@ export default {
 					to: [{type: 'topic'},],
 				}
 			],
+			group: 'Basics',
 		},
+		body({ group: 'Basics' }),
 		{
 			name: 'authors',
 			type: 'array',
@@ -78,23 +80,52 @@ export default {
 					}
 				}
 			],
+			group: 'Who',
 		},
 		{
-			name: 'cover',
-			description: 'Aspect ratio 1:1',
-			type: 'image',
+			name: 'authorsPreview',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'person'},],
+				}
+			],
+			group: 'Who',
+		},
+		{
+			name: 'visible',
+			title: "Visible in 'Esplora' page",
+			type: 'boolean',
+			initialValue: false,
+			group: 'Preview',
+		},
+		{
+			name: 'visibleAuthor',
+			title: "Visible in 'Author' page",
+			type: 'boolean',
+			initialValue: false,
+			group: 'Preview',
+		},
+		{
+			name: 'hierarchy',
+			description: "Higher number means it will be displayed higher in 'Esplora' page",
+			type: 'number',
+			initialValue: 1,
+			group: 'Preview',
 		},
 		{
 			name: 'highlightCover',
 			description: "Aspect ratio 21:9. To be used if the podcast is selected in 'Esplora' page",
 			type: 'image',
+			group: 'Preview',
 		},
 		{
 			name: 'highlightAbstract',
 			type: 'text',
 			rows: 5,
+			group: 'Preview',
 		},
-		body(),
 		...seoFields(),
 	],
 	preview: {

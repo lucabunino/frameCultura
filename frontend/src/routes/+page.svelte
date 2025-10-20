@@ -42,27 +42,32 @@ $effect(() => {
 		const swiperParams = {
 			breakpoints: {
 				0: {
-					slidesPerView: 1.5,
+					slidesPerView: 1.6,
+					slidesOffsetBefore: 15,
+					slidesOffsetAfter: 15,
+				},
+				400: {
+					slidesPerView: 2.4,
 					slidesOffsetBefore: 15,
 					slidesOffsetAfter: 15,
 				},
 				800: {
-					slidesPerView: 2.5,
+					slidesPerView: 3.2,
 					slidesOffsetBefore: 15,
 					slidesOffsetAfter: 15,
 				},
 				1200: {
-					slidesPerView: 3.5,
+					slidesPerView: 4.2,
 					slidesOffsetBefore: 21,
 					slidesOffsetAfter: 21,
 				},
 				1513: {
-					slidesPerView: 4.5,
+					slidesPerView: 5.2,
 					slidesOffsetBefore: 21,
 					slidesOffsetAfter: 21,
 				},
 				1800: {
-					slidesPerView: 5.5,
+					slidesPerView: 6.2,
 					slidesOffsetBefore: 21,
 					slidesOffsetAfter: 21,
 				},
@@ -241,16 +246,16 @@ function onRealIndexChange(e) {
 	{/if}
 {/if}
 
-<!-- TODO -->
 {#if homepage.liveSelection}
 	<section id="live">
-		<h4 class="jost-54 inline-title">Live</h4>{#if homepage.liveIntro}<span class="section-description-inline jost-18">{homepage.liveIntro}</span>{/if}
+		<h4 class="jost-54 inline-title">Live</h4>
+		{#if homepage.liveIntro}<span class="section-description-inline jost-18">{homepage.liveIntro}</span>{/if}
 		<swiper-container class="events"
 		bind:this={swiperLiveEl}
 		init={false}
 		class:invisible={!domLoaded}
 		loop={false}
-		space-between={4}
+		space-between={15}
 		grabCursor={true}
 		free-mode={false}
 		mousewheel-force-to-axis={true}
@@ -468,6 +473,18 @@ function onRealIndexChange(e) {
 .section-description {
 	display: block;
 	max-width: 600px;
+	white-space: pre;
+}
+@media screen and (max-width: 800px) {
+	.inline-title,
+	.section-description-inline,
+	.section-description {
+		white-space: unset;
+	}
+	.section-description-inline {
+		margin-left: 0;
+		margin-top: 1rem;
+	}
 }
 
 /* Hero */

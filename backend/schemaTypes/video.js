@@ -6,7 +6,13 @@ export default {
 	name: 'video',
 	type: 'document',
 	icon: VideoIcon,
-	groups: [{name: 'SEO'}],
+	groups: [
+		{name: 'Basics'},
+		{name: 'Who'},
+		{name: 'Preview'},
+		{name: 'Related'},
+		{name: 'SEO'},
+	],
 	fieldsets: [
 		{name: 'youtube'},
 	],
@@ -14,10 +20,12 @@ export default {
 		{
 			name: 'title',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'subtitle',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'slug',
@@ -27,31 +35,19 @@ export default {
 				source: 'title',
 				maxLength: 96,
 			},
+			group: 'Basics',
 		},
 		{
 			name: 'date',
 			description: "When two productions have the same hierarchy, the one with the most recent date is displayed first in 'Esplora' page",
 			type: 'date',
+			group: 'Basics',
 		},
 		{
-			name: 'visible',
-			title: "Visible in 'Esplora' page",
-			type: 'boolean',
-			initialValue: false,
-			validation: (Rule) => Rule.required(),
-		},
-		{
-			name: 'visibleAuthor',
-			title: "Visible in 'Author' page",
-			type: 'boolean',
-			initialValue: false,
-		},
-		{
-			name: 'hierarchy',
-			description: "Higher number means it will be displayed higher in 'Esplora' page",
-			type: 'number',
-			initialValue: 1,
-			validation: (Rule) => Rule.required(),
+			name: 'cover',
+			description: 'Aspect ratio 16:9',
+			type: 'image',
+			group: 'Basics',
 		},
 		{
 			name: 'youtubeVideoCode',
@@ -65,7 +61,8 @@ export default {
 					return 'Either a YouTube Video Code or an External Link is required'
 				}
 				return true
-				}),
+			}),
+			group: 'Basics',
 		},
 		{
 			name: 'youtubePlaylistCode',
@@ -73,6 +70,13 @@ export default {
 			description: "Required to display the video as part of a Youtube playlist, when loaded in 'Single Video' page",
 			type: 'string',
 			fieldset: 'youtube',
+			group: 'Basics',
+		},
+		{
+			name: 'externalLinkLabel',
+			type: 'string',
+			fieldset: 'youtube',
+			group: 'Basics',
 		},
 		{
 			name: 'externalLink',
@@ -85,12 +89,8 @@ export default {
 					return 'Either an External Link or a YouTube Video Code is required'
 				}
 				return true
-				}),
-		},
-		{
-			name: 'externalLinkLabel',
-			type: 'string',
-			fieldset: 'youtube',
+			}),
+			group: 'Basics',
 		},
 		{
 			name: 'topics',
@@ -101,7 +101,9 @@ export default {
 					to: [{type: 'topic'},],
 				}
 			],
+			group: 'Basics',
 		},
+		body({ group: 'Basics' }),
 		{
 			name: 'authors',
 			type: 'array',
@@ -111,23 +113,54 @@ export default {
 					to: [{type: 'person'},],
 				}
 			],
+			group: 'Who',
 		},
 		{
-			name: 'cover',
-			description: 'Aspect ratio 16:9',
-			type: 'image',
+			name: 'authorsPreview',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'person'},],
+				}
+			],
+			group: 'Who',
+		},
+		{
+			name: 'visible',
+			title: "Visible in 'Esplora' page",
+			type: 'boolean',
+			initialValue: false,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
+			name: 'visibleAuthor',
+			title: "Visible in 'Author' page",
+			type: 'boolean',
+			initialValue: false,
+			group: 'Preview',
+		},
+		{
+			name: 'hierarchy',
+			description: "Higher number means it will be displayed higher in 'Esplora' page",
+			type: 'number',
+			initialValue: 1,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
 		},
 		{
 			name: 'highlightCover',
 			description: "Aspect ratio 21:9. To be used if the video is selected in 'Esplora' page",
 			type: 'image',
+			group: 'Preview',
 		},
 		{
 			name: 'highlightAbstract',
 			type: 'text',
 			rows: 5,
+			group: 'Preview',
 		},
-		body(),
 		...seoFields()
 	],
 	preview: {

@@ -23,7 +23,7 @@ export default {
 		{
 			name: 'intro1',
 			type: 'text',
-			rows: 2,
+			rows: 3,
 			fieldset: 'hero',
 			validation: (Rule) => Rule.required(),
 		},

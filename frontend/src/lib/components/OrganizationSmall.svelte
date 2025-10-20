@@ -6,12 +6,12 @@ let {organization} = $props()
 {#if organization.link}
 	<a href={organization.link} target="_blank" rel="noopener noreferrer" class="organization">
 		<img class="_1-1" src={urlFor(organization.logo)} alt="">
-		{#if organization.displayTitle}<h2 class="jost-15">{organization.title}</h2>{/if}
+		{#if organization.displayTitle}<h2 class="jost-15 mobile-jost-12">{organization.title}</h2>{/if}
 	</a>
 {:else}
 	<div class="organization">
 		<img class="_1-1" src={urlFor(organization.logo)} alt="">
-		{#if organization.displayTitle}<h2 class="jost-15">{organization.title}</h2>{/if}
+		{#if organization.displayTitle}<h2 class="jost-15 mobile-jost-12">{organization.title}</h2>{/if}
 	</div>
 {/if}
 
@@ -26,5 +26,10 @@ let {organization} = $props()
 }
 .organization img {
 	object-fit: contain;
+}
+@media screen and (max-width: 800px) {
+	.organization {
+		max-width: 80px;
+	}
 }
 </style>

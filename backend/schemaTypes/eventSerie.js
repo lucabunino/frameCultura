@@ -223,13 +223,13 @@ export default {
 			group: 'Where',
 		},
 		{
-			name: 'horizontalCover',
-			description: 'Aspect ratio 21:9. To be used in single page',
+			name: 'cover',
+			description: 'Aspect ratio 5:7',
 			type: 'image',
 		},
 		{
-			name: 'cover',
-			description: 'Aspect ratio 5:7',
+			name: 'horizontalCover',
+			description: 'Aspect ratio 21:9. To be used in single page',
 			type: 'image',
 		},
 		{
@@ -248,7 +248,7 @@ export default {
 			type: 'text',
 			rows: 5,
 		},
-		body(),
+		body({ group: 'Basics' }),
 		{
 			name: 'events',
 			type: 'array',

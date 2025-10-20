@@ -1,28 +1,33 @@
 export function formatDate(startStr, endStr) {
 	if (!startStr) return '';
 
+	// const months = [
+	// 	'gen', 'feb', 'mar', 'apr', 'mag', 'giu',
+	// 	'lug', 'ago', 'set', 'ott', 'nov', 'dic'
+	// ];
+	const months = [
+		'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+		'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'
+	];
+
 	const start = new Date(startStr);
 	const end = endStr ? new Date(endStr) : null;
 
 	const pad = (n) => n.toString().padStart(2, '0');
+
 	const formatDate = (date) =>
-		`${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}`;
+		`${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 	const formatDayMonth = (date) =>
-		`${pad(date.getDate())}.${pad(date.getMonth() + 1)}`;
+		`${date.getDate()} ${months[date.getMonth()]}`;
 	const formatTime = (date) => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
-	// Detect if original field was a date-only (no time)
-	const isDateOnly = (str) => str && !str.includes('T');
-
-	const hasRealTime = (date, str) => {
-		if (!date) return false;
-		// If no "T" → no time field was set
-		if (isDateOnly(str)) return false;
-		return date.getHours() !== 0 || date.getMinutes() !== 0;
+	const hasRealTime = (date) => {
+		// Detect fake "02:00" times caused by missing time input
+		return date && (date.getHours() !== 0 || date.getMinutes() !== 0);
 	};
 
-	const startHasTime = hasRealTime(start, startStr);
-	const endHasTime = hasRealTime(end, endStr);
+	const startHasTime = hasRealTime(start);
+	const endHasTime = hasRealTime(end);
 
 	const sameDay =
 		end &&
@@ -59,11 +64,11 @@ export function formatDate(startStr, endStr) {
 	// Date range without times
 	if (!startHasTime && !endHasTime) {
 		if (sameMonth) {
-			return `${pad(start.getDate())}-${pad(end.getDate())}.${pad(start.getMonth() + 1)}.${start.getFullYear()}`;
+			return `${start.getDate()}–${end.getDate()} ${months[start.getMonth()]} ${start.getFullYear()}`;
 		} else if (sameYear) {
-			return `${formatDayMonth(start)}-${formatDayMonth(end)}.${start.getFullYear()}`;
+			return `${formatDayMonth(start)}–${formatDayMonth(end)} ${start.getFullYear()}`;
 		} else {
-			return `${formatDate(start)}-${formatDate(end)}`;
+			return `${formatDate(start)}–${formatDate(end)}`;
 		}
 	}
 

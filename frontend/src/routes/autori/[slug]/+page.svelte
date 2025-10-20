@@ -5,6 +5,7 @@ import { urlFor } from "$lib/utils/image";
 import { formatDate } from "$lib/utils/date";
 import { formatAuthorName } from '$lib/utils/author.js';
     import Event from '$lib/components/Event.svelte';
+    import Production from '$lib/components/Production.svelte';
 let { data } = $props();
 const author = data.author
 const maxLength = 400
@@ -109,14 +110,7 @@ function blocksToPlainText(blocks) {
 				<h4 class="jost-12 uppercase bold">Podcast</h4>
 				<div class="author-contents podcasts">
 					{#each author.audios as audio, i}
-						<a class="author-content jost-15" href={`/esplora/${audio.slug.current}`}>
-							<img class="cover rounded _16-9" src={urlFor(audio.cover ? audio.cover : data.info.placeholder)} alt=""
-							class:_1-1={audio._type == "episode" || audio._type == "podcast"}
-							class:_16-9={audio._type == "video" || audio._type == "playlist"}
-							>
-							<h2 class="jost-18 uppercase bold tight">{audio.title}</h2>
-							{#if audio.subtitle}<h3 class="jost-18 bold tight">{audio.subtitle}</h3>{/if}
-						</a>
+						<Production production={audio} placeholder={data.info.placeholder} showInfo={false}/>
 					{/each}
 				</div>
 			</div>
@@ -126,21 +120,14 @@ function blocksToPlainText(blocks) {
 				<h4 class="jost-12 uppercase bold">Video</h4>
 				<div class="author-contents videos">
 					{#each author.videos as video, i}
-						<a class="author-content jost-15" href={`/esplora/${video.slug.current}`}>
-							<img class="cover rounded _16-9" src={urlFor(video.cover ? video.cover : data.info.placeholder)} alt=""
-							class:_1-1={video._type == "episode" || video._type == "podcast"}
-							class:_16-9={video._type == "video" || video._type == "playlist"}
-							>
-							<h2 class="jost-18 uppercase bold tight">{video.title}</h2>
-							{#if video.subtitle}<h3 class="jost-18 bold tight">{video.subtitle}</h3>{/if}
-						</a>
+						<Production production={video} placeholder={data.info.placeholder} showInfo={false}/>
 					{/each}
 				</div>
 			</div>
 		{/if}
 		{#if author.events.length > 0}
 			<div class="author-appears">
-				<h4 class="jost-12 uppercase bold">Eventi</h4>
+				<h4 class="jost-12 uppercase bold">Live</h4>
 				<div class="author-contents events">
 					{#each author.events as event, i}
 						<Event event={event}/>

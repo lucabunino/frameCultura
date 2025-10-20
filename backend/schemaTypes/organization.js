@@ -22,6 +22,7 @@ fields: [
 	{
 		name: 'logo',
 		type: 'image',
+		validation: (Rule) => Rule.required(),
 	},
 	{
 		name: 'relatedContent',

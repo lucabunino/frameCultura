@@ -6,7 +6,13 @@ export default {
 	name: 'playlist',
 	type: 'document',
 	icon: VersionsIcon,
-	groups: [{name: 'SEO'}],
+	groups: [
+		{name: 'Basics'},
+		{name: 'Who'},
+		{name: 'Preview'},
+		{name: 'Related'},
+		{name: 'SEO'},
+	],
 	fieldsets: [
 		{name: 'youtube'},
 	],
@@ -14,6 +20,7 @@ export default {
 		{
 			name: 'title',
 			type: 'string',
+			group: 'Basics',
 		},
 		{
 			name: 'slug',
@@ -23,31 +30,19 @@ export default {
 				source: 'title',
 				maxLength: 96,
 			},
+			group: 'Basics',
 		},
 		{
 			name: 'date',
 			description: "When two productions have the same hierarchy, the one with the most recent date is displayed first in 'Esplora' page",
 			type: 'date',
+			group: 'Basics',
 		},
 		{
-			name: 'visible',
-			title: "Visible in 'Esplora' page",
-			type: 'boolean',
-			initialValue: false,
-			validation: (Rule) => Rule.required(),
-		},
-		{
-			name: 'visibleAuthor',
-			title: "Visible in 'Author' page",
-			type: 'boolean',
-			initialValue: false,
-		},
-		{
-			name: 'hierarchy',
-			description: "Higher number means it will be displayed higher in 'Esplora' page",
-			type: 'number',
-			initialValue: 1,
-			validation: (Rule) => Rule.required(),
+			name: 'cover',
+			description: 'Aspect ratio 16:9',
+			type: 'image',
+			group: 'Basics',
 		},
 		{
 			name: 'youtubePlaylistCode',
@@ -55,43 +50,8 @@ export default {
 			description: "Required to display the videos as part of a Youtube playlist, when loaded in 'Playlist' page",
 			type: 'string',
 			fieldset: 'youtube',
+			group: 'Basics',
 		},
-		{
-			name: 'topics',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{type: 'topic'},],
-				}
-			],
-		},
-		{
-			name: 'authors',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{type: 'person'},],
-				}
-			],
-		},
-		{
-			name: 'cover',
-			description: 'Aspect ratio 16:9',
-			type: 'image',
-		},
-		{
-			name: 'highlightCover',
-			description: "Aspect ratio 21:9. To be used if the playlist is selected in 'Esplora' page",
-			type: 'image',
-		},
-		{
-			name: 'highlightAbstract',
-			type: 'text',
-			rows: 5,
-		},
-		body(),
 		{
 			name: 'videos',
 			type: 'array',
@@ -102,6 +62,77 @@ export default {
 				},
 			],
 			validation: (Rule) => Rule.required(),
+			group: 'Basics',
+		},
+		body({ group: 'Basics' }),
+		{
+			name: 'topics',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'topic'},],
+				}
+			],
+			group: 'Basics',
+		},
+		{
+			name: 'authors',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'person'},],
+				}
+			],
+			group: 'Who',
+		},
+		{
+			name: 'authorsPreview',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'person'},],
+				}
+			],
+			group: 'Who',
+		},
+		{
+			name: 'visible',
+			title: "Visible in 'Esplora' page",
+			type: 'boolean',
+			initialValue: false,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
+			name: 'visibleAuthor',
+			title: "Visible in 'Author' page",
+			type: 'boolean',
+			initialValue: false,
+			group: 'Preview',
+		},
+		{
+			name: 'hierarchy',
+			description: "Higher number means it will be displayed higher in 'Esplora' page",
+			type: 'number',
+			initialValue: 1,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
+			name: 'highlightCover',
+			description: "Aspect ratio 21:9. To be used if the playlist is selected in 'Esplora' page",
+			type: 'image',
+			group: 'Preview',
+		},
+		{
+			name: 'highlightAbstract',
+			type: 'text',
+			rows: 5,
+			group: 'Preview',
+
 		},
 		...seoFields()
 	],

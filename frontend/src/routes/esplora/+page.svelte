@@ -8,6 +8,7 @@ import { formatAuthorName } from "$lib/utils/author.js";
 import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
     import { isPast } from "$lib/utils/date.js";
     import { onDestroy, onMount } from "svelte";
+    import Production from "$lib/components/Production.svelte";
 
 let header = getHeader()
 let { data } = $props();
@@ -135,21 +136,7 @@ data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} display
 {#if data.explore.length > 0}
 	<section id="explore" class:marginTop={!data.exploreSelection}>
 		{#each data.explore as production, i}
-			<a class="production" href="/esplora/{production.slug.current}">
-				<img class="cover rounded"
-				class:_1-1={production._type == "episode" || production._type == "podcast"}
-				class:_16-9={production._type == "video" || production._type == "playlist"}
-				src={urlFor(production.cover ? production.cover : data.info.placeholder).width(800)}
-				alt="Copertina di {production.title}"
-				>
-				<h2 class="jost-18 uppercase bold">{production.title}</h2>
-				{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
-				{#if production.authors?.length < 4}
-					<p class="jost-18">di {#each production.authors as author, j}{formatAuthorName(author)}{@html production.authors.length > j+1 ? ', ' : ''}{/each}</p>
-				{:else if production.authors?.length >= 4}
-					<p class="jost-18">di Autori vari</p>
-				{/if}
-			</a>
+			<Production production={production} placeholder={data.info.placeholder}/>
 		{/each}
 	</section>
 {:else}
@@ -210,6 +197,15 @@ data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} display
 	flex-direction: column;
 	justify-content: center;
 	padding: var(--margin);
+}
+#exploreSelection .production h2, .production h3 {
+	line-height: 1.05;
+}
+#exploreSelection .production p {
+	margin-top: 1rem;
+}
+#exploreSelection .production .cover {
+	margin-bottom: 1rem;
 }
 #exploreSelection .info {
 	max-width: 700px;
@@ -281,15 +277,6 @@ data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} display
 #noResults {
 	padding: 4rem var(--margin);
 	text-align:center;
-}
-.production h2, .production h3 {
-	line-height: 1.05;
-}
-.production p {
-	margin-top: 1rem;
-}
-.production .cover {
-	margin-bottom: 1rem;
 }
 @media only screen and (max-width: 1280px) {
 	#explore {

@@ -149,12 +149,7 @@ export async function getProduction(slug) {
 				_type in ["event","eventSerie","podcast","episode","video","playlist"]
 				&& visible == true
 				&& !(_id in path("drafts.**"))
-				&& (
-					format._ref == ^.format._ref ||
-					city._ref == ^.city._ref ||
-					count(topics[@._ref in ^.topics[]._ref]) > 0
-				)
-			][0...8] {
+			] {
 				...,
 				authors[]->{ ... },
 				authorsPreview[]-> { ... },
@@ -162,7 +157,7 @@ export async function getProduction(slug) {
 				topics[]-> { ... },
 				format-> { ... },
 				city-> { ... },
-			},
+			} | order(matchPriority asc, date desc)[0...8],
 			"podcasts": *[_type == "podcast" && references(^._id)]{ ... },
 			"playlists": *[_type == "playlist" && references(^._id)]{ ... },
 		}`, { slug });
@@ -319,10 +314,6 @@ export async function getEvent(slug) {
 				topics[]-> { ... },
 				format-> { ... },
 				city-> { ... },
-				"matchPriority": 
-					city._ref in ^.city[]._ref ? 1 :
-					count(topics[@._ref in ^.topics[]._ref]) > 0 ? 2 :
-					format._ref in ^.format[]._ref ? 3 : 4
 			} | order(matchPriority asc, date desc)[0...8]
 		}`, { slug });
 }

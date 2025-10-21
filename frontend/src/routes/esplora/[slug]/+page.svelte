@@ -348,7 +348,7 @@ let activeVideoPlayMobileIndex = $state(null)
 								{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
 							</div>
 							<div class="opener">
-								{#if video.date}<time class="jost-15" datetime={video.date}>{formatDate(episode.date)}</time>{/if}
+								{#if video.date}<time class="jost-15" datetime={video.date}>{formatDate(video.date)}</time>{/if}
 								{#if video.authors?.length < 6}
 									<div class="authors jost-15">
 										<p class="authors-label">

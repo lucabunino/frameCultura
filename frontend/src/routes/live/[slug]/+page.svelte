@@ -1,62 +1,29 @@
 <script>
 import { PortableText } from '@portabletext/svelte'
-import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 import { urlFor } from "$lib/utils/image";
 import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
 import { formatAuthorName } from '$lib/utils/author';
 import { register } from 'swiper/element/bundle';register();
-import OrganizationSmall from '$lib/components/OrganizationSmall.svelte';
-import Live from '$lib/components/Live.svelte';
-import Event from '$lib/components/Event.svelte';
-import ProductionLive from '$lib/components/ProductionLive.svelte';
 import { entersViewport } from '$lib/utils/entersViewport.js';
+import { groupMultiAccordions } from '$lib/utils/accordion.js';
 import { slide } from 'svelte/transition';
 import { onDestroy, onMount } from 'svelte';
 import { getHeader } from '$lib/stores/header.svelte';
+import OrganizationSmall from '$lib/components/OrganizationSmall.svelte';
+import Live from '$lib/components/Live.svelte';
+import Event from '$lib/components/Event.svelte';
+import Related from '$lib/components/Related.svelte';
+import ProductionLive from '$lib/components/ProductionLive.svelte';
 import DownloadTextStyle from '$lib/components/portableTextStyles/DownloadTextStyle.svelte';
 import AccordionTextStyle from '$lib/components/portableTextStyles/AccordionTextStyle.svelte';
-
-function groupMultiAccordions(blocks) {
-  const output = [];
-  let currentAccordions = [];
-  for (const block of blocks) {
-    if (block._type === 'accordionTitle') {
-      const newAccordion = {
-        _type: 'accordion',
-        title: block.title,
-        content: [],
-        first: currentAccordions.length === 0,
-        last: false,
-      };
-      currentAccordions.push(newAccordion);
-    } else if (block._type === 'accordionEnd') {
-      if (currentAccordions.length > 0) {
-        currentAccordions[currentAccordions.length - 1].last = true;
-      }
-      output.push(...currentAccordions);
-      currentAccordions = [];
-    } else if (currentAccordions.length > 0) {
-      currentAccordions[currentAccordions.length - 1].content.push(block);
-    } else {
-      output.push(block);
-    }
-  }
-  if (currentAccordions.length > 0) {
-    currentAccordions[currentAccordions.length - 1].last = true;
-    output.push(...currentAccordions);
-  }
-
-  return output;
-}
-
-
+import PlainTextStyle from '$lib/components/portableTextStyles/PlainTextStyle.svelte';
 let header = getHeader()
 let { data } = $props();
-$inspect(data)
 const event = data.event
 let domLoaded = $state(false)
 let swiperLiveEl = $state(undefined)
 let displayAnchor = $state(false)
+$inspect(event.additionalRelated)
 
 // Lifecycle
 onMount(() => { if (event.horizontalCover) {
@@ -103,7 +70,6 @@ $effect(() => {
 	}
 	domLoaded = true
 })
-
 // Functions
 function showAnchor() {
 	displayAnchor = false;
@@ -293,6 +259,9 @@ function hideAnchor() {
 	href={event.accessCtaLink} target="_blank" rel="noopener noreferrer"
 	style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
 	>{event.accessCtaLabel}</a>
+{/if}
+{#if event.additionalRelated}
+	<Related related={event.related} additionalRelated={event.additionalRelated}/>
 {/if}
 
 <style>

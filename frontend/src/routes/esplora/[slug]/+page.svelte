@@ -5,7 +5,10 @@ import { urlFor } from "$lib/utils/image";
 import { formatDate } from '$lib/utils/date';
 import { formatEmbed } from '$lib/utils/youtube';
 import { formatAuthorName } from '$lib/utils/author';
-
+import { groupMultiAccordions } from '$lib/utils/accordion.js';
+import AccordionTextStyle from '$lib/components/portableTextStyles/AccordionTextStyle.svelte';
+import DownloadTextStyle from '$lib/components/portableTextStyles/DownloadTextStyle.svelte';
+import Related from '$lib/components/Related.svelte';
 let { data } = $props();
 const production = data.production
 let activeVideoIndex = $state(0)
@@ -75,7 +78,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{#if production.body}
 				<div class="body jost-21">
 					<PortableText
-					value={production.body}
+					value={groupMultiAccordions(production.body)}
 					components={{
 					block: {
 						normal: PlainTextStyle,
@@ -87,6 +90,10 @@ let activeVideoPlayMobileIndex = $state(null)
 					marks: {
 						link: PlainTextStyle,
 					},
+					types: {
+						download: DownloadTextStyle,
+						accordion: AccordionTextStyle,
+					}
 					}}/>
 				</div>
 			{/if}
@@ -108,7 +115,7 @@ let activeVideoPlayMobileIndex = $state(null)
 						{#if episode.body}
 							<div class="body jost-15">
 								<PortableText
-								value={episode.body}
+								value={groupMultiAccordions(episode.body)}
 								components={{
 								block: {
 									normal: PlainTextStyle,
@@ -120,6 +127,10 @@ let activeVideoPlayMobileIndex = $state(null)
 								marks: {
 									link: PlainTextStyle,
 								},
+								types: {
+									download: DownloadTextStyle,
+									accordion: AccordionTextStyle,
+								}
 								}}/>
 							</div>
 						{/if}
@@ -170,7 +181,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{#if production.body}
 				<div class="body jost-21">
 					<PortableText
-					value={production.body}
+					value={groupMultiAccordions(production.body)}
 					components={{
 					block: {
 						normal: PlainTextStyle,
@@ -182,6 +193,10 @@ let activeVideoPlayMobileIndex = $state(null)
 					marks: {
 						link: PlainTextStyle,
 					},
+					types: {
+						download: DownloadTextStyle,
+						accordion: AccordionTextStyle,
+					}
 					}}/>
 				</div>
 			{/if}
@@ -230,7 +245,7 @@ let activeVideoPlayMobileIndex = $state(null)
 			{#if production.body}
 				<div class="body jost-24">
 					<PortableText
-					value={production.body}
+					value={groupMultiAccordions(production.body)}
 					components={{
 					block: {
 						normal: PlainTextStyle,
@@ -242,6 +257,10 @@ let activeVideoPlayMobileIndex = $state(null)
 					marks: {
 						link: PlainTextStyle,
 					},
+					types: {
+						download: DownloadTextStyle,
+						accordion: AccordionTextStyle,
+					}
 					}}/>
 				</div>
 			{/if}
@@ -329,7 +348,7 @@ let activeVideoPlayMobileIndex = $state(null)
 								{#if video.subtitle}<h3 class="jost-18 bold">{video.subtitle}</h3>{/if}
 							</div>
 							<div class="opener">
-								{#if video.date}<time class="jost-15" datetime={video.date}>{video.date}</time>{/if}
+								{#if video.date}<time class="jost-15" datetime={video.date}>{formatDate(episode.date)}</time>{/if}
 								{#if video.authors?.length < 6}
 									<div class="authors jost-15">
 										<p class="authors-label">
@@ -465,6 +484,9 @@ let activeVideoPlayMobileIndex = $state(null)
 		{/if}
 	{/if}
 </section>
+{#if production.additionalRelated}
+	<Related related={production.related} additionalRelated={production.additionalRelated}/>
+{/if}
 
 <style>
 #production {

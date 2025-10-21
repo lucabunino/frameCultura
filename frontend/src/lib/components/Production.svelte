@@ -6,6 +6,7 @@ let {
 	production,
 	placeholder,
 	showInfo = true,
+	related = true,
 } = $props()
 </script>
 
@@ -16,7 +17,7 @@ let {
 	src={urlFor(production.cover ? production.cover : placeholder).width(800)}
 	alt="Copertina di {production.title}"
 	>
-	<h2 class="jost-18 uppercase bold">{production.title}</h2>
+	<h2 class="{related ? 'jost-24' : 'jost-18'} uppercase bold">{production.title}</h2>
 	{#if production.subtitle}<h3 class="jost-18 bold">{production.subtitle}</h3>{/if}
 	{#if showInfo}
 		{#if production.authorsPreview}
@@ -41,4 +42,5 @@ let {
 .production .cover {
 	margin-bottom: 1rem;
 }
+
 </style>

@@ -1,30 +1,30 @@
 export function formatDate(startStr, endStr) {
 	if (!startStr) return '';
 
-	// const months = [
-	// 	'gen', 'feb', 'mar', 'apr', 'mag', 'giu',
-	// 	'lug', 'ago', 'set', 'ott', 'nov', 'dic'
-	// ];
 	const months = [
 		'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
 		'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'
 	];
 
-	const start = new Date(startStr);
-	const end = endStr ? new Date(endStr) : null;
+	const parseDate = (str) => {
+		// Detect date-only strings: "YYYY-MM-DD"
+		if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+			const [y, m, d] = str.split('-').map(Number);
+			return new Date(y, m - 1, d); // JS months are 0-based
+		}
+		return new Date(str);
+	};
+
+	const start = parseDate(startStr);
+	const end = endStr ? parseDate(endStr) : null;
 
 	const pad = (n) => n.toString().padStart(2, '0');
 
-	const formatDate = (date) =>
-		`${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-	const formatDayMonth = (date) =>
-		`${date.getDate()} ${months[date.getMonth()]}`;
+	const formatDateStr = (date) => `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+	const formatDayMonth = (date) => `${date.getDate()} ${months[date.getMonth()]}`;
 	const formatTime = (date) => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
-	const hasRealTime = (date) => {
-		// Detect fake "02:00" times caused by missing time input
-		return date && (date.getHours() !== 0 || date.getMinutes() !== 0);
-	};
+	const hasRealTime = (date) => date && (date.getHours() !== 0 || date.getMinutes() !== 0);
 
 	const startHasTime = hasRealTime(start);
 	const endHasTime = hasRealTime(end);
@@ -44,20 +44,21 @@ export function formatDate(startStr, endStr) {
 
 	// No end date
 	if (!end) {
-		if (startHasTime) return `${formatDate(start)} alle ${formatTime(start)}`;
-		return formatDate(start);
+		return startHasTime
+			? `${formatDateStr(start)} alle ${formatTime(start)}`
+			: formatDateStr(start);
 	}
 
 	// Same day
 	if (sameDay) {
-		if (!startHasTime && endHasTime) {
-			return `${formatDate(start)} fino alle ${formatTime(end)}`;
-		} else if (startHasTime && endHasTime) {
-			return `${formatDate(start)} dalle ${formatTime(start)} alle ${formatTime(end)}`;
+		if (startHasTime && endHasTime) {
+			return `${formatDateStr(start)} dalle ${formatTime(start)} alle ${formatTime(end)}`;
+		} else if (!startHasTime && endHasTime) {
+			return `${formatDateStr(start)} fino alle ${formatTime(end)}`;
 		} else if (startHasTime) {
-			return `${formatDate(start)} alle ${formatTime(start)}`;
+			return `${formatDateStr(start)} alle ${formatTime(start)}`;
 		} else {
-			return formatDate(start);
+			return formatDateStr(start);
 		}
 	}
 
@@ -68,14 +69,13 @@ export function formatDate(startStr, endStr) {
 		} else if (sameYear) {
 			return `${formatDayMonth(start)}–${formatDayMonth(end)} ${start.getFullYear()}`;
 		} else {
-			return `${formatDate(start)}–${formatDate(end)}`;
+			return `${formatDateStr(start)}–${formatDateStr(end)}`;
 		}
 	}
 
 	// Date range with times
-	return `Dal ${formatDate(start)}${startHasTime ? ' alle ' + formatTime(start) : ''} al ${formatDate(end)}${endHasTime ? ' alle ' + formatTime(end) : ''}`;
+	return `Dal ${formatDateStr(start)}${startHasTime ? ' alle ' + formatTime(start) : ''} al ${formatDateStr(end)}${endHasTime ? ' alle ' + formatTime(end) : ''}`;
 }
-
 
 export function isPast(datetime) {
 	if (!datetime) return false;

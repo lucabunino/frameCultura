@@ -1,4 +1,4 @@
-import {DownloadIcon, StopIcon} from '@sanity/icons'
+import {DownloadIcon, StopIcon, BlockElementIcon} from '@sanity/icons'
 
 export default function body({ group = undefined } = {}) {
 	return {
@@ -70,6 +70,7 @@ export default function body({ group = undefined } = {}) {
 			{
 				type: 'object',
 				name: 'accordionTitle',
+				icon: BlockElementIcon,
 				fields: [
 					{
 						name: 'title',

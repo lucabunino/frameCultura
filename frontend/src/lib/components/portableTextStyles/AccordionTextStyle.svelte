@@ -13,7 +13,6 @@ let {global, value} = $derived(portableText)
 let {style, listItem, markDefs} = $derived(value);
 let accordionOpen = $state(false)
 let accordionHeight = $state(undefined)
-$inspect(accordionHeight)
 </script>
 
 {#if value.title}

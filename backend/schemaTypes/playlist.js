@@ -134,6 +134,17 @@ export default {
 			group: 'Preview',
 
 		},
+		{
+			name: 'related',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'event'},{type: 'eventSerie'},{type: 'video'},{type: 'playlist'},{type: 'episode'},{type: 'podcast'}],
+				}
+			],
+			group: 'Related',
+		},
 		...seoFields()
 	],
 };

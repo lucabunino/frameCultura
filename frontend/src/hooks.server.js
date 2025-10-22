@@ -1,17 +1,14 @@
 /** @type {import('@sveltejs/kit').Handle} */
-export async function handle({ event, resolve }) {
-	const response = await resolve(event, {
-		preload: ({ type, path }) => 
-			['js', 'css', 'font'].includes(type) || path.includes('/important/')
-	});
-	return response;
-}
-
 import { dev } from '$app/environment';
-export function handle({ event, resolve }) {
+
+export async function handle({ event, resolve }) {
 	if (dev && event.url.pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
 		return new Response(undefined, { status: 404 });
 	}
+	const response = await resolve(event, {
+		preload: ({ type, path }) =>
+			['js', 'css', 'font'].includes(type) || path.includes('/important/')
+	});
 
-	return resolve(event);
+	return response;
 }

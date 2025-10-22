@@ -132,10 +132,11 @@ section h4 {
 }
 @media only screen and (max-width: 800px) {
 	section {
-		margin-bottom: 12rem;
+		margin-bottom: 8rem;
 	}
 	.explore-live-wrapper {
 		grid-column: 1 / span 12;
+		gap: 4rem;
 	}
 }
 
@@ -178,6 +179,7 @@ section h4 {
 	display: flex;
 	align-items: center;
 	gap: var(--gutter);
+	padding-right: var(--margin);
 }
 .author h2 {
 	line-height: 1.05;
@@ -209,6 +211,9 @@ section h4 {
 		height: auto;
 		padding: 2rem 0 4rem;
 	}
+	.author {
+		padding-right: 0;
+	}
 }
 
 /* Explore */
@@ -220,18 +225,18 @@ section h4 {
 	padding-top: 2rem;
 	margin-bottom: 4rem;
 }
-@media only screen and (max-width: 1280px) {
+@media only screen and (max-width: 1536px) {
 	.explore {
 		grid-template-columns: repeat(4, 1fr);
+	}
+}
+@media only screen and (max-width: 1280px) {
+	.explore {
+		grid-template-columns: repeat(3, 1fr);
 		margin-bottom: 4rem;
 	}
 }
 @media only screen and (max-width: 1080px) {
-	.explore {
-		grid-template-columns: repeat(3, 1fr);
-	}
-}
-@media only screen and (max-width: 800px) {
 	.explore {
 		grid-template-columns: repeat(2, 1fr);
 	}
@@ -263,6 +268,12 @@ section h4 {
 	}
 }
 @media screen and (max-width: 800px) {
+	.live {
+		grid-template-columns: repeat(2, 1fr);
+		margin-bottom: 4rem;
+	}
+}
+@media screen and (max-width: 350px) {
 	.live {
 		grid-template-columns: repeat(1, 1fr);
 	}

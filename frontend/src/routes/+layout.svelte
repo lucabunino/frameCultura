@@ -325,6 +325,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 }
 .menu.open ul {
 	height: 100vh;
+	height: 100svh;
 	padding: calc(var(--margin)*2 + 4rem + var(--margin) + 2rem) var(--margin);
 }
 .logo {

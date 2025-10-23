@@ -195,14 +195,18 @@ function onRealIndexChange(e) {
 				{#each homepage.highlights as highlight, i}
 					<swiper-slide>
 						{#if highlight.ctaReference || highlight.ctaLink}
-							<a class="highlight"
+							<a class="highlight mobile"
 							class:left={i == 0}
 							class:right={i > 0}
 							class:wide={homepage.highlights.length == 1}
 							class:high={homepage.highlights.length == 3 && i == 0}
 							style={
 								(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
-								(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
+								(highlight.backgroundImageMobile
+									? `background-image: url(${urlFor(highlight.backgroundImageMobile)});`
+									: highlight.backgroundImage
+									? `background-image: url(${urlFor(highlight.backgroundImage)});`
+									: '')
 							}
 							href={highlight.ctaReference ? `/${{
 								video: 'esplora',
@@ -222,14 +226,18 @@ function onRealIndexChange(e) {
 								{#if highlight.ctaLabel}<button class="btn bg-white">{highlight.ctaLabel}</button>{/if}
 							</a>
 						{:else}
-							<div class="highlight"
+							<div class="highlight mobile"
 							class:left={i == 0}
 							class:right={i > 0}
 							class:wide={homepage.highlights.length == 1}
 							class:high={homepage.highlights.length == 3 && i == 0}
 							style={
 								(highlight.backgroundColor ? `background-color: ${highlight.backgroundColor.hex}; ` : '') +
-								(highlight.backgroundImage ? `background-image: url(${urlFor(highlight.backgroundImage)});` : '')
+								(highlight.backgroundImageMobile
+									? `background-image: url(${urlFor(highlight.backgroundImageMobile)});`
+									: highlight.backgroundImage
+									? `background-image: url(${urlFor(highlight.backgroundImage)});`
+									: '')
 							}
 							>
 								<div>
@@ -518,6 +526,10 @@ function onRealIndexChange(e) {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	background-size: cover;
+}
+.highlight.mobile {
+	background-position: right bottom;
 	background-size: cover;
 }
 .highlight.left {

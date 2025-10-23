@@ -9,6 +9,5 @@ export async function handle({ event, resolve }) {
 		preload: ({ type, path }) =>
 			['js', 'css', 'font'].includes(type) || path.includes('/important/')
 	});
-
 	return response;
 }

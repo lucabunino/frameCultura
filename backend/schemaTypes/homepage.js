@@ -77,8 +77,13 @@ export default {
 						},
 						{
 							name: 'backgroundImage',
+							description: 'Aspect ratio 16:9',
 							type: 'image',
-
+						},
+						{
+							name: 'backgroundImageMobile',
+							description: 'Aspect ratio 1:1. Optional — can be used instead of the background image on mobile devices',
+							type: 'image',
 						},
 					]
 				}

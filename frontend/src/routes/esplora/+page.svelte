@@ -6,9 +6,10 @@ import { register } from 'swiper/element/bundle';register();
 import sliderInjectedStyle from '$lib/utils/sliderInjectedStyle.js';
 import { formatAuthorName } from "$lib/utils/author.js";
 import FiltersAndSearch from "$lib/components/FiltersAndSearch.svelte";
-    import { isPast } from "$lib/utils/date.js";
-    import { onDestroy, onMount } from "svelte";
-    import Production from "$lib/components/Production.svelte";
+import { isPast } from "$lib/utils/date.js";
+import { onDestroy, onMount } from "svelte";
+import Production from "$lib/components/Production.svelte";
+import { innerWidth } from 'svelte/reactivity/window';
 
 let header = getHeader()
 let { data } = $props();
@@ -38,7 +39,7 @@ $effect(() => {
 // Functions
 function onSwiperClick(e) {
 	if (e.target.tagName !== 'A') {
-		if (e.clientX > innerWidth/2) {
+		if (e.clientX > innerWidth.current/2) {
 			swiperEl.swiper.slideNext()
 		} else {
 			swiperEl.swiper.slidePrev()
@@ -47,7 +48,7 @@ function onSwiperClick(e) {
 }
 function onSwiperHover(e) {
 	if (e.target.tagName !== 'A' && swiperEl?.swiper?.slides.length > 1) {
-		if (e.clientX > innerWidth/2) {
+		if (e.clientX > innerWidth.current/2) {
 			highlightTag = 'Next'
 		} else {
 			highlightTag = 'Prev'
@@ -84,7 +85,11 @@ function handleMouseMove(e) {
 				onclick={(e) => {onSwiperClick(e)}}
 				>
 					<img class="cover"
-					src={urlFor(production.highlightCover ? production.highlightCover : data.info.placeholder).width(2560)}
+					src={urlFor(
+						production.highlightCoverMobile && innerWidth.current <= 800 ? production.highlightCoverMobile :
+						production.highlightCover ? production.highlightCover :
+						data.info.placeholder
+						).width(2560)}
 					alt="Copertina di {production.title}"
 					>
 					<div class="info">
@@ -149,6 +154,7 @@ data={data} marginTop={!data.exploreSelection} displayFilterMedia={true} display
 /* Highlights */
 #exploreSelection {
 	min-height: 500px;
+	height: calc(100vw/21*9);
 }
 #exploreSelection swiper-container {
 	height: 100%;

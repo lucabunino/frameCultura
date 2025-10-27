@@ -57,6 +57,25 @@ export default {
 			group: 'Basics',
 		},
 		{
+			name: 'format',
+			type: 'reference',
+			to: [{type: 'format'},],
+			validation: (Rule) => Rule.required(),
+			group: 'Basics',
+		},
+		{
+			name: 'topics',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{type: 'topic'},],
+				}
+			],
+			group: 'Basics',
+		},
+		body({ group: 'Basics' }),
+		{
 			name: 'people',
 			type: 'object',
 			fields: [
@@ -200,24 +219,6 @@ export default {
 			group: 'Where',
 		},
 		{
-			name: 'format',
-			type: 'reference',
-			to: [{type: 'format'},],
-			validation: (Rule) => Rule.required(),
-			group: 'Basics',
-		},
-		{
-			name: 'topics',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{type: 'topic'},],
-				}
-			],
-			group: 'Basics',
-		},
-		{
 			name: 'accessColor',
 			title: 'Color',
 			type: 'color',
@@ -261,7 +262,6 @@ export default {
 			group: 'Access',
 			fieldset: 'Tag',
 		},
-		body({ group: 'Basics' }),
 		{
 			name: 'visible',
 			title: "Visible in 'Live' page",
@@ -293,6 +293,12 @@ export default {
 		{
 			name: 'highlightCover',
 			description: "Aspect ratio 16:9. To be used if the event is selected in 'Live' page",
+			type: 'image',
+			group: 'Preview',
+		},
+		{
+			name: 'highlightCoverMobile',
+			description: "Aspect ratio 1:1. Optional — can be used instead of the Highlight Cover on mobile devices",
 			type: 'image',
 			group: 'Preview',
 		},

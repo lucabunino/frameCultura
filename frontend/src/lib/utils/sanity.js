@@ -145,19 +145,6 @@ export async function getProduction(slug) {
 				format-> { ... },
 				city-> { ... },
 			},
-			"additionalRelated": *[
-				_type in ["event","eventSerie","podcast","episode","video","playlist"]
-				&& visible == true
-				&& !(_id in path("drafts.**"))
-			] {
-				...,
-				authors[]->{ ... },
-				authorsPreview[]-> { ... },
-				peoplePreview[]-> { ... },
-				topics[]-> { ... },
-				format-> { ... },
-				city-> { ... },
-			} | order(matchPriority asc, date desc)[0...8],
 			"podcasts": *[_type == "podcast" && references(^._id)]{ ... },
 			"playlists": *[_type == "playlist" && references(^._id)]{ ... },
 		}`, { slug });
@@ -302,19 +289,6 @@ export async function getEvent(slug) {
 				format-> { ... },
 				city-> { ... },
 			},
-			"additionalRelated": *[
-				_type in ["event","eventSerie","podcast","episode","video","playlist"]
-				&& visible == true
-				&& !(_id in path("drafts.**"))
-			] {
-				...,
-				authors[]->{ ... },
-				authorsPreview[]-> { ... },
-				peoplePreview[]-> { ... },
-				topics[]-> { ... },
-				format-> { ... },
-				city-> { ... },
-			} | order(matchPriority asc, date desc)[0...8]
 		}`, { slug });
 }
 export async function getAuthors(search) {

@@ -1,20 +1,18 @@
 <script>
 import Organization from "$lib/components/Organization.svelte";
 let { data } = $props();
-let innerWidth = $state(undefined)
 let activeOrganization = $state(0)
 let activeOrganizationMobile = $state(undefined)
 </script>
 
-<svelte:window bind:innerWidth></svelte:window>
-
 {#if data.network.introduction}
 	<section id="intro">
-		<h1 class="jost-74">{data.about.introduction}</h1>
+		<h1 class="jost-27">{data.network.introduction}</h1>
 	</section>
 {/if}
 
 <section id="network">
+	
 	<nav class="navigator">
 		{#each data.network.network as cluster, i}
 			<a class="navigator-item jost-18 uppercase bold" href="#{cluster.slug.current}"
@@ -42,6 +40,11 @@ let activeOrganizationMobile = $state(undefined)
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
 	gap: var(--gutter);
+}
+/* Intro */
+#intro {
+	padding: var(--margin) var(--margin) 4rem;
+	max-width: 1000px;
 }
 /* Navigator */
 .navigator {

@@ -90,5 +90,9 @@ export default {
 			title: 'P. IVA',
 			type: 'string',
 		},
+		{
+			name: 'newsletterLink',
+			type: 'url',
+		},
 	],
 };

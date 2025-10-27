@@ -4,12 +4,7 @@ import Production from "./Production.svelte";
 import { register } from 'swiper/element/bundle';register();
 let {
 	related,
-	additionalRelated,
 } = $props()
-let items = $derived(
-	[...(related ?? []), ...(additionalRelated ?? [])]
-		.filter((item, index, self) => index === self.findIndex(t => t._id === item._id))
-);
 let domLoaded = $state(false)
 let swiperRelatedEl = $state(false)
 $effect(() => {
@@ -67,7 +62,7 @@ $effect(() => {
 	free-mode={false}
 	mousewheel-force-to-axis={true}
 	>
-		{#each items as item, i}
+		{#each related as item, i}
 			<swiper-slide>
 				{#if ["video", "playlist", "episode", "podcast"].includes(item._type)}
 					<Production production={item} related={true}/>

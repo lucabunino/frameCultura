@@ -8,9 +8,10 @@ import { formatAuthorName } from "$lib/utils/author.js";
 import { formatDate, isPast, isOngoing, isUpcoming } from '$lib/utils/date';
 import Event from "$lib/components/Event.svelte";
 import { onDestroy, onMount } from "svelte";
+import { innerWidth } from 'svelte/reactivity/window';
+
 let header = getHeader()
 let { data } = $props();
-$inspect(data)
 let mouse = $state({y: undefined, x: undefined});
 let swiperEl = $state(undefined);
 let highlightTag = $state(undefined);
@@ -36,21 +37,19 @@ $effect(() => {
 
 // Functions
 function onSwiperClick(e) {
-	console.log("click");
-	
 	if (e.target.tagName !== 'A') {
-		if (e.clientX > innerWidth/3*2) {
+		if (e.clientX > innerWidth.current/3*2) {
 			swiperEl.swiper.slideNext()
-		} else if (e.clientX < innerWidth/3) {
+		} else if (e.clientX < innerWidth.current/3) {
 			swiperEl.swiper.slidePrev()
 		}
 	}
 }
 function onSwiperHover(e) {
 	if (e.target.tagName !== 'A' && swiperEl?.swiper?.slides.length > 1) {
-		if (e.clientX > innerWidth/3*2) {
+		if (e.clientX > innerWidth.current/3*2) {
 			highlightTag = 'Next'
-		} else if (e.clientX < innerWidth/3) {
+		} else if (e.clientX < innerWidth.current/3) {
 			highlightTag = 'Prev'
 		}
 	}
@@ -85,7 +84,11 @@ function handleMouseMove(e) {
 				onclick={(e) => {onSwiperClick(e)}}
 				>
 					<img class="cover"
-					src={urlFor(event.highlightCover ? event.highlightCover : data.info.placeholder).width(2560)}
+					src={urlFor(
+						event.highlightCoverMobile && innerWidth.current <= 800 ? event.highlightCoverMobile :
+						event.highlightCover ? event.highlightCover :
+						data.info.placeholder
+						).width(2560)}
 					alt="Copertina di {event.title}"
 					>
 					<div class="info">
@@ -256,13 +259,6 @@ displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} se
 	gap: .6em;
 	align-items: center;
 }
-#liveSelection .btns .btn svg {
-	height: 1.25rem;
-	fill: var(--black);
-}
-#liveSelection .btns .btn:hover svg {
-	fill: var(--white);
-}
 .highlightTag {
 	position: fixed;
 	z-index: 8;
@@ -283,10 +279,6 @@ displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} se
 	line-height: calc(2.5rem + 1.25rem*1.3);
 }
 @media screen and (max-width: 800px) {
-	#liveSelection .production {
-		justify-content: flex-end;
-		padding-bottom: 12rem;
-	}
 	.highlightTag {
 		display: none;
 	}
@@ -318,9 +310,6 @@ displayFilterCity={true} displayFilterTopic={true} displayFilterFormat={true} se
 }
 .event {
 	position: relative;
-}
-.events {
-	display: flex;
 }
 @media screen and (max-width: 1536px) {
 	#live {

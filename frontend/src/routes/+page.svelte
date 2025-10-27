@@ -6,6 +6,7 @@ import Event from "$lib/components/Event.svelte";
 import { register } from 'swiper/element/bundle';register();
 import { formatAuthorName } from "$lib/utils/author.js";
 import { colors } from "$lib/utils/color.js";
+import { innerWidth, innerHeight, scrollY } from 'svelte/reactivity/window';
 
 let { data } = $props();
 const homepage = data.homepage
@@ -13,9 +14,6 @@ let domLoaded = $state(false)
 let activeAuthorIndex = $state(0)
 let activeAuthor = $derived(homepage.authorsSelection[activeAuthorIndex])
 let authorEls = $state([])
-let scrollY = $state(undefined)
-let innerHeight = $state(undefined)
-let innerWidth = $state(undefined)
 let swiperProductionsMobileEl = $state(undefined)
 let activeProductionIndex = $state(0)
 let activeProduction = $derived(homepage.productionsSelection[activeProductionIndex])
@@ -123,7 +121,7 @@ function onRealIndexChange(e) {
 }
 </script>
 
-<svelte:window bind:scrollY bind:innerWidth bind:innerHeight onscroll={() => handleScroll()}></svelte:window>
+<svelte:window onscroll={() => handleScroll()}></svelte:window>
 
 <section id="hero">
 	<h1 class="jost-74">{homepage.intro1}</h1>
@@ -134,7 +132,7 @@ function onRealIndexChange(e) {
 </section>
 
 {#if homepage.highlights}
-	{#if innerWidth > 800}
+	{#if innerWidth.current > 800}
 		<section id="highlights" class:high={homepage.highlights.length == 3}>
 			{#each homepage.highlights as highlight, i}
 				{#if highlight.ctaReference || highlight.ctaLink}
@@ -282,7 +280,7 @@ function onRealIndexChange(e) {
 	<section id="productions">
 			<h4 class="jost-54 inline-title">Produzioni</h4>{#if homepage.productionsIntro}
 			<span class="section-description jost-18">{homepage.productionsIntro}</span>{/if}
-			{#if innerWidth > 800}
+			{#if innerWidth.current > 800}
 				<ProductionsWidget productions={homepage.productionsSelection} />
 				<a href="/esplora" class="btn bg-gray">Esplora tutti i contenuti</a>
 			{:else}
@@ -356,7 +354,7 @@ function onRealIndexChange(e) {
 
 {#if homepage.authorsSelection}
 	<section id="authors">
-		{#if innerWidth > 800}
+		{#if innerWidth.current > 800}
 			<div class="active-author">
 				<h4 class="jost-54 inline-title">Autori</h4>
 				<div class="card">
@@ -409,6 +407,7 @@ function onRealIndexChange(e) {
 					style={"--activeColor: " + colors[i%8]}
 					class:active={activeAuthorIndex == i}
 					onmouseover={() => {activeAuthorIndex = i}}
+					onfocus={() => {activeAuthorIndex = i}}
 					bind:this={authorEls[i]}
 					>
 						<h2>{formatAuthorName(author)}</h2>
@@ -715,7 +714,7 @@ function onRealIndexChange(e) {
 .active-author .highlighted-contents h2 {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2; /* limit to 2 lines */
+	line-clamp: 2;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }

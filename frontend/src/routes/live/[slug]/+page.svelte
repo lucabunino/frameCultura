@@ -23,7 +23,6 @@ const event = data.event
 let domLoaded = $state(false)
 let swiperLiveEl = $state(undefined)
 let displayAnchor = $state(false)
-$inspect(event.additionalRelated)
 
 // Lifecycle
 onMount(() => { if (event.horizontalCover) {
@@ -260,8 +259,8 @@ function hideAnchor() {
 	style={event.accessColor ? "background-color: " + event.accessColor.hex + "; color: white;" : ""}
 	>{event.accessCtaLabel}</a>
 {/if}
-{#if event.additionalRelated}
-	<Related related={event.related} additionalRelated={event.additionalRelated}/>
+{#if event.related}
+	<Related related={event.related}/>
 {/if}
 
 <style>

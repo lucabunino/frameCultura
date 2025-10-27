@@ -40,22 +40,6 @@ export default {
 			group: 'Basics',
 		},
 		{
-			name: 'visible',
-			title: "Visible in 'Live' page",
-			type: 'boolean',
-			initialValue: false,
-			validation: (Rule) => Rule.required(),
-			group: 'Preview',
-		},
-		{
-			name: 'hierarchy',
-			description: 'Higher number means it will be displayed higher in Live',
-			type: 'number',
-			initialValue: 1,
-			validation: (Rule) => Rule.required(),
-			group: 'Preview',
-		},
-		{
 			name: 'format',
 			type: 'reference',
 			to: [{type: 'format'},],
@@ -89,6 +73,19 @@ export default {
 			name: 'detailColor',
 			type: 'color',
 			options: colorOptions,
+			group: 'Basics',
+		},
+		body({ group: 'Basics' }),
+		{
+			name: 'events',
+			type: 'array',
+			of: [
+				{
+					type: 'reference',
+					to: [{ type: 'event' }],
+				},
+			],
+			validation: (Rule) => Rule.required(),
 			group: 'Basics',
 		},
 		{
@@ -150,6 +147,18 @@ export default {
 						}
 					},
 				],
+				},
+			],
+			group: 'Who',
+		},
+		{
+			name: 'peoplePreview',
+			type: 'array',
+			of: [
+				{
+					name: 'person',
+					type: 'reference',
+					to: [{ type: 'person' }],
 				},
 			],
 			group: 'Who',
@@ -223,14 +232,32 @@ export default {
 			group: 'Where',
 		},
 		{
+			name: 'visible',
+			title: "Visible in 'Live' page",
+			type: 'boolean',
+			initialValue: false,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
+			name: 'hierarchy',
+			description: 'Higher number means it will be displayed higher in Live',
+			type: 'number',
+			initialValue: 1,
+			validation: (Rule) => Rule.required(),
+			group: 'Preview',
+		},
+		{
 			name: 'cover',
 			description: 'Aspect ratio 5:7',
 			type: 'image',
+			group: 'Preview',
 		},
 		{
 			name: 'horizontalCover',
 			description: 'Aspect ratio 21:9. To be used in single page',
 			type: 'image',
+			group: 'Preview',
 		},
 		{
 			name: 'abstract',
@@ -242,23 +269,19 @@ export default {
 			name: 'highlightCover',
 			description: "Aspect ratio 16:9. To be used if the event serie is selected in 'Live' page",
 			type: 'image',
+			group: 'Preview',
+		},
+		{
+			name: 'highlightCoverMobile',
+			description: "Aspect ratio 1:1. Optional — can be used instead of the Highlight Cover on mobile devices",
+			type: 'image',
+			group: 'Preview',
 		},
 		{
 			name: 'highlightAbstract',
 			type: 'text',
 			rows: 5,
-		},
-		body({ group: 'Basics' }),
-		{
-			name: 'events',
-			type: 'array',
-			of: [
-				{
-					type: 'reference',
-					to: [{ type: 'event' }],
-				},
-			],
-			validation: (Rule) => Rule.required(),
+			group: 'Preview',
 		},
 		...seoFields(),
 	],

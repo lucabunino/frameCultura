@@ -123,6 +123,12 @@ export default {
 			group: 'Preview',
 		},
 		{
+			name: 'highlightCoverMobile',
+			description: "Aspect ratio 1:1. Optional — can be used instead of the Highlight Cover on mobile devices",
+			type: 'image',
+			group: 'Preview',
+		},
+		{
 			name: 'highlightAbstract',
 			type: 'text',
 			rows: 5,

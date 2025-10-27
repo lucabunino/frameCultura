@@ -12,6 +12,11 @@ export default {
 			hidden: true,
 		},
 		{
+			name: 'introduction',
+			type: 'text',
+			rows: 3,
+		},
+		{
 			name: 'network',
 			type: 'array',
 			of: [

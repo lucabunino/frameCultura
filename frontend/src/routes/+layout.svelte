@@ -11,6 +11,8 @@ import { goto } from "$app/navigation";
 import { ProgressBar } from "@prgm/sveltekit-progress-bar";
 import { isPast } from "$lib/utils/date";
 import Live from "$lib/components/Live.svelte";
+import SearchBar from "$lib/components/SearchBar.svelte";
+import { innerWidth, scrollY } from 'svelte/reactivity/window';
 
 // Variables
 let { data, children } = $props();
@@ -21,10 +23,7 @@ if (page.url.pathname == '/esplora' && data.exploreHasContent || page.url.pathna
 }
 let mouse = $state([])
 let domLoaded = $state(false)
-let innerWidth = $state(undefined)
-let placeholder = $derived(innerWidth > 800  ? 'cerca nel sito' : 'cerca')
-let innerHeight = $state(undefined)
-let scrollY = $state(0)
+let placeholder = $derived(innerWidth.current > 800  ? 'cerca nel sito' : 'cerca')
 let lastScrollY = $state(0)
 let menuOpen = $state(false)
 let cookieAccepted = $state(false)
@@ -32,6 +31,7 @@ let headerHeight = $state(undefined)
 let search = $state(undefined)
 let body = $state(undefined)
 let showBanner = $state()
+let searchOpen = $state(false)
 
 // Lifecycle
 $effect(() => {
@@ -66,19 +66,19 @@ function rejectCookies() {
   cookieAccepted = false;
 }
 function handleScroll(e) {
-	if (scrollY > lastScrollY && scrollY > 50) {
+	if (scrollY.current > lastScrollY && scrollY.current > 50) {
 		header.setUp(true)
 	} else {
 		header.setUp(false)
 	}
 	if (header.initialInverted) {
-		if (scrollY > 250 - headerHeight) {
+		if (scrollY.current > 250 - headerHeight) {
 			header.setInverted(false)
 		} else {
 			header.setInverted(true)
 		}
 	}
-	lastScrollY = scrollY
+	lastScrollY = scrollY.current
 }
 
 // Dev
@@ -88,13 +88,13 @@ const gridColumnsMobile = 8
 function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight bind:scrollY={scrollY} onkeyup={handleKey} onmousemove={handleMousemove} onscroll={(e) => handleScroll(e)}></svelte:window>
+<svelte:window onkeyup={handleKey} onmousemove={handleMousemove} onscroll={(e) => handleScroll(e)}></svelte:window>
 <svelte:body bind:this={body}></svelte:body>
 
 {#if viewGrid}
 <div id="layout"
-			style="grid-template-columns:repeat({innerWidth > 800 ? gridColumnsDesktop : gridColumnsMobile}, 1fr);pointer-events:none;display: grid;position:fixed; z-index:999;width: -moz-available;width: -webkit-fill-available;width: -moz-available;width: fill-available;height: -moz-available;height: -webkit-fill-available;margin:0 var(--margin);gap:var(--gutter);opacity:.2;">
-	{#each Array(innerWidth > 800 ? gridColumnsDesktop : gridColumnsMobile) as _, i}
+			style="grid-template-columns:repeat({innerWidth.current > 800 ? gridColumnsDesktop : gridColumnsMobile}, 1fr);pointer-events:none;display: grid;position:fixed; z-index:999;width: -moz-available;width: -webkit-fill-available;width: -moz-available;width: fill-available;height: -moz-available;height: -webkit-fill-available;margin:0 var(--margin);gap:var(--gutter);opacity:.2;">
+	{#each Array(innerWidth.current > 800 ? gridColumnsDesktop : gridColumnsMobile) as _, i}
 		<div style="background-color:red"></div>
 	{/each}
 </div>
@@ -124,29 +124,30 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			</a>
 		{/if}
 		<ul class="jost-74">
-			<li class="menu-item" class:active={page.url.pathname === "/esplora" || page.url.pathname.includes("/esplora/")}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/esplora">esplora</a>
+			<li class="menu-item" class:active={page.url.pathname === "/esplora" || page.url.pathname.includes("/esplora/")}>
+				<a href="/esplora"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>esplora</a>
 			</li>
-			<li class="menu-item" class:active={page.url.pathname === "/autori" || page.url.pathname.includes("/autori/")}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/autori">autori</a>
+			<li class="menu-item" class:active={page.url.pathname === "/autori" || page.url.pathname.includes("/autori/")}>
+				<a href="/autori"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>autori</a>
 			</li>
-			<li class="menu-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/live">live</a>
+			<li class="menu-item" class:active={page.url.pathname === "/live" || page.url.pathname.includes("/live/")}>
+				<a href="/live"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>live</a>
 			</li>
-			<li class="menu-item" class:active={page.url.pathname === "/about"}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/about">about</a>
+			<li class="menu-item" class:active={page.url.pathname === "/about"}>
+				<a href="/about"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}
+				>about</a>
 			</li>
-			<li class="menu-item" class:active={page.url.pathname === "/network"}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/network">network</a>
+			<li class="menu-item" class:active={page.url.pathname === "/network"}>
+				<a href="/network"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>network</a>
 			</li>
-			<li class="menu-item" class:active={page.url.pathname === "/contatti"}
-			onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>
-				<a href="/contatti">contatti</a>
+			<li class="menu-item" class:active={page.url.pathname === "/contatti"}>
+				<a href="/contatti"
+				onclick={() => {menuOpen = false, header.setUp(false), search = undefined}}>contatti</a>
 			</li>
 			<form id="search-bar" class="menu-item" onsubmit={(e) => {
 				e.preventDefault()
@@ -161,11 +162,24 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 				</button>
 			</form>
 		</ul>
-		<button id="menuSwitch" onclick={(e) => {menuOpen = !menuOpen, header.setUp(false), search = undefined}} class:crossed={menuOpen}>
-			<div class="line"></div>
-			<div class="line"></div>
-			<div class="line"></div>
-		</button>
+		<div id="switchContainer">
+			{#if innerWidth.current > 800}
+				{#if searchOpen}
+					<SearchBar bind:searchOpen={searchOpen} search={search} header={true} small={true} mobileAnchorBottom={false} placeholder={"Cerca nel sito"}/>
+				{:else}
+					<button aria-label="Search switch" id="searchSwitch" class="jost-27" onclick={() => searchOpen = !searchOpen}>
+						<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13">
+							<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063-.003 1 .495 2.193 1.043 3.029L0 11.57 1.417 13l3.38-3.888c.808.547 2.087 1.07 3.133 1.074 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.861a3.843 3.843 0 0 1-3.864-3.8h-.004A3.859 3.859 0 0 1 7.93 1.207a3.842 3.842 0 0 1 3.838 3.8A3.843 3.843 0 0 1 7.96 8.861h.001Z" style="fill:#231f20"/>
+						</svg>
+					</button>
+				{/if}
+			{/if}
+			<button aria-label="Menu switch" id="menuSwitch" onclick={(e) => {menuOpen = !menuOpen, header.setUp(false), search = undefined}} class:crossed={menuOpen}>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+			</button>
+		</div>
 	</nav>
 </header>
 
@@ -189,11 +203,13 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			cerca
 		</button>
 	</form>
-	<div class="newsletter mobile-only">
-		<h5>newsletter</h5>
-		{#if data.info.newsletter}<p class="jost-18">{data.info.newsletter}</p>{/if}
-		<a class="btn bg-black text-white mobile-w-100" href="http://" target="_blank" rel="noopener noreferrer">Iscriviti</a>
-	</div>
+	{#if data.info.newsletter && data.info.newsletterLink}
+		<div class="newsletter mobile-only">
+			<h5>newsletter</h5>
+			<p class="jost-18">{data.info.newsletter}</p>
+			<a class="btn bg-black text-white mobile-w-100" href={data.info.newsletterLink} target="_blank" rel="noopener noreferrer">Iscriviti</a>
+		</div>
+	{/if}
 	{#if data.info.footerPatterns}
 		{@const randomIndex = Math.floor(Math.random() * data.info.footerPatterns.length)}
 		<div class="footer-pattern" style={`background-image: url(${urlFor(data.info.footerPatterns[randomIndex])})`}></div>
@@ -243,11 +259,15 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			</li>
 		</ul>
 	</nav>
-	<div class="desktop-only">
-		<h5>newsletter</h5>
-		{#if data.info.newsletter}<p class="jost-18">{data.info.newsletter}</p>{/if}
-		<a class="btn" href="http://" target="_blank" rel="noopener noreferrer">Iscriviti</a>
-	</div>
+	{#if data.info.newsletter && data.info.newsletterLink}
+		<div class="desktop-only">
+			<h5>newsletter</h5>
+			<p class="jost-18">{data.info.newsletter}</p>
+			<a class="btn" href={data.info.newsletterLink} target="_blank" rel="noopener noreferrer">Iscriviti</a>
+		</div>
+	{:else}
+		<div class="desktop-only"></div>
+	{/if}
 	<div class="jost-15 mobile-jost-12">
 		<div>
 			<p>©{new Date().getFullYear()} {#if data.info.ragioneSociale}{data.info.ragioneSociale}{/if}</p>
@@ -275,7 +295,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 
 {#if showBanner}
 	<div id="cookie-banner" class="jost-15 shadow rounded">
-		<p>Questo sito utilizza servizi di terze parti come Youtube che possono impostare cookie. Avviando la riproduzione di un video, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}
+		<p>Questo sito utilizza servizi di terze parti come Youtube che possono impostare cookie. Avviando la riproduzione di un video, consenti l’uso dei relativi cookie.{#each data.policies as policy}{#if policy.kind == 'cookies'}{@html ' '}Per saperne di più, consulta la nostra <a href="/cookies" class="underline">cookie policy</a>{/if}{/each}</p>
 		<div id="cookie-btns">
 			<button id="accept-cookies" onclick={acceptCookies} class="jost-12 bold uppercase">Ok, ho capito</button>
 		</div>
@@ -340,6 +360,25 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 .menu-item:hover, .menu-item.active {
 	color: var(--blue);
 }
+#switchContainer {
+	display: flex;
+	gap: 1em;
+}
+#searchSwitch {
+	z-index: 2;
+	width: 1.4em;
+	height: auto;
+	cursor: pointer;
+	display: block;
+	position: relative;
+	align-self: center;
+}
+#searchSwitch svg {
+	fill: var(--black);
+	width: 100%;
+	height: auto;
+	margin-top: .3em;
+}
 #menuSwitch {
 	z-index: 2;
 	width: 2.5em;
@@ -348,9 +387,6 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	display: block;
 	position: relative;
 	align-self: center;
-}
-#menuSwitch.off .line {
-	width: 0;
 }
 #menuSwitch .line {
 	width: 100%;
@@ -467,14 +503,6 @@ main.marginTop {
 /* Pre-footer */
 .pre-footer {
 	margin-top: 20rem;
-}
-.footer-search {
-	max-width: stretch;
-	width: 100%;
-	margin: 2rem var(--margin);
-	padding-bottom: 1rem;
-	border: none;
-	border-bottom: solid 1px;
 }
 .footer-pattern {
   height: 50px;

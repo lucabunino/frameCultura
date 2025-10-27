@@ -9,6 +9,7 @@ import { groupMultiAccordions } from '$lib/utils/accordion.js';
 import AccordionTextStyle from '$lib/components/portableTextStyles/AccordionTextStyle.svelte';
 import DownloadTextStyle from '$lib/components/portableTextStyles/DownloadTextStyle.svelte';
 import Related from '$lib/components/Related.svelte';
+import { innerWidth, scrollY } from 'svelte/reactivity/window';
 let { data } = $props();
 const production = data.production
 let activeVideoIndex = $state(0)
@@ -16,8 +17,6 @@ let activeVideo = $derived(production.videos?.[activeVideoIndex])
 let activeVideoPlay = $state(false)
 let productionVideoPlay = $state(false)
 let videos = $state([])
-let scrollY = $state(0)
-let innerWidth = $state(undefined)
 let activeVideoPlayMobileIndex = $state(null)
 </script>
 
@@ -33,8 +32,6 @@ let activeVideoPlayMobileIndex = $state(null)
 	{#if production.cover}<meta property="og:image" content={urlFor(production.cover).width(1200).url()}>{/if}
 	{#if data.seo.SEOTitle}<meta property="og:site_name" content={`${data.seo.SEOTitle} — ${production.title}`}>{/if}
 </svelte:head>
-
-<svelte:window bind:scrollY bind:innerWidth></svelte:window>
 
 <section id="production" class={production._type}>
 	<!-- Podcast -->
@@ -311,17 +308,20 @@ let activeVideoPlayMobileIndex = $state(null)
 							activeVideoIndex = i;
 							activeVideoPlay = false;
 							setTimeout(() => {
-								if (production.videos.length - i > 4 || innerWidth <= 800) {
-									const offset = scrollY + videos[i]?.getBoundingClientRect().top - (12*4 + 12*7 - 1);
+								if (production.videos.length - i > 4 || innerWidth.current <= 800) {
+									const offset = scrollY.current + videos[i]?.getBoundingClientRect().top - (12*4 + 12*7 - 1);
 									window.scrollTo({ top: offset, behavior: 'smooth' });	
 								}
 							}, 100);
 						}}
 						>
-							{#if innerWidth <= 800 && video.youtubeVideoCode}
+							{#if innerWidth.current <= 800 && video.youtubeVideoCode}
 								<div class="mobile-video">
 									<div class="active-video-cover"
+									role="button"
+  									tabindex="0"
 									onclick={() => activeVideoPlayMobileIndex = i}
+									onkeydown={(e) => { if (e.key === "Enter" || e.key === " ") activeVideoPlayMobileIndex = i; }}
 									>
 										<img class="cover rounded _16-9" src={urlFor(video.cover ? video.cover : data.info.placeholder)} alt="">
 										{#if activeVideoPlayMobileIndex != i}
@@ -484,8 +484,8 @@ let activeVideoPlayMobileIndex = $state(null)
 		{/if}
 	{/if}
 </section>
-{#if production.additionalRelated}
-	<Related related={production.related} additionalRelated={production.additionalRelated}/>
+{#if production.related}
+	<Related related={production.related}/>
 {/if}
 
 <style>

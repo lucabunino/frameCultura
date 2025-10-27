@@ -1,31 +1,26 @@
-<!-- AboutTextStyle -->
-<script lang="ts">
-import type {BlockComponentProps} from '@portabletext/svelte'
-
-interface Props {
-	portableText: BlockComponentProps;
-	children?: import('svelte').Snippet;
-}
-
-let { portableText, children }: Props = $props();
-let {global, value} = $derived(portableText)
-let {style, listItem, markDefs} = $derived(value);
+<script>
+  let { portableText, children } = $props();
+  let { global, value } = $derived(portableText);
+  let { style, listItem, markDefs } = $derived(value);
 </script>
 
-{#if value._type === 'link'}
-	<span class="link"><a href={value?.url} target={value?.blank ? '_blank' : undefined}>
-	{@render children()}{#if value?.blank}<sup>{@html ' ↗'}</sup>{/if}
-	</a></span>
+{#if value?._type === 'link'}
+  <span class="link">
+    <a href={value?.url} target={value?.blank ? '_blank' : undefined}>
+      {@render children()}
+      {#if value?.blank}<sup>{@html ' ↗'}</sup>{/if}
+    </a>
+  </span>
 {:else if style === 'normal' && !listItem}
-	<p>{@render children()}</p>
-{:else if listItem == 'bullet'}
-	<li>{@render children()}</li>
-{:else if style=== 'h2'}
-	<h2 class="jost-21 uppercase bold">{@render children()}</h2>
-{:else if style=== 'h3'}
-	<h3 class="jost-12 uppercase bold">{@render children()}</h3>
-{:else if style=== 'h4'}
-	<p class="jost-36 mobile-jost-27">{@render children()}</p>
+  <p>{@render children()}</p>
+{:else if listItem === 'bullet'}
+  <li>{@render children()}</li>
+{:else if style === 'h2'}
+  <h2 class="jost-21 uppercase bold">{@render children()}</h2>
+{:else if style === 'h3'}
+  <h3 class="jost-12 uppercase bold">{@render children()}</h3>
+{:else if style === 'h4'}
+  <p class="jost-36 mobile-jost-27">{@render children()}</p>
 {/if}
 <style>
 p {

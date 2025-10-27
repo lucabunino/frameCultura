@@ -108,7 +108,7 @@ h4:first-of-type {
 @media only screen and (min-width: 801px) {
 	.navigator-item:not(.active):hover {
 		border-right: solid 5px var(--black);
-		padding-right: calc(var(--gutter) - 5px);
+		padding-right: calc(var(--margin) - 5px);
 		border-radius: 0;
 	}
 	.navigator-item:not(:first-of-type).active {

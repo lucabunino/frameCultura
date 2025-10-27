@@ -59,7 +59,7 @@ transition:slide={{ axis: "y", duration: 500 }}
 		<div class="dot"></div>
 		<h1 class="uppercase">{live.title}</h1>
 		{#if live.subtitle}<h2>{live.subtitle}</h2>{/if}
-		<button id="liveSwitch" onclick={(e) => {e.preventDefault(); liveOpen = !liveOpen}} class:crossed={liveOpen}>
+		<button aria-label="Live switch" id="liveSwitch" onclick={(e) => {e.preventDefault(); liveOpen = !liveOpen}} class:crossed={liveOpen}>
 			<div class="line"></div>
 			<div class="line"></div>
 		</button>
@@ -140,9 +140,6 @@ transition:slide={{ axis: "y", duration: 500 }}
 	background-color: var(--bgColor);
 	justify-items: center;
 }
-#liveSwitch.off .line {
-	width: 0;
-}
 #liveSwitch .line {
 	width: 50%;
 	height: 2px;
@@ -152,9 +149,7 @@ transition:slide={{ axis: "y", duration: 500 }}
 	transition-property: top, transform, transform-origin, width;
 	transform-origin: center;
 }
-.menu.inverted:not(.open) #liveSwitch .line {
-	background-color: var(--white);
-}
+
 #liveSwitch .line:nth-child(1) {transform: translateY(-50%)}
 #liveSwitch .line:nth-child(2) {transform: translateY(-50%) rotate(-90deg);}
 #liveSwitch.crossed .line:nth-child(1) {

@@ -101,6 +101,7 @@ function handleMouseLeave() {
 		<div class="productions"
 		onmousemove={handleMouseMove}
 		onmouseleave={handleMouseLeave}
+		role="region"
 		>
 		{#each productions as production, i}
 			<a

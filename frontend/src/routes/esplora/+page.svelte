@@ -46,6 +46,11 @@ function onSwiperClick(e) {
 		}
 	}
 }
+function onSwiperKeydown(e) {
+	if (e.target.tagName !== 'A') {
+		swiperEl.swiper.slideNext()
+	}
+}
 function onSwiperHover(e) {
 	if (e.target.tagName !== 'A' && swiperEl?.swiper?.slides.length > 1) {
 		if (e.clientX > innerWidth.current/2) {
@@ -77,12 +82,15 @@ function handleMouseMove(e) {
 		slides-per-view={1}
 		loop={true}
 		autoplay={{delay: 6000, disableOnInteraction: true}}
-		onmousemove={(e) => {onSwiperHover(e)}}
-		onmouseleave={(e) => {onSwiperMouseLeave(e)}}
 		>
 			{#each data.exploreSelection as production, i}
 				<swiper-slide class="production"
+				onmousemove={(e) => {onSwiperHover(e)}}
+				onmouseleave={(e) => {onSwiperMouseLeave(e)}}
 				onclick={(e) => {onSwiperClick(e)}}
+				role="button"
+  				tabindex="0"
+				onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSwiperKeydown(e); }}
 				>
 					<img class="cover"
 					src={urlFor(

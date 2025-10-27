@@ -1,56 +1,54 @@
-<!-- AboutTextStyle -->
-<script lang="ts">
-import type {BlockComponentProps} from '@portabletext/svelte'
-import PlainTextStyle from './PlainTextStyle.svelte';
-import DownloadTextStyle from './DownloadTextStyle.svelte';
-import { PortableText } from '@portabletext/svelte'
-interface Props {
-	portableText: BlockComponentProps;
-	children?: import('svelte').Snippet;
-}
-let { portableText, children }: Props = $props();
-let {global, value} = $derived(portableText)
-let {style, listItem, markDefs} = $derived(value);
-let accordionOpen = $state(false)
-let accordionHeight = $state(undefined)
+<script>
+  import PlainTextStyle from './PlainTextStyle.svelte';
+  import DownloadTextStyle from './DownloadTextStyle.svelte';
+  import { PortableText } from '@portabletext/svelte';
+
+  let { portableText, children } = $props();
+  let { global, value } = $derived(portableText);
+  let { style, listItem, markDefs } = $derived(value);
+
+  let accordionOpen = $state(false);
+  let accordionHeight = $state(undefined);
 </script>
 
-{#if value.title}
-	<button class="opener" class:first={value.first}
-	onclick={(e) => {e.preventDefault(); accordionOpen = !accordionOpen}}>
-		<h2 class="jost-18 uppercase bold">{value.title}
-			<div id="accordionSwitch" class="plus" class:crossed={accordionOpen}>
-				<div class="line"></div>
-				<div class="line"></div>
-			</div>
-		</h2>
-	</button>
+{#if value?.title}
+  <button class="opener" class:first={value?.first}
+    onclick={(e) => { e.preventDefault(); accordionOpen = !accordionOpen }}>
+    <h2 class="jost-18 uppercase bold">
+      {value.title}
+      <div id="accordionSwitch" class="plus" class:crossed={accordionOpen}>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </h2>
+  </button>
 {/if}
-<div class="content-wrapper" class:last={value.last}
-style="height: {accordionOpen ? accordionHeight : '0'}px">
-	<div class="content" bind:clientHeight={accordionHeight}>
-		{#each value.content as item, j}
-			<PortableText
-			value={item}
-			components={{
-			block: {
-				normal: PlainTextStyle,
-				h2: PlainTextStyle,
-				h3: PlainTextStyle,
-				h4: PlainTextStyle,
-			},
-			listItem: PlainTextStyle,
-			marks: {
-				link: PlainTextStyle,
-			},
-			types: {
-				download: DownloadTextStyle,
-			}
-			}}/>
-		{/each}
-	</div>
-</div>
 
+<div class="content-wrapper" class:last={value?.last}
+     style="height: {accordionOpen ? accordionHeight : '0'}px">
+  <div class="content" bind:clientHeight={accordionHeight}>
+    {#each value?.content ?? [] as item, j}
+      <PortableText
+        value={item}
+        components={{
+          block: {
+            normal: PlainTextStyle,
+            h2: PlainTextStyle,
+            h3: PlainTextStyle,
+            h4: PlainTextStyle,
+          },
+          listItem: PlainTextStyle,
+          marks: {
+            link: PlainTextStyle,
+          },
+          types: {
+            download: DownloadTextStyle,
+          }
+        }}
+      />
+    {/each}
+  </div>
+</div>
 
 <style>
 .opener {
@@ -85,9 +83,6 @@ style="height: {accordionOpen ? accordionHeight : '0'}px">
 	aspect-ratio: 1;
 	align-self: center;
 	justify-items: center;
-}
-#accordionSwitch.off .line {
-	width: 0;
 }
 #accordionSwitch .line {
 	width: 50%;

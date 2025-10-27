@@ -54,16 +54,17 @@ function extractVimeoID(url) {
 	{#if live.embed && live.embed.url}
 		{#if live.embed.provider === 'YouTube'}
 			<iframe
+			title="Youtube live: {live.title}"
 			width="560"
 			height="315"
 			src={`https://www.youtube.com/embed/${extractYouTubeID(live.embed.url)}`}
-			title="YouTube video"
 			frameborder="0"
 			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 			allowfullscreen
 			></iframe>
 		{:else if live.embed.provider === 'Vimeo'}
 			<iframe
+			title="Vimeo live: {live.title}"
 			src={`https://player.vimeo.com/video/${extractVimeoID(live.embed.url)}`}
 			width="640"
 			height="360"
@@ -73,6 +74,7 @@ function extractVimeoID(url) {
 			></iframe>
 		{:else if live.embed.provider === 'Facebook'}
 			<iframe
+			title="Facebook live: {live.title}"
 			src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(live.embed.url)}&show_text=0&width=560`}
 			width="560"
 			height="315"

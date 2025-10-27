@@ -289,31 +289,7 @@ select:hover {
 }
 
 /* Search */
-#search-form {
-	display: flex;
-	border-bottom: solid 1px var(--black);
-}
-input::placeholder {
-	color: var(--black);
-}
-#search {
-	width: 250px;
-	border: none;
-}
-#search-submit svg {
-	fill: var(--black);
-}
 @media screen and (max-width: 800px) {
-	#search-form {
-		display: none;
-	}
-	#search-form input {
-		width: stretch;
-	}
-	#search-form.open {
-		display: flex;
-		border: none;
-	}
 	#search-switch {
 		display: flex;
 		align-items: center;

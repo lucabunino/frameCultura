@@ -60,6 +60,8 @@ slide-to-clicked-slide={true}
 		style={`--color: ${item.activeColor?.hex}`}
 		onmouseenter={(e) => {onSwiperMouseEnter(e)}}
 		onmouseleave={(e) => {onSwiperMouseLeave(e)}}
+		role="button"
+  		tabindex="0"
 		>
 			<div class="slide-content">
 				<p class="jost-45 mobile-jost-27">{item.title}</p>

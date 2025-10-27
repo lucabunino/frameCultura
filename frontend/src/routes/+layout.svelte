@@ -163,17 +163,17 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 			</form>
 		</ul>
 		<div id="switchContainer">
-			{#if innerWidth.current > 800}
+			<div class="desktop-only">
 				{#if searchOpen}
 					<SearchBar bind:searchOpen={searchOpen} search={search} header={true} small={true} mobileAnchorBottom={false} placeholder={"Cerca nel sito"}/>
 				{:else}
 					<button aria-label="Search switch" id="searchSwitch" class="jost-27" onclick={() => searchOpen = !searchOpen}>
 						<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13">
-							<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063-.003 1 .495 2.193 1.043 3.029L0 11.57 1.417 13l3.38-3.888c.808.547 2.087 1.07 3.133 1.074 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.861a3.843 3.843 0 0 1-3.864-3.8h-.004A3.859 3.859 0 0 1 7.93 1.207a3.842 3.842 0 0 1 3.838 3.8A3.843 3.843 0 0 1 7.96 8.861h.001Z" style="fill:#231f20"/>
+							<path d="M7.96 0c-2.8-.017-5.083 2.25-5.1 5.063-.003 1 .495 2.193 1.043 3.029L0 11.57 1.417 13l3.38-3.888c.808.547 2.087 1.07 3.133 1.074 2.788 0 5.053-2.262 5.07-5.063C13.017 2.31 10.76.017 7.96 0Zm.001 8.861a3.843 3.843 0 0 1-3.864-3.8h-.004A3.859 3.859 0 0 1 7.93 1.207a3.842 3.842 0 0 1 3.838 3.8A3.843 3.843 0 0 1 7.96 8.861h.001Z"/>
 						</svg>
 					</button>
 				{/if}
-			{/if}
+			</div>
 			<button aria-label="Menu switch" id="menuSwitch" onclick={(e) => {menuOpen = !menuOpen, header.setUp(false), search = undefined}} class:crossed={menuOpen}>
 				<div class="line"></div>
 				<div class="line"></div>
@@ -378,6 +378,9 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 	width: 100%;
 	height: auto;
 	margin-top: .3em;
+}
+.inverted:not(.open) #searchSwitch svg {
+	fill: var(--white);
 }
 #menuSwitch {
 	z-index: 2;

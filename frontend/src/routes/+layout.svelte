@@ -115,7 +115,7 @@ function handleKey({key}) {if (key === 'G' && dev) {viewGrid = !viewGrid}}
 </svelte:head>
 
 {#if page.url.hostname === 'framecultura.it' || page.url.hostname === 'www.framecultura.it'}
-	<h1>Manteinance</h1>
+	<h1>WIP</h1>
 {:else}
 	<header>
 		<nav aria-label="menu" class="menu" class:open={menuOpen} class:up={header.up} class:inverted={header.inverted} bind:clientHeight={headerHeight}>
